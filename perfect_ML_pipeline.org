@@ -1,0 +1,1241 @@
+-*- mode: Org; fill-column: 80; coding: utf-8; -*-
+* pandas, numpy - Small tasks Малые задачи
+** task 1
+#+begin_src python :results output :exports both :session s1
+import pandas as pd
+import numpy as np
+
+import sklearn
+
+print(np.arange(20))
+a = np.random.randint(0, 20, size=10)
+a = a.reshape((2,5))
+b = np.eye(5)
+b = b * 3
+c = np.dot(a, b)
+print(c.flatten())
+
+#+end_src
+
+#+RESULTS:
+: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19]
+: [30. 36.  0. 48. 54. 36. 30. 42. 36. 18.]
+
+** task 2 DataFrame reshape
+#+begin_src python :results output :exports both :session pivot
+import pandas as pd
+import numpy as np
+df = pd.DataFrame({"a":[1,2,3]})
+a = []
+
+for x in range(12):
+  s = np.random.randint(1,11, 3)
+  df[str(x+1)] = s
+print(df)
+#+end_src
+
+#+RESULTS:
+:    a  1   2   3  4   5   6  7  8  9  10  11  12
+: 0  1  6   1   4  4  10  10  7  6  7   4   3   6
+: 1  2  3   1  10  5   5   6  5  9  2   8   7   4
+: 2  3  1  10   4  1   1   5  6  9  9   1   6   8
+
+We should transform v DataFrame to pivot table:
+# a month value(row)
+
+# 1  1    8
+# 1  2    4
+# 1  3    4
+# 1  4    7
+# 1  5
+# 1  12
+# 2  1
+# 2  2
+# 2  12
+# 3  1
+# 3  12
+
+We will use DataFrame.melt:
+https://pandas.pydata.org/docs/user_guide/reshaping.html#reshaping
+#+begin_src python :results output :exports both :session pivot
+print(df)
+print()
+# print(v.pivot(index=["a"], columns=[1], values=[v.columns])) # , columns=["a"]
+#
+df2 = df.melt(id_vars=["a"])
+df2["variable"] = df2.variable.astype(int)
+print()
+print(df2.sort_values(by=["a", "variable"]))
+#+end_src
+
+#+RESULTS:
+#+begin_example
+   a  1   2   3  4   5   6  7  8  9  10  11  12
+0  1  6   1   4  4  10  10  7  6  7   4   3   6
+1  2  3   1  10  5   5   6  5  9  2   8   7   4
+2  3  1  10   4  1   1   5  6  9  9   1   6   8
+
+
+    a  variable  value
+0   1         1      6
+3   1         2      1
+6   1         3      4
+9   1         4      4
+12  1         5     10
+15  1         6     10
+18  1         7      7
+21  1         8      6
+24  1         9      7
+27  1        10      4
+30  1        11      3
+33  1        12      6
+1   2         1      3
+4   2         2      1
+7   2         3     10
+10  2         4      5
+13  2         5      5
+16  2         6      6
+19  2         7      5
+22  2         8      9
+25  2         9      2
+28  2        10      8
+31  2        11      7
+34  2        12      4
+2   3         1      1
+5   3         2     10
+8   3         3      4
+11  3         4      1
+14  3         5      1
+17  3         6      5
+20  3         7      6
+23  3         8      9
+26  3         9      9
+29  3        10      1
+32  3        11      6
+35  3        12      8
+#+end_example
+
+*** learned RESHAPINGS guide https://pandas.pydata.org/docs/user_guide/reshaping.html
+**** Resample for timeseries
+- 'M' - month boundary
+- 'A' - annual
+
+: loan_rev_data=data['Loan Amount']
+: loan_rev_data['date'] = pd.DatetimeIndex(data['Created Date'])
+: loan_rev_data = loan_rev_data.set_index('date')
+: monthly_loan_rev_data= loan_rev_data.resample('M').sum()
+
+:             Loan Amount
+: date
+: 2014-10-31  13039283.00
+: 2014-11-30  16097733.00
+: 2014-12-31  29077334.00
+**** pivot - rows to columns without aggregation
+Uses unique values from specified index / columns to form axes of the resulting DataFrame
+
+params: index, columns, values
+#+begin_src python :results output :exports both
+import pandas as pd
+df = pd.DataFrame({'foo': ['one', 'one', 'one', 'two', 'two','two'],
+                   'bar': ['A', 'B', 'C', 'A', 'B', 'C'],
+                   'baz': [1, 2, 3, 4, 5, 6],
+                   'zoo': ['x', 'y', 'z', 'q', 'w', 't']})
+print(df)
+print()
+print(df.pivot(index='foo', columns='bar', values='baz'))
+#+end_src
+
+#+RESULTS:
+#+begin_example
+   foo bar  baz zoo
+0  one   A    1   x
+1  one   B    2   y
+2  one   C    3   z
+3  two   A    4   q
+4  two   B    5   w
+5  two   C    6   t
+
+bar  A  B  C
+foo
+one  1  2  3
+two  4  5  6
+#+end_example
+
+Possible misstakes example:
+#+begin_src python :results output :exports both
+import pandas as pd
+df = pd.DataFrame({"foo": ['one', 'one', 'two', 'two'],
+                   "bar": ['A', 'A2', 'B', 'C'], # new columns should not have duplicates in one index
+                   "baz": [1, 2, 3, 4]})
+print(df.pivot(index='foo', columns='bar', values='baz'))
+#+end_src
+
+#+RESULTS:
+: bar    A   A2    B    C
+: foo
+: one  1.0  2.0  NaN  NaN
+: two  NaN  NaN  3.0  4.0
+
+- https://pandas.pydata.org/docs/user_guide/reshaping.html#reshaping
+- https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pivot.html
+**** stack (levels)
+#+begin_src python :results output :exports both
+import pandas as pd
+df_single_level_cols = pd.DataFrame([[0, 1], [2, 3]],
+                                    index=['cat', 'dog'],
+                                    columns=['weight', 'height'])
+print(df_single_level_cols)
+print()
+print(df_single_level_cols.stack())
+#+end_src
+
+#+RESULTS:
+:      weight  height
+: cat       0       1
+: dog       2       3
+:
+: cat  weight    0
+:      height    1
+: dog  weight    2
+:      height    3
+: dtype: int64
+
+**** melt - columns to rows
+***** ex1
+#+begin_src python :results output :exports both
+import pandas as pd
+df = pd.DataFrame(
+    {
+        "first": ["John", "Mary"],
+        "last": ["Doe", "Bo"],
+        "height": [5.5, 6.0],
+        "weight": [130, 150],
+    })
+print(df)
+print()
+print(df.melt(id_vars=["first", "last"]))
+#+end_src
+
+#+RESULTS:
+:   first last  height  weight
+: 0  John  Doe     5.5     130
+: 1  Mary   Bo     6.0     150
+:
+:   first last variable  value
+: 0  John  Doe   height    5.5
+: 1  Mary   Bo   height    6.0
+: 2  John  Doe   weight  130.0
+: 3  Mary   Bo   weight  150.0
+
+***** ex2
+#+begin_src python :results output :exports both
+import pandas as pd
+df = pd.DataFrame({'A': {0: 'a', 1: 'b', 2: 'c'},
+                   'B': {0: 1, 1: 3, 2: 5},
+                   'C': {0: 2, 1: 4, 2: 6}})
+print(df)
+print()
+print(pd.melt(df, id_vars=['A'], value_vars=['B']))
+#+end_src
+
+#+RESULTS:
+:    A  B  C
+: 0  a  1  2
+: 1  b  3  4
+: 2  c  5  6
+:
+:    A variable  value
+: 0  a        B      1
+: 1  b        B      3
+: 2  c        B      5
+
+**** pivot_table - allow aggs
+***** ex1
+#+begin_src python :results output :exports both :session s1
+import pandas as pd
+import numpy as np
+import datetime
+df = pd.DataFrame(
+    {
+        "A": ["one", "one", "two", "three"] * 6,
+        "B": ["A", "B", "C"] * 8,
+        "C": ["foo", "foo", "foo", "bar", "bar", "bar"] * 4,
+        "D": np.random.randn(24),
+        "E": np.random.randn(24),
+        "F": [datetime.datetime(2013, i, 1) for i in range(1, 13)]
+        + [datetime.datetime(2013, i, 15) for i in range(1, 13)],
+    })
+print(df)
+print()
+print(pd.pivot_table(df, values="D", index=["A", "B"], columns=["C"]))
+print()
+print(pd.pivot_table(df, values="D", index=["B"], columns=["A", "C"], aggfunc=np.sum))
+#+end_src
+
+#+RESULTS:
+#+begin_example
+        A  B    C         D         E          F
+0     one  A  foo  0.834789 -0.268575 2013-01-01
+1     one  B  foo -0.332062 -0.324379 2013-02-01
+2     two  C  foo -2.095669 -2.186134 2013-03-01
+3   three  A  bar -0.793498  0.126653 2013-04-01
+4     one  B  bar  0.117796 -0.845898 2013-05-01
+5     one  C  bar  1.016105 -0.369420 2013-06-01
+6     two  A  foo  1.151064 -0.698485 2013-07-01
+7   three  B  foo -0.487159  0.123010 2013-08-01
+8     one  C  foo -1.456931  1.230448 2013-09-01
+9     one  A  bar -0.591074 -0.851506 2013-10-01
+10    two  B  bar  1.332696  0.161591 2013-11-01
+11  three  C  bar  0.033348 -0.187387 2013-12-01
+12    one  A  foo -1.159041  0.321096 2013-01-15
+13    one  B  foo  0.353786  0.724629 2013-02-15
+14    two  C  foo -1.765572 -0.708540 2013-03-15
+15  three  A  bar  0.805330 -0.652539 2013-04-15
+16    one  B  bar -0.124616  0.014006 2013-05-15
+17    one  C  bar -0.052215 -0.168125 2013-06-15
+18    two  A  foo  0.921741  0.280954 2013-07-15
+19  three  B  foo -0.584663  0.727251 2013-08-15
+20    one  C  foo -1.740931  1.516952 2013-09-15
+21    one  A  bar -0.189743 -0.515618 2013-10-15
+22    two  B  bar -0.099166  0.002090 2013-11-15
+23  three  C  bar -0.487092 -0.996470 2013-12-15
+
+C             bar       foo
+A     B
+one   A -0.390408 -0.162126
+      B -0.003410  0.010862
+      C  0.481945 -1.598931
+three A  0.005916       NaN
+      B       NaN -0.535911
+      C -0.226872       NaN
+two   A       NaN  1.036402
+      B  0.616765       NaN
+      C       NaN -1.930620
+
+A       one               three                two
+C       bar       foo       bar       foo      bar       foo
+B
+A -0.780817 -0.324252  0.011831       NaN      NaN  2.072805
+B -0.006820  0.021724       NaN -1.071822  1.23353       NaN
+C  0.963890 -3.197862 -0.453743       NaN      NaN -3.861240
+#+end_example
+
+***** ex2
+#+begin_src python :results output :exports both :session s1
+import pandas as pd
+import numpy as np
+print(pd.pivot_table(df[["A", "B", "C", "D", "E"]], index=["A", "B"], columns=["C"]))
+print()
+print(pd.pivot_table(df, values="D", index=pd.Grouper(freq="M", key="F"), columns="C"))
+print()
+table = pd.pivot_table(df, index=["A", "B"], columns=["C"], values=["D", "E"])
+print(table.to_string(na_rep=""))
+print()
+table = df.pivot_table(
+    index=["A", "B"],
+    columns="C",
+    values=["D", "E"],
+    margins=True,
+    aggfunc=np.std)
+print(table)
+print()
+print(table.stack())
+#+end_src
+
+#+RESULTS:
+#+begin_example
+                D                   E
+C             bar       foo       bar       foo
+A     B
+one   A -0.390408 -0.162126 -0.683562  0.026260
+      B -0.003410  0.010862 -0.415946  0.200125
+      C  0.481945 -1.598931 -0.268773  1.373700
+three A  0.005916       NaN -0.262943       NaN
+      B       NaN -0.535911       NaN  0.425131
+      C -0.226872       NaN -0.591928       NaN
+two   A       NaN  1.036402       NaN -0.208765
+      B  0.616765       NaN  0.081840       NaN
+      C       NaN -1.930620       NaN -1.447337
+
+C                bar       foo
+F
+2013-01-31       NaN -0.162126
+2013-02-28       NaN  0.010862
+2013-03-31       NaN -1.930620
+2013-04-30  0.005916       NaN
+2013-05-31 -0.003410       NaN
+2013-06-30  0.481945       NaN
+2013-07-31       NaN  1.036402
+2013-08-31       NaN -0.535911
+2013-09-30       NaN -1.598931
+2013-10-31 -0.390408       NaN
+2013-11-30  0.616765       NaN
+2013-12-31 -0.226872       NaN
+
+                D                   E
+C             bar       foo       bar       foo
+A     B
+one   A -0.390408 -0.162126 -0.683562  0.026260
+      B -0.003410  0.010862 -0.415946  0.200125
+      C  0.481945 -1.598931 -0.268773  1.373700
+three A  0.005916           -0.262943
+      B           -0.535911            0.425131
+      C -0.226872           -0.591928
+two   A            1.036402           -0.208765
+      B  0.616765            0.081840
+      C           -1.930620           -1.447337
+
+                D                             E
+C             bar       foo       All       bar       foo       All
+A     B
+one   A  0.283784  1.409851  0.840699  0.237509  0.416961  0.494677
+      B  0.171411  0.484967  0.297085  0.608044  0.741761  0.658146
+      C  0.755417  0.200819  1.283359  0.142337  0.202589  0.958996
+three A  1.130542       NaN  1.130542  0.550971       NaN  0.550971
+      B       NaN  0.068946  0.068946       NaN  0.427263  0.427263
+      C  0.368006       NaN  0.368006  0.572108       NaN  0.572108
+two   A       NaN  0.162156  0.162156       NaN  0.692568  0.692568
+      B  1.012479       NaN  1.012479  0.112784       NaN  0.112784
+      C       NaN  0.233414  0.233414       NaN  1.044817  1.044817
+All      0.651877  1.140991  0.940582  0.408882  0.998514  0.759845
+
+                    D         E
+A     B C
+one   A All  0.840699  0.494677
+        bar  0.283784  0.237509
+        foo  1.409851  0.416961
+      B All  0.297085  0.658146
+        bar  0.171411  0.608044
+        foo  0.484967  0.741761
+      C All  1.283359  0.958996
+        bar  0.755417  0.142337
+        foo  0.200819  0.202589
+three A All  1.130542  0.550971
+        bar  1.130542  0.550971
+      B All  0.068946  0.427263
+        foo  0.068946  0.427263
+      C All  0.368006  0.572108
+        bar  0.368006  0.572108
+two   A All  0.162156  0.692568
+        foo  0.162156  0.692568
+      B All  1.012479  0.112784
+        bar  1.012479  0.112784
+      C All  0.233414  1.044817
+        foo  0.233414  1.044817
+All     All  0.940582  0.759845
+        bar  0.651877  0.408882
+        foo  1.140991  0.998514
+#+end_example
+
+**** pivot tables(old)
+#+BEGIN_SRC python
+melb_df.groupby(['Rooms', 'Type'])['Price'].mean() # иерархические индексы
+melb_df.groupby(['Rooms', 'Type'])['Price'].mean().unstack() # раскладывает таблицу в столбцы
+melb_df.pivot_table(
+    values='Price',
+    index='Rooms',
+    columns='Type',
+    fill_value=0
+).round() # аналогично второму
+#+END_SRC
+**** crosstab - frequencies
+frequency table of the factors unless an array of values and an aggregation function are passed.
+#+begin_src python :results output :exports both
+import pandas as pd
+import numpy as np
+foo, bar, dull, shiny, one, two = "foo", "bar", "dull", "shiny", "one", "two"
+a = np.array([foo, foo, bar, bar, foo, foo], dtype=object)
+b = np.array([one, one, two, one, two, one], dtype=object)
+c = np.array([dull, dull, shiny, dull, dull, shiny], dtype=object)
+print("frequencies:")
+print(pd.crosstab(a, b))
+print()
+print(pd.crosstab(a, [b, c], rownames=["a"], colnames=["b", "c"]))
+#+end_src
+
+#+RESULTS:
+#+begin_example
+frequencies:
+col_0  one  two
+row_0
+bar      1    1
+foo      3    1
+
+b    one        two
+c   dull shiny dull shiny
+a
+bar    1     0    0     1
+foo    2     1    1     0
+#+end_example
+
+**** cut - transform continuous variables to discrete or categorical variables
+#+begin_src python :results output :exports both
+import pandas as pd
+import numpy as np
+ages = np.array([10, 15, 13, 12, 23, 25, 28, 59, 60])
+print(pd.cut(ages, bins=3))
+print()
+print(pd.cut(ages, bins=[0, 18, 35, 70]))
+#+end_src
+
+#+RESULTS:
+: [(9.95, 26.667], (9.95, 26.667], (9.95, 26.667], (9.95, 26.667], (9.95, 26.667], (9.95, 26.667], (26.667, 43.333], (43.333, 60.0], (43.333, 60.0]]
+: Categories (3, interval[float64, right]): [(9.95, 26.667] < (26.667, 43.333] < (43.333, 60.0]]
+:
+: [(0, 18], (0, 18], (0, 18], (0, 18], (18, 35], (18, 35], (18, 35], (35, 70], (35, 70]]
+: Categories (3, interval[int64, right]): [(0, 18] < (18, 35] < (35, 70]]
+
+**** dummies
+- pd.get_dummies(df, prefix="new_prefix")
+- pd.from_dummies(df, sep="_")
+**** factorize - categories to numbers
+#+begin_src python :results output :exports both
+import pandas as pd
+import numpy as np
+x = pd.Series(["A", "A", np.nan, "B", 3.14, np.inf])
+labels, uniques = pd.factorize(x)
+print(labels)
+print(uniques)
+#+end_src
+
+#+RESULTS:
+: [ 0  0 -1  1  2  3]
+: Index(['A', 'B', 3.14, inf], dtype='object')
+
+**** explode
+#+begin_src python :results output :exports both
+import pandas as pd
+import numpy as np
+keys = ["panda1", "panda2", "panda3"]
+values = [["eats", "shoots"], ["shoots", "leaves"], ["eats", "leaves"]]
+df = pd.DataFrame({"keys": keys, "values": values})
+print(df)
+print()
+print(df["values"].explode())
+print()
+print(df.explode("values"))
+#+end_src
+
+#+RESULTS:
+#+begin_example
+     keys            values
+0  panda1    [eats, shoots]
+1  panda2  [shoots, leaves]
+2  panda3    [eats, leaves]
+
+0      eats
+0    shoots
+1    shoots
+1    leaves
+2      eats
+2    leaves
+Name: values, dtype: object
+
+     keys  values
+0  panda1    eats
+0  panda1  shoots
+1  panda2  shoots
+1  panda2  leaves
+2  panda3    eats
+2  panda3  leaves
+#+end_example
+
+**** assign and explode - split values to rows
+#+begin_src python :results output :exports both :session s1
+import pandas as pd
+import numpy as np
+df = pd.DataFrame([{"var1": "a,b,c,d", "var2": 1}, {"var1": "d,e,f", "var2": 2}])
+print(df)
+print()
+print(df.assign(var1=df.var1.str.split(",")).explode("var1"))
+#+end_src
+
+#+RESULTS:
+#+begin_example
+      var1  var2
+0  a,b,c,d     1
+1    d,e,f     2
+
+  var1  var2
+0    a     1
+0    b     1
+0    c     1
+0    d     1
+1    d     2
+1    e     2
+1    f     2
+#+end_example
+
+* perfect ML pipeline for small task
+** task
+Task to use iris dataset for ML classification.
+
+Задача состоит в использовании Iris flower датасета для
+ задачи классификации.
+
+Iris flower data set is sometimes called Anderson's Iris
+ data set.
+
+Этот датасет еще называют датасетом Андерсона, в честь
+ Эдгора Андерсона, который среди своих заслуг в ботанике
+ ввел термин introgressive hybridization, означающий обмен
+ генами между двумя родственными, но различными видами.
+
+This dataset is also called the Anderson dataset, in honor
+ of Edgar Anderson, who, among his achievements in botany,
+ introduced the term introgressive hybridization, meaning
+ the exchange of genes between two related, but different
+ species.
+
+Dataset consist of 150 rows of iris flowers, 50 for each of
+ 3 species. 4 columns for features and 1 for species.
+
+** Steps (not strict)
+We will follow steps:
+1. goal and ML problem formulation, metrics selection,
+ validation strategy
+2. data analysis for problem
+3. common data transformation, feature engineering
+4. model selection
+5. data preparation, feature selection
+6. selected model finetuning
+7. model training
+8. model validation
+9. results analysis
+** Goal, problem, metric, strategy
+*Goal* is to predict specie by 4 features.
+
+*Problem* is multi-class classification for 3 classes.
+
+All classes balanced, we will *metrics*: ROC AUC, macro precision and recall.
+
+We have 150 observations, we should use them with maximum effeciency, that is why we use
+ cross_validation *strategy* with LeaveOneOut folds.  To choose model we split data to main and test parts as 10
+ percentage stratifyed.
+*** Averaging techniques theory
+Averaging techniques for metrics:
+- macro - compute the metric independently for each class and then take the average - treating all classes
+ equally
+- weighted - weighted average for classes (score*num_occur_per_class)/totalnum
+- micro - aggregate the contributions of all classes to compute the average metric - micro-average is
+ preferable if you suspect there might be class imbalance
+
+*** metrics exploration
+#+begin_src python
+def _check_model_scorings(est, X, Y, kfold):
+    print( '{:40} {:5} {:5}'.format("metric", "mean_accuracy", "std" ))
+    for k in metrics.get_scorer_names():
+        # print(k)
+        results = cross_validate(est, X, Y, cv=kfold, scoring=[k])
+        r = results[f'test_{k}']
+        if not all(np.isnan(r)):
+            print( '{:40} {:5} {:5}'.format(k, round(r.mean(), 3), round(r.std(),2)) )
+#+end_src
+
+#+begin_src text
+metric                                   mean_accuracy std
+accuracy                                 0.973  0.02
+adjusted_mutual_info_score               0.923  0.07
+adjusted_rand_score                      0.921  0.07
+balanced_accuracy                        0.973  0.02
+completeness_score                        0.93  0.06
+explained_variance                       0.962  0.04
+f1_macro                                 0.973  0.03
+f1_micro                                 0.973  0.02
+f1_weighted                              0.973  0.03
+fowlkes_mallows_score                    0.946  0.05
+homogeneity_score                        0.927  0.06
+jaccard_macro                             0.95  0.05
+jaccard_micro                            0.949  0.05
+jaccard_weighted                          0.95  0.05
+matthews_corrcoef                        0.962  0.04
+max_error                                 -0.6  0.49
+mutual_info_score                        1.018  0.07
+neg_log_loss                             -0.511  0.54
+neg_mean_absolute_error                  -0.027  0.02
+neg_mean_absolute_percentage_error       -0.023  0.02
+neg_mean_squared_error                   -0.027  0.02
+neg_mean_squared_log_error               -0.004   0.0
+neg_median_absolute_error                  0.0   0.0
+neg_root_mean_squared_error              -0.125  0.11
+normalized_mutual_info_score             0.928  0.06
+precision_macro                          0.977  0.02
+precision_micro                          0.973  0.02
+precision_weighted                       0.977  0.02
+r2                                        0.96  0.04
+rand_score                               0.966  0.03
+recall_macro                             0.973  0.02
+recall_micro                             0.973  0.02
+recall_weighted                          0.973  0.02
+roc_auc_ovo                              0.987  0.01
+roc_auc_ovo_weighted                     0.987  0.01
+roc_auc_ovr                              0.987  0.01
+roc_auc_ovr_weighted                     0.987  0.01
+v_measure_score                          0.928  0.06
+
+#+end_src
+** data analysis for problem
+#+begin_src python :results output :exports both  :session s1
+import pandas as pd
+from sklearn import datasets
+import numpy as np
+d = datasets.load_iris()
+target_names = d['target_names']
+print(target_names)
+print(pd.DataFrame(d['data'], columns=d['feature_names']).describe())
+print()
+print("target:", np.unique(d['target']))
+#+end_src
+
+#+RESULTS:
+#+begin_example
+['setosa' 'versicolor' 'virginica']
+       sepal length (cm)  sepal width (cm)  petal length (cm)  petal width (cm)
+count         150.000000        150.000000         150.000000        150.000000
+mean            5.843333          3.057333           3.758000          1.199333
+std             0.828066          0.435866           1.765298          0.762238
+min             4.300000          2.000000           1.000000          0.100000
+25%             5.100000          2.800000           1.600000          0.300000
+50%             5.800000          3.000000           4.350000          1.300000
+75%             6.400000          3.300000           5.100000          1.800000
+max             7.900000          4.400000           6.900000          2.500000
+
+target: [0 1 2]
+#+end_example
+
+** common data transformation
+#+begin_src python :results output :exports both :session s1
+import pandas as pd
+from sklearn import datasets
+import numpy as np
+from sklearn.model_selection import train_test_split
+d = datasets.load_iris()
+X = d['data']
+y = d['target']
+X_train, X_test_saved, y_train, y_test_saved = train_test_split(
+    X, y, test_size=0.10, random_state=42, stratify=y)
+X = X_train
+y = y_train
+#+end_src
+
+#+RESULTS:
+
+** model selection
+We selected
+ OneVsOneClassifier(estimator=LogisticRegression(multi_class='ovr'))
+
+ just for learning.
+
+*** code
+#+begin_src python :results output :exports both :session s1
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import StratifiedKFold, KFold
+
+from sklearn import linear_model
+from sklearn.model_selection import cross_val_score, cross_validate
+from sklearn.model_selection import StratifiedKFold, KFold
+
+from sklearn.neural_network import MLPClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.gaussian_process.kernels import RBF
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+# from sklearn.metrics import hinge_loss
+from sklearn import metrics
+from sklearn.multiclass import OneVsOneClassifier
+import sklearn
+
+def warn(*args, **kwargs):
+    pass
+import warnings
+warnings.warn = warn
+
+
+classifiers_binary = [
+        KNeighborsClassifier(5),
+        SVC(kernel="linear", C=0.025),  # очень долго
+        SVC(gamma=2, C=1),  # слишком долго
+        GaussianProcessClassifier(1.0 * RBF(1.0)), # не хватает памяти
+        DecisionTreeClassifier(max_depth=5),
+        RandomForestClassifier(max_depth=5, n_estimators=10, ),  # max_features=1
+        MLPClassifier(alpha=1, max_iter=1000),
+        AdaBoostClassifier(),
+        GaussianNB(),
+        QuadraticDiscriminantAnalysis()
+]
+
+def _select_metrics(est, X, Y, kfold):
+    print( '{:40} {:5} {:5}'.format("metric", "mean_accuracy", "std" ))
+    for k in metrics.get_scorer_names():
+        # print(k)
+        results = cross_validate(est, X, Y, cv=kfold, scoring=[k])
+        r = results[f'test_{k}']
+        if not all(np.isnan(r)):
+            print( '{:40} {:5} {:5}'.format(k, round(r.mean(), 3), round(r.std(),2)) )
+
+def _check_model_binary(est, X, Y, kfold):
+    results = cross_validate(est, X, Y, cv=kfold, scoring=['accuracy', 'roc_auc'])
+    print(est.__class__.__name__)
+    print("Accuracy: %f" % results['test_accuracy'].mean())
+    print("AUC: %f" % results['test_roc_auc'].mean())
+
+def _check_model_multiclass_native(est, X, Y, kfold):
+    """ https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
+    returns score per folds"""
+    print(est)
+    results = cross_validate(est, X, Y, cv=kfold,
+                             scoring=['roc_auc_ovo', 'precision_macro',
+                                      'recall_macro'])
+    print("ROC_AUC: %f" % results['test_roc_auc_ovo'].mean())
+    print("precision_macro: %f" % results['test_precision_macro'].mean())
+    print("recall_macro: %f" % results['test_recall_macro'].mean())
+    print()
+
+def _check_model_multiclass_ovo(est, X, Y, kfold):
+    """ https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
+    returns score per folds"""
+    scoring=['accuracy', 'precision_macro',
+                                      'recall_macro']
+    results = cross_validate(est, X, Y, cv=kfold, scoring=scoring) #
+    print(est)
+    for x in scoring:
+        print(x+ ": %f" % results['test_'+x].mean())
+    print()
+
+
+classifiers_multiclass_nativ = [
+    sklearn.naive_bayes.BernoulliNB(),
+    sklearn.tree.DecisionTreeClassifier(),
+    sklearn.ensemble.RandomForestClassifier(max_depth=5, n_estimators=10, ),
+    sklearn.tree.ExtraTreeClassifier(),
+    sklearn.ensemble.ExtraTreesClassifier(),
+    sklearn.naive_bayes.GaussianNB(),
+    sklearn.neighbors.KNeighborsClassifier(),
+    sklearn.linear_model.LogisticRegression(multi_class="multinomial"),
+    sklearn.linear_model.LogisticRegressionCV(multi_class="multinomial")
+    ]
+
+classifiers_multiclass_ovo = [
+    OneVsOneClassifier(sklearn.svm.LinearSVC(C=100.)),
+    OneVsOneClassifier(sklearn.svm.SVC(kernel="linear", C=0.025)),  # очень долго
+    OneVsOneClassifier(sklearn.svm.SVC(gamma=2, C=1)),  # слишком долго
+    OneVsOneClassifier(sklearn.gaussian_process.GaussianProcessClassifier(1.0 * RBF(1.0))), # не хватает памяти
+    OneVsOneClassifier(sklearn.neural_network.MLPClassifier(alpha=1, max_iter=1000)),
+    OneVsOneClassifier(sklearn.ensemble.AdaBoostClassifier()),
+    OneVsOneClassifier(sklearn.discriminant_analysis.QuadraticDiscriminantAnalysis()),
+    OneVsOneClassifier(sklearn.ensemble.GradientBoostingClassifier()),
+    OneVsOneClassifier(sklearn.gaussian_process.GaussianProcessClassifier()),
+    OneVsOneClassifier(sklearn.linear_model.LogisticRegression(multi_class="ovr")),
+    OneVsOneClassifier(sklearn.linear_model.LogisticRegressionCV(multi_class="ovr")),
+    OneVsOneClassifier(sklearn.linear_model.SGDClassifier()),
+    OneVsOneClassifier(sklearn.linear_model.Perceptron())
+    ]
+
+
+kfold = StratifiedKFold(n_splits=5)
+# ----------- select metrics ------
+# m = linear_model.LogisticRegressionCV(max_iter=10, multi_class='multinomial')
+# m = linear_model.Lasso()
+# m=KNeighborsClassifier(5)
+# m = OneVsOneClassifier(sklearn.ensemble.AdaBoostClassifier())
+# _select_metrics(m, X, y, kfold)
+# ------------------ select model -----------
+Xscal = sklearn.preprocessing.StandardScaler().fit_transform(X)
+
+for est in classifiers_multiclass_nativ: # classifiers_multiclass_ovo:
+    _check_model_multiclass_native(est, Xscal, y, kfold)
+
+for est in classifiers_multiclass_ovo: # classifiers_multiclass_ovo:
+    _check_model_multiclass_ovo(est, Xscal, y, kfold)
+
+#+end_src
+
+#+RESULTS:
+#+begin_example
+BernoulliNB()
+ROC_AUC: 0.891358
+precision_macro: 0.762554
+recall_macro: 0.762963
+
+DecisionTreeClassifier()
+ROC_AUC: 0.955556
+precision_macro: 0.947424
+recall_macro: 0.940741
+
+RandomForestClassifier(max_depth=5, n_estimators=10)
+ROC_AUC: 0.985391
+precision_macro: 0.954091
+recall_macro: 0.948148
+
+ExtraTreeClassifier()
+ROC_AUC: 0.955556
+precision_macro: 0.943333
+recall_macro: 0.940741
+
+ExtraTreesClassifier()
+ROC_AUC: 0.996708
+precision_macro: 0.959545
+recall_macro: 0.955556
+
+GaussianNB()
+ROC_AUC: 0.994239
+precision_macro: 0.965000
+recall_macro: 0.962963
+
+KNeighborsClassifier()
+ROC_AUC: 0.995473
+precision_macro: 0.969091
+recall_macro: 0.962963
+
+LogisticRegression(multi_class='multinomial')
+ROC_AUC: 0.997531
+precision_macro: 0.955000
+recall_macro: 0.948148
+
+LogisticRegressionCV(multi_class='multinomial')
+ROC_AUC: 0.997942
+precision_macro: 0.955000
+recall_macro: 0.948148
+
+OneVsOneClassifier(estimator=LinearSVC(C=100.0))
+accuracy: 0.962963
+precision_macro: 0.971212
+recall_macro: 0.962963
+
+OneVsOneClassifier(estimator=SVC(C=0.025, kernel='linear'))
+accuracy: 0.903704
+precision_macro: 0.908877
+recall_macro: 0.903704
+
+OneVsOneClassifier(estimator=SVC(C=1, gamma=2))
+accuracy: 0.948148
+precision_macro: 0.952879
+recall_macro: 0.948148
+
+OneVsOneClassifier(estimator=GaussianProcessClassifier(kernel=1**2 * RBF(length_scale=1)))
+accuracy: 0.955556
+precision_macro: 0.961852
+recall_macro: 0.955556
+
+OneVsOneClassifier(estimator=MLPClassifier(alpha=1, max_iter=1000))
+accuracy: 0.948148
+precision_macro: 0.955000
+recall_macro: 0.948148
+
+OneVsOneClassifier(estimator=AdaBoostClassifier())
+accuracy: 0.955556
+precision_macro: 0.959545
+recall_macro: 0.955556
+
+OneVsOneClassifier(estimator=QuadraticDiscriminantAnalysis())
+accuracy: 0.962963
+precision_macro: 0.968519
+recall_macro: 0.962963
+
+OneVsOneClassifier(estimator=GradientBoostingClassifier())
+accuracy: 0.948148
+precision_macro: 0.952879
+recall_macro: 0.948148
+
+OneVsOneClassifier(estimator=GaussianProcessClassifier())
+accuracy: 0.955556
+precision_macro: 0.958333
+recall_macro: 0.955556
+
+OneVsOneClassifier(estimator=LogisticRegression(multi_class='ovr'))
+accuracy: 0.948148
+precision_macro: 0.955000
+recall_macro: 0.948148
+
+OneVsOneClassifier(estimator=LogisticRegressionCV(multi_class='ovr'))
+accuracy: 0.948148
+precision_macro: 0.955000
+recall_macro: 0.948148
+
+OneVsOneClassifier(estimator=SGDClassifier())
+accuracy: 0.948148
+precision_macro: 0.959091
+recall_macro: 0.948148
+
+OneVsOneClassifier(estimator=Perceptron())
+accuracy: 0.925926
+precision_macro: 0.938333
+recall_macro: 0.925926
+#+end_example
+
+** data preparation
+sklearn.linear_model.LogisticRegression uses L2-penalty by
+ default, which is Ridge Regression.
+
+As Hastie,Tibshirani and Friedman points out (page 82 of the
+ pdf or at page 63 of the book) [fn:1] Standardization of
+ data is preffered.
+#+begin_src python :results output :exports both :session s1
+X = sklearn.preprocessing.StandardScaler().fit_transform(X)
+print(X[0:10])
+#+end_src
+
+#+RESULTS:
+#+begin_example
+[[-1.37406347  0.32273255 -1.2292066  -1.31595957]
+ [ 1.05870464 -0.12875858  0.82793667  1.43330011]
+ [-1.73897869 -0.35450415 -1.34349233 -1.31595957]
+ [ 0.45051261  0.77422368  0.94222241  1.43330011]
+ [-1.00914826 -0.12875858 -1.2292066  -1.31595957]
+ [-1.13078666  0.09698698 -1.28634947 -1.4468767 ]
+ [ 0.69378943 -0.58024971  1.05650815  1.17146585]
+ [-1.25242507 -0.12875858 -1.34349233 -1.18504244]
+ [-0.15767942 -0.35450415  0.25650799  0.12412883]
+ [-1.49570188  0.09698698 -1.28634947 -1.31595957]]
+#+end_example
+
+** model finetuning and training
+#+begin_src python :results output :exports both :session s1
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_validate
+from sklearn.multiclass import OneVsOneClassifier
+from sklearn.model_selection import LeaveOneOut
+
+
+params = {'estimator__penalty': ['none', 'l2'], 'estimator__C': [0, 0.0001, 0.001,0.01,0.1]}
+clf = GridSearchCV(OneVsOneClassifier(estimator=sklearn.linear_model.LogisticRegression(multi_class='ovr', n_jobs=2)),
+                   params, cv=kfold)
+
+results = clf.fit(X, y)
+est = results.best_estimator_
+print(est)
+kfold = LeaveOneOut()
+results = cross_val_score(results.best_estimator_, X, y, cv=kfold)
+print("Accuracy: %f" % results.mean())
+print(results)
+
+scoring=['accuracy', 'precision_macro',
+                                      'recall_macro']
+
+results = cross_validate(est, X, y, cv=kfold, scoring=scoring) #
+
+for x in scoring:
+    print(x+ ": %f" % results['test_'+x].mean())
+#+end_src
+
+#+RESULTS:
+#+begin_example
+/usr/lib/python3.10/site-packages/sklearn/model_selection/_search.py:968: RuntimeWarning: invalid value encountered in cast
+  results["rank_%s" % key_name] = np.asarray(
+OneVsOneClassifier(estimator=LogisticRegression(C=0, multi_class='ovr',
+                                                n_jobs=2, penalty='none'))
+Accuracy: 0.970370
+[1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.
+ 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.
+ 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.
+ 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 0. 1. 1. 1. 1.
+ 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 0. 1. 1. 1. 1.
+ 1. 0. 1. 1. 1. 1. 1. 1. 0. 1. 1. 1. 1. 1. 1.]
+accuracy: 0.970370
+precision_macro: 0.970370
+recall_macro: 0.970370
+#+end_example
+
+** model validation
+#+begin_src python :results output :exports both :session s1
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+
+est = OneVsOneClassifier(
+    estimator=sklearn.linear_model.LogisticRegression(
+        C=0, multi_class='ovr',
+        n_jobs=2, penalty='none'))
+est.fit(X,y)
+X_test = sklearn.preprocessing.StandardScaler().fit_transform(X_test_saved)
+y_pred = est.predict(X_test)
+print(y_pred)
+print(y_test_saved)
+print(classification_report(y_test_saved, y_pred))
+cm = confusion_matrix(y_test_saved, y_pred)
+print("x-redicted:0,1,2", "y-true labels: 0, 1, 2 (from top to bottom)")
+print(cm)
+#+end_src
+
+#+begin_src sh
+mkdir ./autoimgs
+#+end_src
+
+#+RESULTS:
+
+#+begin_src python :results file graphics :exports both :file ./autoimgs/confusion_matrix.png :session s1
+from sklearn.metrics import ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+disp = ConfusionMatrixDisplay(confusion_matrix=cm,
+                              display_labels=target_names)
+disp.plot()
+plt.savefig('./autoimgs/confusion_matrix.png')
+#+end_src
+
+#+RESULTS:
+[[file:./autoimgs/confusion_matrix.png]]
+
+** results analysis
+results analysis:
+- we get only one mistake at validation in "versicolor"
+ specie.
+** model output calibration
+We want to have confidence score for result of model
+ inference on the prediction.
+
+If we have 0.8 it will mean, approximately 80% actually
+ belong to the positive class.
+
+It allow making decisions under uncertainty.
+
+OneVsRest has equal accuracy with OneVsOne. We take
+ OneVsRest for clarity.
+#+begin_src python :results file graphics :exports both :file ./autoimgs/calibrating.png :session s1
+# print(est.predict_proba(X_test))
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.multiclass import OneVsRestClassifier
+import matplotlib.pyplot as plt
+from sklearn.calibration import CalibrationDisplay
+from sklearn.preprocessing import MinMaxScaler
+
+# ---- plot default and calibrated classifiers
+fig = plt.figure(figsize=(9,9))
+gs = fig.add_gridspec(4,3, hspace=0.6)
+#                       left=2.1, right=0.1, bottom=0.1, top=0.9,
+#                       wspace=0.9, hspace=0.1)
+# | 1 | 2 | 3 |
+# | 4 | 5 | 6 |
+# | 7 | 7 | 7 |
+# | 8 | 8 | 8 |
+d1 = fig.add_subplot(gs[0,0])
+d2 = fig.add_subplot(gs[0,1])
+d3 = fig.add_subplot(gs[0,2])
+
+d4 = fig.add_subplot(gs[1,0])
+d5 = fig.add_subplot(gs[1,1])
+d6 = fig.add_subplot(gs[1,2])
+
+d7 = fig.add_subplot(gs[2,:])
+d8 = fig.add_subplot(gs[3,:])
+
+colors = plt.cm.get_cmap("Dark2")
+markers = ["^", "v", "s", "o"]
+# -- data preparation
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.50, random_state=42, stratify=y)
+
+y_test # y_true
+# covert to onevsrest
+y_test_oneh = np.zeros((y_test.size, y_test.max() + 1))
+y_test_oneh[np.arange(y_test.size), y_test] = 1
+# print(y_test_oneh)
+
+
+# -- default:
+clf_default = OneVsRestClassifier(
+    estimator=sklearn.linear_model.LogisticRegression(
+        C=0, multi_class='ovr',
+        n_jobs=2, penalty='none'))
+
+clf_default.fit(X_train, y_train)
+y_prob = clf_default.decision_function(X_test)
+d1.hist(y_prob[:,0], bins='auto')
+d2.hist(y_prob[:,1], bins='auto')
+d3.hist(y_prob[:,2], bins='auto')
+d2.set(title='Raw output')
+
+y_prob = MinMaxScaler().fit_transform(y_prob)
+CalibrationDisplay.from_predictions(y_test_oneh[:,0], y_prob[:,0],
+                                           ax=d7)
+CalibrationDisplay.from_predictions(y_test_oneh[:,1], y_prob[:,1],
+                                           ax=d7)
+CalibrationDisplay.from_predictions(y_test_oneh[:,2], y_prob[:,2],
+                                           ax=d7)
+
+d7.set(title='Not Calibrated, MinMax scaled', xlabel="Mean predicted prob", ylabel="Count")
+# -- calibrated:
+clf = OneVsRestClassifier(
+    estimator=sklearn.linear_model.LogisticRegression(
+        C=0, multi_class='ovr',
+        n_jobs=2, penalty='none'))
+
+
+cal_clf = CalibratedClassifierCV(clf, method="sigmoid",
+                                 cv=StratifiedKFold(10)) # ,
+cal_clf.fit(X_train, y_train)
+
+# print(y_test)
+y_prob = cal_clf.predict_proba(X_test)
+
+
+d4.hist(y_prob[:,0], bins='auto')
+d5.hist(y_prob[:,1], bins='auto')
+d6.hist(y_prob[:,2], bins='auto')
+d5.set(title='Calibrated output')
+# plt.hist(y_prob, bins='auto')
+# print(clf_probs)
+# print(cal_clf_probs)
+
+
+# display = CalibrationDisplay.from_predictions(
+#         y_true
+#         ,
+#         y_test,
+#     ax=d4
+#         # n_bins=10,
+#         # name='model',
+#         # ax=ax_calibration_curve,
+#         # color=colors(0),
+#         # marker=markers[0],
+# )
+CalibrationDisplay.from_predictions(y_test_oneh[:,0], y_prob[:,0],
+                                           ax=d8)
+CalibrationDisplay.from_predictions(y_test_oneh[:,1], y_prob[:,1],
+                                           ax=d8)
+CalibrationDisplay.from_predictions(y_test_oneh[:,2], y_prob[:,2],
+                                           ax=d8)
+d8.set(title='Calibrated', xlabel="Mean predicted prob", ylabel="Count")
+# plt.show()
+plt.savefig('./autoimgs/calibrating.png')
+# print(display)
+#+end_src
+
+#+RESULTS:
+[[file:./autoimgs/calibrating.png]]
+
+*** link
+- https://scikit-learn.org/stable/auto_examples/calibration/plot_compare_calibration.html#sphx-glr-auto-examples-calibration-plot-compare-calibration-py
+- https://scikit-learn.org/stable/auto_examples/calibration/plot_calibration_multiclass.html#sphx-glr-auto-examples-calibration-plot-calibration-multiclass-py
+** old
+#+begin_src python :results output :exports both :session perfect_ml_pipeline
+from sklearn import datasets
+from sklearn.linear_model import RidgeCV
+from sklearn.model_selection import cross_validate
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+d = datasets.load_iris()
+X = d['data']
+y = d['target']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
+c = RidgeCV()
+c.fit(X_train, y_train)
+
+accuracy_score(y_true, y_pred, normalize=False)
+print(c.predict(X_test))
+
+#+end_src
+
+** links
+- ISO/IEC DIS 23053 - Machine Learning Framework
+- 2022 [2205.02302] Machine Learning Operations (MLOps) Dominik Kreuzberger, Niklas Kühl, Sebastian Hirschl
+- Probablistic Machine Learning, Kevin P. Murphy, MIT Press
+- https://towardsdatascience.com/comprehensive-guide-on-multiclass-classification-metrics-af94cfb83fbd
+- https://towardsdatascience.com/comprehensive-guide-to-multiclass-classification-with-sklearn-127cc500f362
+- select sklearn algorithms for problems https://scikit-learn.org/stable/modules/multiclass.html
+* Footnotes
+
+[fn:1] https://web.stanford.edu/~hastie/Papers/ESLII.pdf
