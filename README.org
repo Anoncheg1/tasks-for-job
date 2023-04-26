@@ -1,3 +1,3 @@
-[[perfect_ML_pipeline.md]]
-[[sql-task.org]]
-[[optimization.org]]
+- [[perfect_ML_pipeline.org]] - Model and metrics selection, model calibration
+- [[sql-task.org]] - SQL: CASE WHEN, CTE and subquery
+- [[optimization.org]] - bit packing optimization task
