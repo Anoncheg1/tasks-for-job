@@ -1,0 +1,1757 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-04-26 Wed 17:59 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+</head>
+<body>
+<div id="content" class="content">
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org904964a">1. perfect ML pipeline for small task</a>
+<ul>
+<li><a href="#org6eaa4ad">1.1. task</a></li>
+<li><a href="#orgc233a3e">1.2. Steps (not strict)</a></li>
+<li><a href="#org3ab1738">1.3. Goal, problem, metric, strategy</a>
+<ul>
+<li><a href="#orgc6e21f1">1.3.1. Averaging techniques theory</a></li>
+<li><a href="#org63e6305">1.3.2. metrics exploration</a></li>
+</ul>
+</li>
+<li><a href="#org9cec72c">1.4. data analysis for problem</a></li>
+<li><a href="#org6e22ea4">1.5. common data transformation</a></li>
+<li><a href="#org686a35b">1.6. model selection</a>
+<ul>
+<li><a href="#org51555b8">1.6.1. code</a></li>
+</ul>
+</li>
+<li><a href="#orgefe2180">1.7. data preparation</a></li>
+<li><a href="#org2992d61">1.8. model finetuning and training</a></li>
+<li><a href="#org9c9609b">1.9. model validation</a></li>
+<li><a href="#org8b56f30">1.10. results analysis</a></li>
+<li><a href="#org6c0c8a0">1.11. model output calibration</a>
+<ul>
+<li><a href="#org84fd0cc">1.11.1. link</a></li>
+</ul>
+</li>
+<li><a href="#orgb4f5162">1.12. old</a></li>
+<li><a href="#orge64f6bf">1.13. links</a></li>
+</ul>
+</li>
+<li><a href="#org0bafdea">2. pandas, numpy - Small tasks Малые задачи</a>
+<ul>
+<li><a href="#org0dcb546">2.1. task 1</a></li>
+<li><a href="#org94c1636">2.2. task 2 DataFrame reshape</a>
+<ul>
+<li><a href="#orgf8a3f79">2.2.1. learned RESHAPINGS guide https://pandas.pydata.org/docs/user_guide/reshaping.html</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+-<b>- mode: Org; fill-column: 80; coding: utf-8; -</b>-
+</p>
+
+<p>
+Classic Iris dataset with 3 species.
+</p>
+
+<p>
+We will build multi-class classifier and calibrate outputs.
+</p>
+
+<div id="outline-container-org904964a" class="outline-2">
+<h2 id="org904964a"><span class="section-number-2">1.</span> perfect ML pipeline for small task</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org6eaa4ad" class="outline-3">
+<h3 id="org6eaa4ad"><span class="section-number-3">1.1.</span> task</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Task to use iris dataset for ML classification.
+</p>
+
+<p>
+Задача состоит в использовании Iris flower датасета для
+ задачи классификации.
+</p>
+
+<p>
+Iris flower data set is sometimes called Anderson's Iris
+ data set.
+</p>
+
+<p>
+Этот датасет еще называют датасетом Андерсона, в честь
+ Эдгора Андерсона, который среди своих заслуг в ботанике
+ ввел термин introgressive hybridization, означающий обмен
+ генами между двумя родственными, но различными видами.
+</p>
+
+<p>
+This dataset is also called the Anderson dataset, in honor
+ of Edgar Anderson, who, among his achievements in botany,
+ introduced the term introgressive hybridization, meaning
+ the exchange of genes between two related, but different
+ species.
+</p>
+
+<p>
+Dataset consist of 150 rows of iris flowers, 50 for each of
+ 3 species. 4 columns for features and 1 for species.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc233a3e" class="outline-3">
+<h3 id="orgc233a3e"><span class="section-number-3">1.2.</span> Steps (not strict)</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+We will follow steps:
+</p>
+<ol class="org-ol">
+<li>goal and ML problem formulation, metrics selection,
+validation strategy</li>
+<li>data analysis for problem</li>
+<li>common data transformation, feature engineering</li>
+<li>model selection</li>
+<li>data preparation, feature selection</li>
+<li>selected model finetuning</li>
+<li>model training</li>
+<li>model validation</li>
+<li>results analysis</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org3ab1738" class="outline-3">
+<h3 id="org3ab1738"><span class="section-number-3">1.3.</span> Goal, problem, metric, strategy</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+<b>Goal</b> is to predict specie by 4 features.
+</p>
+
+<p>
+<b>Problem</b> is multi-class classification for 3 classes.
+</p>
+
+<p>
+All classes balanced, we will <b>metrics</b>: ROC AUC, macro precision and recall.
+</p>
+
+<p>
+We have 150 observations, we should use them with maximum effeciency, that is why we use
+ cross_validation <b>strategy</b> with LeaveOneOut folds.  To choose model we split data to main and test parts as 10
+ percentage stratifyed.
+</p>
+</div>
+<div id="outline-container-orgc6e21f1" class="outline-4">
+<h4 id="orgc6e21f1"><span class="section-number-4">1.3.1.</span> Averaging techniques theory</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+Averaging techniques for metrics:
+</p>
+<ul class="org-ul">
+<li>macro - compute the metric independently for each class and then take the average - treating all classes
+equally</li>
+<li>weighted - weighted average for classes (score*num_occur_per_class)/totalnum</li>
+<li>micro - aggregate the contributions of all classes to compute the average metric - micro-average is
+preferable if you suspect there might be class imbalance</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org63e6305" class="outline-4">
+<h4 id="org63e6305"><span class="section-number-4">1.3.2.</span> metrics exploration</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">def</span> <span style="color: #cae682; font-weight: bold;">_check_model_scorings</span>(est, X, Y, kfold):
+    <span style="color: #e5786d;">print</span>( <span style="color: #95e454;">'{:40} {:5} {:5}'</span>.<span style="color: #e5786d;">format</span>(<span style="color: #95e454;">"metric"</span>, <span style="color: #95e454;">"mean_accuracy"</span>, <span style="color: #95e454;">"std"</span> ))
+    <span style="color: #8ac6f2; font-weight: bold;">for</span> k <span style="color: #8ac6f2; font-weight: bold;">in</span> metrics.get_scorer_names():
+        <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">print(k)</span>
+        <span style="color: #cae682;">results</span> = cross_validate(est, X, Y, cv=kfold, scoring=[k])
+        r = results[f<span style="color: #95e454;">'test_</span>{k}<span style="color: #95e454;">'</span>]
+        <span style="color: #8ac6f2; font-weight: bold;">if</span> <span style="color: #8ac6f2; font-weight: bold;">not</span> <span style="color: #e5786d;">all</span>(np.isnan(r)):
+            <span style="color: #e5786d;">print</span>( <span style="color: #95e454;">'{:40} {:5} {:5}'</span>.<span style="color: #e5786d;">format</span>(k, <span style="color: #e5786d;">round</span>(r.mean(), 3), <span style="color: #e5786d;">round</span>(r.std(),2)) )
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-text">metric                                   mean_accuracy std
+accuracy                                 0.973  0.02
+adjusted_mutual_info_score               0.923  0.07
+adjusted_rand_score                      0.921  0.07
+balanced_accuracy                        0.973  0.02
+completeness_score                        0.93  0.06
+explained_variance                       0.962  0.04
+f1_macro                                 0.973  0.03
+f1_micro                                 0.973  0.02
+f1_weighted                              0.973  0.03
+fowlkes_mallows_score                    0.946  0.05
+homogeneity_score                        0.927  0.06
+jaccard_macro                             0.95  0.05
+jaccard_micro                            0.949  0.05
+jaccard_weighted                          0.95  0.05
+matthews_corrcoef                        0.962  0.04
+max_error                                 -0.6  0.49
+mutual_info_score                        1.018  0.07
+neg_log_loss                             -0.511  0.54
+neg_mean_absolute_error                  -0.027  0.02
+neg_mean_absolute_percentage_error       -0.023  0.02
+neg_mean_squared_error                   -0.027  0.02
+neg_mean_squared_log_error               -0.004   0.0
+neg_median_absolute_error                  0.0   0.0
+neg_root_mean_squared_error              -0.125  0.11
+normalized_mutual_info_score             0.928  0.06
+precision_macro                          0.977  0.02
+precision_micro                          0.973  0.02
+precision_weighted                       0.977  0.02
+r2                                        0.96  0.04
+rand_score                               0.966  0.03
+recall_macro                             0.973  0.02
+recall_micro                             0.973  0.02
+recall_weighted                          0.973  0.02
+roc_auc_ovo                              0.987  0.01
+roc_auc_ovo_weighted                     0.987  0.01
+roc_auc_ovr                              0.987  0.01
+roc_auc_ovr_weighted                     0.987  0.01
+v_measure_score                          0.928  0.06
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org9cec72c" class="outline-3">
+<h3 id="org9cec72c"><span class="section-number-3">1.4.</span> data analysis for problem</h3>
+<div class="outline-text-3" id="text-1-4">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn <span style="color: #8ac6f2; font-weight: bold;">import</span> datasets
+<span style="color: #8ac6f2; font-weight: bold;">import</span> numpy <span style="color: #8ac6f2; font-weight: bold;">as</span> np
+<span style="color: #cae682;">d</span> = datasets.load_iris()
+<span style="color: #cae682;">target_names</span> = d[<span style="color: #95e454;">'target_names'</span>]
+<span style="color: #e5786d;">print</span>(target_names)
+<span style="color: #e5786d;">print</span>(pd.DataFrame(d[<span style="color: #95e454;">'data'</span>], columns=d[<span style="color: #95e454;">'feature_names'</span>]).describe())
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(<span style="color: #95e454;">"target:"</span>, np.unique(d[<span style="color: #95e454;">'target'</span>]))
+</pre>
+</div>
+
+<pre class="example" id="org2531de3">
+['setosa' 'versicolor' 'virginica']
+       sepal length (cm)  sepal width (cm)  petal length (cm)  petal width (cm)
+count         150.000000        150.000000         150.000000        150.000000
+mean            5.843333          3.057333           3.758000          1.199333
+std             0.828066          0.435866           1.765298          0.762238
+min             4.300000          2.000000           1.000000          0.100000
+25%             5.100000          2.800000           1.600000          0.300000
+50%             5.800000          3.000000           4.350000          1.300000
+75%             6.400000          3.300000           5.100000          1.800000
+max             7.900000          4.400000           6.900000          2.500000
+
+target: [0 1 2]
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org6e22ea4" class="outline-3">
+<h3 id="org6e22ea4"><span class="section-number-3">1.5.</span> common data transformation</h3>
+<div class="outline-text-3" id="text-1-5">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn <span style="color: #8ac6f2; font-weight: bold;">import</span> datasets
+<span style="color: #8ac6f2; font-weight: bold;">import</span> numpy <span style="color: #8ac6f2; font-weight: bold;">as</span> np
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.model_selection <span style="color: #8ac6f2; font-weight: bold;">import</span> train_test_split
+<span style="color: #cae682;">d</span> = datasets.load_iris()
+<span style="color: #cae682;">X</span> = d[<span style="color: #95e454;">'data'</span>]
+<span style="color: #cae682;">y</span> = d[<span style="color: #95e454;">'target'</span>]
+<span style="color: #cae682;">X_train</span>, <span style="color: #cae682;">X_test_saved</span>, <span style="color: #cae682;">y_train</span>, <span style="color: #cae682;">y_test_saved</span> = train_test_split(
+    X, y, test_size=0.10, random_state=42, stratify=y)
+X = X_train
+y = y_train
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org686a35b" class="outline-3">
+<h3 id="org686a35b"><span class="section-number-3">1.6.</span> model selection</h3>
+<div class="outline-text-3" id="text-1-6">
+<p>
+We selected
+ OneVsOneClassifier(estimator=LogisticRegression(multi_class='ovr'))
+</p>
+
+<p>
+just for learning.
+</p>
+</div>
+
+<div id="outline-container-org51555b8" class="outline-4">
+<h4 id="org51555b8"><span class="section-number-4">1.6.1.</span> code</h4>
+<div class="outline-text-4" id="text-1-6-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.model_selection <span style="color: #8ac6f2; font-weight: bold;">import</span> cross_val_score
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.model_selection <span style="color: #8ac6f2; font-weight: bold;">import</span> StratifiedKFold, KFold
+
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn <span style="color: #8ac6f2; font-weight: bold;">import</span> linear_model
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.model_selection <span style="color: #8ac6f2; font-weight: bold;">import</span> cross_val_score, cross_validate
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.model_selection <span style="color: #8ac6f2; font-weight: bold;">import</span> StratifiedKFold, KFold
+
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.neural_network <span style="color: #8ac6f2; font-weight: bold;">import</span> MLPClassifier
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.neighbors <span style="color: #8ac6f2; font-weight: bold;">import</span> KNeighborsClassifier
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.svm <span style="color: #8ac6f2; font-weight: bold;">import</span> SVC
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.gaussian_process <span style="color: #8ac6f2; font-weight: bold;">import</span> GaussianProcessClassifier
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.gaussian_process.kernels <span style="color: #8ac6f2; font-weight: bold;">import</span> RBF
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.tree <span style="color: #8ac6f2; font-weight: bold;">import</span> DecisionTreeClassifier
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.ensemble <span style="color: #8ac6f2; font-weight: bold;">import</span> RandomForestClassifier, AdaBoostClassifier
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.naive_bayes <span style="color: #8ac6f2; font-weight: bold;">import</span> GaussianNB
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.discriminant_analysis <span style="color: #8ac6f2; font-weight: bold;">import</span> QuadraticDiscriminantAnalysis
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">from sklearn.metrics import hinge_loss</span>
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn <span style="color: #8ac6f2; font-weight: bold;">import</span> metrics
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.multiclass <span style="color: #8ac6f2; font-weight: bold;">import</span> OneVsOneClassifier
+<span style="color: #8ac6f2; font-weight: bold;">import</span> sklearn
+
+<span style="color: #8ac6f2; font-weight: bold;">def</span> <span style="color: #cae682; font-weight: bold;">warn</span>(*args, **kwargs):
+    <span style="color: #8ac6f2; font-weight: bold;">pass</span>
+<span style="color: #8ac6f2; font-weight: bold;">import</span> warnings
+warnings.<span style="color: #cae682;">warn</span> = warn
+
+
+<span style="color: #cae682;">classifiers_binary</span> = [
+        KNeighborsClassifier(5),
+        SVC(kernel=<span style="color: #95e454;">"linear"</span>, C=0.025),  <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">&#1086;&#1095;&#1077;&#1085;&#1100; &#1076;&#1086;&#1083;&#1075;&#1086;</span>
+        SVC(gamma=2, C=1),  <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">&#1089;&#1083;&#1080;&#1096;&#1082;&#1086;&#1084; &#1076;&#1086;&#1083;&#1075;&#1086;</span>
+        GaussianProcessClassifier(1.0 * RBF(1.0)), <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">&#1085;&#1077; &#1093;&#1074;&#1072;&#1090;&#1072;&#1077;&#1090; &#1087;&#1072;&#1084;&#1103;&#1090;&#1080;</span>
+        DecisionTreeClassifier(max_depth=5),
+        RandomForestClassifier(max_depth=5, n_estimators=10, ),  <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">max_features=1</span>
+        MLPClassifier(alpha=1, max_iter=1000),
+        AdaBoostClassifier(),
+        GaussianNB(),
+        QuadraticDiscriminantAnalysis()
+]
+
+<span style="color: #8ac6f2; font-weight: bold;">def</span> <span style="color: #cae682; font-weight: bold;">_select_metrics</span>(est, X, Y, kfold):
+    <span style="color: #e5786d;">print</span>( <span style="color: #95e454;">'{:40} {:5} {:5}'</span>.<span style="color: #e5786d;">format</span>(<span style="color: #95e454;">"metric"</span>, <span style="color: #95e454;">"mean_accuracy"</span>, <span style="color: #95e454;">"std"</span> ))
+    <span style="color: #8ac6f2; font-weight: bold;">for</span> k <span style="color: #8ac6f2; font-weight: bold;">in</span> metrics.get_scorer_names():
+        <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">print(k)</span>
+        results = cross_validate(est, X, Y, cv=kfold, scoring=[k])
+        r = results[f<span style="color: #95e454;">'test_</span>{k}<span style="color: #95e454;">'</span>]
+        <span style="color: #8ac6f2; font-weight: bold;">if</span> <span style="color: #8ac6f2; font-weight: bold;">not</span> <span style="color: #e5786d;">all</span>(np.isnan(r)):
+            <span style="color: #e5786d;">print</span>( <span style="color: #95e454;">'{:40} {:5} {:5}'</span>.<span style="color: #e5786d;">format</span>(k, <span style="color: #e5786d;">round</span>(r.mean(), 3), <span style="color: #e5786d;">round</span>(r.std(),2)) )
+
+<span style="color: #8ac6f2; font-weight: bold;">def</span> <span style="color: #cae682; font-weight: bold;">_check_model_binary</span>(est, X, Y, kfold):
+    results = cross_validate(est, X, Y, cv=kfold, scoring=[<span style="color: #95e454;">'accuracy'</span>, <span style="color: #95e454;">'roc_auc'</span>])
+    <span style="color: #e5786d;">print</span>(est.__class__.<span style="color: #e5786d;">__name__</span>)
+    <span style="color: #e5786d;">print</span>(<span style="color: #95e454;">"Accuracy: %f"</span> % results[<span style="color: #95e454;">'test_accuracy'</span>].mean())
+    <span style="color: #e5786d;">print</span>(<span style="color: #95e454;">"AUC: %f"</span> % results[<span style="color: #95e454;">'test_roc_auc'</span>].mean())
+
+<span style="color: #8ac6f2; font-weight: bold;">def</span> <span style="color: #cae682; font-weight: bold;">_check_model_multiclass_native</span>(est, X, Y, kfold):
+    <span style="color: #f08080; font-style: italic;">""" https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter</span>
+<span style="color: #f08080; font-style: italic;">    returns score per folds"""</span>
+    <span style="color: #e5786d;">print</span>(est)
+    results = cross_validate(est, X, Y, cv=kfold,
+                             scoring=[<span style="color: #95e454;">'roc_auc_ovo'</span>, <span style="color: #95e454;">'precision_macro'</span>,
+                                      <span style="color: #95e454;">'recall_macro'</span>])
+    <span style="color: #e5786d;">print</span>(<span style="color: #95e454;">"ROC_AUC: %f"</span> % results[<span style="color: #95e454;">'test_roc_auc_ovo'</span>].mean())
+    <span style="color: #e5786d;">print</span>(<span style="color: #95e454;">"precision_macro: %f"</span> % results[<span style="color: #95e454;">'test_precision_macro'</span>].mean())
+    <span style="color: #e5786d;">print</span>(<span style="color: #95e454;">"recall_macro: %f"</span> % results[<span style="color: #95e454;">'test_recall_macro'</span>].mean())
+    <span style="color: #e5786d;">print</span>()
+
+<span style="color: #8ac6f2; font-weight: bold;">def</span> <span style="color: #cae682; font-weight: bold;">_check_model_multiclass_ovo</span>(est, X, Y, kfold):
+    <span style="color: #f08080; font-style: italic;">""" https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter</span>
+<span style="color: #f08080; font-style: italic;">    returns score per folds"""</span>
+    scoring=[<span style="color: #95e454;">'accuracy'</span>, <span style="color: #95e454;">'precision_macro'</span>,
+                                      <span style="color: #95e454;">'recall_macro'</span>]
+    results = cross_validate(est, X, Y, cv=kfold, scoring=scoring) <span style="color: #fa8072;">#</span>
+    <span style="color: #e5786d;">print</span>(est)
+    <span style="color: #8ac6f2; font-weight: bold;">for</span> x <span style="color: #8ac6f2; font-weight: bold;">in</span> scoring:
+        <span style="color: #e5786d;">print</span>(x+ <span style="color: #95e454;">": %f"</span> % results[<span style="color: #95e454;">'test_'</span>+x].mean())
+    <span style="color: #e5786d;">print</span>()
+
+
+classifiers_multiclass_nativ = [
+    sklearn.naive_bayes.BernoulliNB(),
+    sklearn.tree.DecisionTreeClassifier(),
+    sklearn.ensemble.RandomForestClassifier(max_depth=5, n_estimators=10, ),
+    sklearn.tree.ExtraTreeClassifier(),
+    sklearn.ensemble.ExtraTreesClassifier(),
+    sklearn.naive_bayes.GaussianNB(),
+    sklearn.neighbors.KNeighborsClassifier(),
+    sklearn.linear_model.LogisticRegression(multi_class=<span style="color: #95e454;">"multinomial"</span>),
+    sklearn.linear_model.LogisticRegressionCV(multi_class=<span style="color: #95e454;">"multinomial"</span>)
+    ]
+
+classifiers_multiclass_ovo = [
+    OneVsOneClassifier(sklearn.svm.LinearSVC(C=100.)),
+    OneVsOneClassifier(sklearn.svm.SVC(kernel=<span style="color: #95e454;">"linear"</span>, C=0.025)),  <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">&#1086;&#1095;&#1077;&#1085;&#1100; &#1076;&#1086;&#1083;&#1075;&#1086;</span>
+    OneVsOneClassifier(sklearn.svm.SVC(gamma=2, C=1)),  <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">&#1089;&#1083;&#1080;&#1096;&#1082;&#1086;&#1084; &#1076;&#1086;&#1083;&#1075;&#1086;</span>
+    OneVsOneClassifier(sklearn.gaussian_process.GaussianProcessClassifier(1.0 * RBF(1.0))), <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">&#1085;&#1077; &#1093;&#1074;&#1072;&#1090;&#1072;&#1077;&#1090; &#1087;&#1072;&#1084;&#1103;&#1090;&#1080;</span>
+    OneVsOneClassifier(sklearn.neural_network.MLPClassifier(alpha=1, max_iter=1000)),
+    OneVsOneClassifier(sklearn.ensemble.AdaBoostClassifier()),
+    OneVsOneClassifier(sklearn.discriminant_analysis.QuadraticDiscriminantAnalysis()),
+    OneVsOneClassifier(sklearn.ensemble.GradientBoostingClassifier()),
+    OneVsOneClassifier(sklearn.gaussian_process.GaussianProcessClassifier()),
+    OneVsOneClassifier(sklearn.linear_model.LogisticRegression(multi_class=<span style="color: #95e454;">"ovr"</span>)),
+    OneVsOneClassifier(sklearn.linear_model.LogisticRegressionCV(multi_class=<span style="color: #95e454;">"ovr"</span>)),
+    OneVsOneClassifier(sklearn.linear_model.SGDClassifier()),
+    OneVsOneClassifier(sklearn.linear_model.Perceptron())
+    ]
+
+
+kfold = StratifiedKFold(n_splits=5)
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">----------- select metrics ------</span>
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">m = linear_model.LogisticRegressionCV(max_iter=10, multi_class='multinomial')</span>
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">m = linear_model.Lasso()</span>
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">m=KNeighborsClassifier(5)</span>
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">m = OneVsOneClassifier(sklearn.ensemble.AdaBoostClassifier())</span>
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">_select_metrics(m, X, y, kfold)</span>
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">------------------ select model -----------</span>
+Xscal = sklearn.preprocessing.StandardScaler().fit_transform(X)
+
+<span style="color: #8ac6f2; font-weight: bold;">for</span> est <span style="color: #8ac6f2; font-weight: bold;">in</span> classifiers_multiclass_nativ: <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">classifiers_multiclass_ovo:</span>
+    _check_model_multiclass_native(est, Xscal, y, kfold)
+
+<span style="color: #8ac6f2; font-weight: bold;">for</span> est <span style="color: #8ac6f2; font-weight: bold;">in</span> classifiers_multiclass_ovo: <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">classifiers_multiclass_ovo:</span>
+    _check_model_multiclass_ovo(est, Xscal, y, kfold)
+
+</pre>
+</div>
+
+<pre class="example" id="orgfc4cf06">
+BernoulliNB()
+ROC_AUC: 0.891358
+precision_macro: 0.762554
+recall_macro: 0.762963
+
+DecisionTreeClassifier()
+ROC_AUC: 0.961111
+precision_macro: 0.952879
+recall_macro: 0.948148
+
+RandomForestClassifier(max_depth=5, n_estimators=10)
+ROC_AUC: 0.995473
+precision_macro: 0.966397
+recall_macro: 0.962963
+
+ExtraTreeClassifier()
+ROC_AUC: 0.966667
+precision_macro: 0.958333
+recall_macro: 0.955556
+
+ExtraTreesClassifier()
+ROC_AUC: 0.995473
+precision_macro: 0.959545
+recall_macro: 0.955556
+
+GaussianNB()
+ROC_AUC: 0.994239
+precision_macro: 0.965000
+recall_macro: 0.962963
+
+KNeighborsClassifier()
+ROC_AUC: 0.995473
+precision_macro: 0.969091
+recall_macro: 0.962963
+
+LogisticRegression(multi_class='multinomial')
+ROC_AUC: 0.997531
+precision_macro: 0.955000
+recall_macro: 0.948148
+
+LogisticRegressionCV(multi_class='multinomial')
+ROC_AUC: 0.997942
+precision_macro: 0.955000
+recall_macro: 0.948148
+
+OneVsOneClassifier(estimator=LinearSVC(C=100.0))
+accuracy: 0.962963
+precision_macro: 0.971212
+recall_macro: 0.962963
+
+OneVsOneClassifier(estimator=SVC(C=0.025, kernel='linear'))
+accuracy: 0.903704
+precision_macro: 0.908877
+recall_macro: 0.903704
+
+OneVsOneClassifier(estimator=SVC(C=1, gamma=2))
+accuracy: 0.948148
+precision_macro: 0.952879
+recall_macro: 0.948148
+
+OneVsOneClassifier(estimator=GaussianProcessClassifier(kernel=1**2 * RBF(length_scale=1)))
+accuracy: 0.955556
+precision_macro: 0.961852
+recall_macro: 0.955556
+
+OneVsOneClassifier(estimator=MLPClassifier(alpha=1, max_iter=1000))
+accuracy: 0.948148
+precision_macro: 0.955000
+recall_macro: 0.948148
+
+OneVsOneClassifier(estimator=AdaBoostClassifier())
+accuracy: 0.955556
+precision_macro: 0.959545
+recall_macro: 0.955556
+
+OneVsOneClassifier(estimator=QuadraticDiscriminantAnalysis())
+accuracy: 0.962963
+precision_macro: 0.968519
+recall_macro: 0.962963
+
+OneVsOneClassifier(estimator=GradientBoostingClassifier())
+accuracy: 0.940741
+precision_macro: 0.947424
+recall_macro: 0.940741
+
+OneVsOneClassifier(estimator=GaussianProcessClassifier())
+accuracy: 0.955556
+precision_macro: 0.958333
+recall_macro: 0.955556
+
+OneVsOneClassifier(estimator=LogisticRegression(multi_class='ovr'))
+accuracy: 0.948148
+precision_macro: 0.955000
+recall_macro: 0.948148
+
+OneVsOneClassifier(estimator=LogisticRegressionCV(multi_class='ovr'))
+accuracy: 0.948148
+precision_macro: 0.955000
+recall_macro: 0.948148
+
+OneVsOneClassifier(estimator=SGDClassifier())
+accuracy: 0.925926
+precision_macro: 0.938333
+recall_macro: 0.925926
+
+OneVsOneClassifier(estimator=Perceptron())
+accuracy: 0.925926
+precision_macro: 0.938333
+recall_macro: 0.925926
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgefe2180" class="outline-3">
+<h3 id="orgefe2180"><span class="section-number-3">1.7.</span> data preparation</h3>
+<div class="outline-text-3" id="text-1-7">
+<p>
+sklearn.linear_model.LogisticRegression uses L2-penalty by
+ default, which is Ridge Regression.
+</p>
+
+<p>
+As Hastie,Tibshirani and Friedman points out (page 82 of the
+ pdf or at page 63 of the book) <sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup> Standardization of
+ data is preffered.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #cae682;">X</span> = sklearn.preprocessing.StandardScaler().fit_transform(X)
+<span style="color: #e5786d;">print</span>(X[0:10])
+</pre>
+</div>
+
+<pre class="example" id="org53ed260">
+&gt;&gt;&gt; [[-1.37406347  0.32273255 -1.2292066  -1.31595957]
+ [ 1.05870464 -0.12875858  0.82793667  1.43330011]
+ [-1.73897869 -0.35450415 -1.34349233 -1.31595957]
+ [ 0.45051261  0.77422368  0.94222241  1.43330011]
+ [-1.00914826 -0.12875858 -1.2292066  -1.31595957]
+ [-1.13078666  0.09698698 -1.28634947 -1.4468767 ]
+ [ 0.69378943 -0.58024971  1.05650815  1.17146585]
+ [-1.25242507 -0.12875858 -1.34349233 -1.18504244]
+ [-0.15767942 -0.35450415  0.25650799  0.12412883]
+ [-1.49570188  0.09698698 -1.28634947 -1.31595957]]
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org2992d61" class="outline-3">
+<h3 id="org2992d61"><span class="section-number-3">1.8.</span> model finetuning and training</h3>
+<div class="outline-text-3" id="text-1-8">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.model_selection <span style="color: #8ac6f2; font-weight: bold;">import</span> GridSearchCV
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.model_selection <span style="color: #8ac6f2; font-weight: bold;">import</span> cross_val_score
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.model_selection <span style="color: #8ac6f2; font-weight: bold;">import</span> cross_validate
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.multiclass <span style="color: #8ac6f2; font-weight: bold;">import</span> OneVsOneClassifier
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.model_selection <span style="color: #8ac6f2; font-weight: bold;">import</span> LeaveOneOut
+
+
+<span style="color: #cae682;">params</span> = {<span style="color: #95e454;">'estimator__penalty'</span>: [<span style="color: #95e454;">'none'</span>, <span style="color: #95e454;">'l2'</span>], <span style="color: #95e454;">'estimator__C'</span>: [0, 0.0001, 0.001,0.01,0.1]}
+<span style="color: #cae682;">clf</span> = GridSearchCV(OneVsOneClassifier(estimator=sklearn.linear_model.LogisticRegression(multi_class=<span style="color: #95e454;">'ovr'</span>, n_jobs=2)),
+                   params, cv=kfold)
+
+results = clf.fit(X, y)
+est = results.best_estimator_
+<span style="color: #e5786d;">print</span>(est)
+kfold = LeaveOneOut()
+results = cross_val_score(results.best_estimator_, X, y, cv=kfold)
+<span style="color: #e5786d;">print</span>(<span style="color: #95e454;">"Accuracy: %f"</span> % results.mean())
+<span style="color: #e5786d;">print</span>(results)
+
+scoring=[<span style="color: #95e454;">'accuracy'</span>, <span style="color: #95e454;">'precision_macro'</span>,
+                                      <span style="color: #95e454;">'recall_macro'</span>]
+
+results = cross_validate(est, X, y, cv=kfold, scoring=scoring) <span style="color: #fa8072;">#</span>
+
+<span style="color: #8ac6f2; font-weight: bold;">for</span> x <span style="color: #8ac6f2; font-weight: bold;">in</span> scoring:
+    <span style="color: #e5786d;">print</span>(x+ <span style="color: #95e454;">": %f"</span> % results[<span style="color: #95e454;">'test_'</span>+x].mean())
+</pre>
+</div>
+
+<pre class="example" id="orge4ed369">
+/usr/lib/python3.10/site-packages/sklearn/model_selection/_search.py:968: RuntimeWarning: invalid value encountered in cast
+  results["rank_%s" % key_name] = np.asarray(
+OneVsOneClassifier(estimator=LogisticRegression(C=0, multi_class='ovr',
+                                                n_jobs=2, penalty='none'))
+Accuracy: 0.970370
+[1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.
+ 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.
+ 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.
+ 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 0. 1. 1. 1. 1.
+ 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 0. 1. 1. 1. 1.
+ 1. 0. 1. 1. 1. 1. 1. 1. 0. 1. 1. 1. 1. 1. 1.]
+accuracy: 0.970370
+precision_macro: 0.970370
+recall_macro: 0.970370
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org9c9609b" class="outline-3">
+<h3 id="org9c9609b"><span class="section-number-3">1.9.</span> model validation</h3>
+<div class="outline-text-3" id="text-1-9">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.metrics <span style="color: #8ac6f2; font-weight: bold;">import</span> classification_report
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.metrics <span style="color: #8ac6f2; font-weight: bold;">import</span> confusion_matrix
+
+<span style="color: #cae682;">est</span> = OneVsOneClassifier(
+    estimator=sklearn.linear_model.LogisticRegression(
+        C=0, multi_class=<span style="color: #95e454;">'ovr'</span>,
+        n_jobs=2, penalty=<span style="color: #95e454;">'none'</span>))
+est.fit(X,y)
+X_test = sklearn.preprocessing.StandardScaler().fit_transform(X_test_saved)
+y_pred = est.predict(X_test)
+<span style="color: #e5786d;">print</span>(y_pred)
+<span style="color: #e5786d;">print</span>(y_test_saved)
+<span style="color: #e5786d;">print</span>(classification_report(y_test_saved, y_pred))
+cm = confusion_matrix(y_test_saved, y_pred)
+<span style="color: #e5786d;">print</span>(<span style="color: #95e454;">"x-redicted:0,1,2"</span>, <span style="color: #95e454;">"y-true labels: 0, 1, 2 (from top to bottom)"</span>)
+<span style="color: #e5786d;">print</span>(cm)
+</pre>
+</div>
+
+<pre class="example" id="org642b1bc">
+[1 2 2 1 2 0 0 0 2 1 0 2 1 2 0]
+[1 2 2 1 2 0 0 0 2 1 0 2 1 1 0]
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00         5
+           1       1.00      0.80      0.89         5
+           2       0.83      1.00      0.91         5
+
+    accuracy                           0.93        15
+   macro avg       0.94      0.93      0.93        15
+weighted avg       0.94      0.93      0.93        15
+
+x-redicted:0,1,2 y-true labels: 0, 1, 2 (from top to bottom)
+[[5 0 0]
+ [0 4 1]
+ [0 0 5]]
+</pre>
+
+<div class="org-src-container">
+<pre class="src src-sh">mkdir ./autoimgs
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.metrics <span style="color: #8ac6f2; font-weight: bold;">import</span> ConfusionMatrixDisplay
+<span style="color: #8ac6f2; font-weight: bold;">import</span> matplotlib.pyplot <span style="color: #8ac6f2; font-weight: bold;">as</span> plt
+<span style="color: #cae682;">disp</span> = ConfusionMatrixDisplay(confusion_matrix=cm,
+                              display_labels=target_names)
+disp.plot()
+plt.savefig(<span style="color: #95e454;">'./autoimgs/confusion_matrix.png'</span>)
+</pre>
+</div>
+
+
+<div id="orgaa4fa44" class="figure">
+<p><img src="./autoimgs/confusion_matrix.png" alt="confusion_matrix.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8b56f30" class="outline-3">
+<h3 id="org8b56f30"><span class="section-number-3">1.10.</span> results analysis</h3>
+<div class="outline-text-3" id="text-1-10">
+<p>
+results analysis:
+</p>
+<ul class="org-ul">
+<li>we get only one mistake at validation in "versicolor"
+specie.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org6c0c8a0" class="outline-3">
+<h3 id="org6c0c8a0"><span class="section-number-3">1.11.</span> model output calibration</h3>
+<div class="outline-text-3" id="text-1-11">
+<p>
+We want to have confidence score for result of model
+ inference on the prediction.
+</p>
+
+<p>
+If we have 0.8 it will mean, approximately 80% actually
+ belong to the positive class.
+</p>
+
+<p>
+It allow making decisions under uncertainty.
+</p>
+
+<p>
+OneVsRest has equal accuracy with OneVsOne. We take
+ OneVsRest for clarity.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">print(est.predict_proba(X_test))</span>
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.calibration <span style="color: #8ac6f2; font-weight: bold;">import</span> CalibratedClassifierCV
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.multiclass <span style="color: #8ac6f2; font-weight: bold;">import</span> OneVsRestClassifier
+<span style="color: #8ac6f2; font-weight: bold;">import</span> matplotlib.pyplot <span style="color: #8ac6f2; font-weight: bold;">as</span> plt
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.calibration <span style="color: #8ac6f2; font-weight: bold;">import</span> CalibrationDisplay
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.preprocessing <span style="color: #8ac6f2; font-weight: bold;">import</span> MinMaxScaler
+
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">---- plot default and calibrated classifiers</span>
+<span style="color: #cae682;">fig</span> = plt.figure(figsize=(9,9))
+gs = fig.add_gridspec(4,3, hspace=0.6)
+<span style="color: #fa8072;">#                       </span><span style="color: #99968b; font-style: italic;">left=2.1, right=0.1, bottom=0.1, top=0.9,</span>
+<span style="color: #fa8072;">#                       </span><span style="color: #99968b; font-style: italic;">wspace=0.9, hspace=0.1)</span>
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">| 1 | 2 | 3 |</span>
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">| 4 | 5 | 6 |</span>
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">| 7 | 7 | 7 |</span>
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">| 8 | 8 | 8 |</span>
+d1 = fig.add_subplot(gs[0,0])
+d2 = fig.add_subplot(gs[0,1])
+d3 = fig.add_subplot(gs[0,2])
+
+d4 = fig.add_subplot(gs[1,0])
+d5 = fig.add_subplot(gs[1,1])
+d6 = fig.add_subplot(gs[1,2])
+
+d7 = fig.add_subplot(gs[2,:])
+d8 = fig.add_subplot(gs[3,:])
+
+colors = plt.cm.get_cmap(<span style="color: #95e454;">"Dark2"</span>)
+markers = [<span style="color: #95e454;">"^"</span>, <span style="color: #95e454;">"v"</span>, <span style="color: #95e454;">"s"</span>, <span style="color: #95e454;">"o"</span>]
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">-- data preparation</span>
+<span style="color: #cae682;">X_train</span>, <span style="color: #cae682;">X_test</span>, <span style="color: #cae682;">y_train</span>, <span style="color: #cae682;">y_test</span> = train_test_split(
+    X, y, test_size=0.50, random_state=42, stratify=y)
+
+y_test <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">y_true</span>
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">covert to onevsrest</span>
+y_test_oneh = np.zeros((y_test.size, y_test.<span style="color: #e5786d;">max</span>() + 1))
+y_test_oneh[np.arange(y_test.size), y_test] = 1
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">print(y_test_oneh)</span>
+
+
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">-- default:</span>
+clf_default = OneVsRestClassifier(
+    estimator=sklearn.linear_model.LogisticRegression(
+        C=0, multi_class=<span style="color: #95e454;">'ovr'</span>,
+        n_jobs=2, penalty=<span style="color: #95e454;">'none'</span>))
+
+clf_default.fit(X_train, y_train)
+y_prob = clf_default.decision_function(X_test)
+d1.hist(y_prob[:,0], bins=<span style="color: #95e454;">'auto'</span>)
+d2.hist(y_prob[:,1], bins=<span style="color: #95e454;">'auto'</span>)
+d3.hist(y_prob[:,2], bins=<span style="color: #95e454;">'auto'</span>)
+d2.<span style="color: #e5786d;">set</span>(title=<span style="color: #95e454;">'Raw output'</span>)
+
+y_prob = MinMaxScaler().fit_transform(y_prob)
+CalibrationDisplay.from_predictions(y_test_oneh[:,0], y_prob[:,0],
+                                           ax=d7)
+CalibrationDisplay.from_predictions(y_test_oneh[:,1], y_prob[:,1],
+                                           ax=d7)
+CalibrationDisplay.from_predictions(y_test_oneh[:,2], y_prob[:,2],
+                                           ax=d7)
+
+d7.<span style="color: #e5786d;">set</span>(title=<span style="color: #95e454;">'Not Calibrated, MinMax scaled'</span>, xlabel=<span style="color: #95e454;">"Mean predicted prob"</span>, ylabel=<span style="color: #95e454;">"Count"</span>)
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">-- calibrated:</span>
+clf = OneVsRestClassifier(
+    estimator=sklearn.linear_model.LogisticRegression(
+        C=0, multi_class=<span style="color: #95e454;">'ovr'</span>,
+        n_jobs=2, penalty=<span style="color: #95e454;">'none'</span>))
+
+
+cal_clf = CalibratedClassifierCV(clf, method=<span style="color: #95e454;">"sigmoid"</span>,
+                                 cv=StratifiedKFold(10)) <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">,</span>
+cal_clf.fit(X_train, y_train)
+
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">print(y_test)</span>
+y_prob = cal_clf.predict_proba(X_test)
+
+
+d4.hist(y_prob[:,0], bins=<span style="color: #95e454;">'auto'</span>)
+d5.hist(y_prob[:,1], bins=<span style="color: #95e454;">'auto'</span>)
+d6.hist(y_prob[:,2], bins=<span style="color: #95e454;">'auto'</span>)
+d5.<span style="color: #e5786d;">set</span>(title=<span style="color: #95e454;">'Calibrated output'</span>)
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">plt.hist(y_prob, bins='auto')</span>
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">print(clf_probs)</span>
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">print(cal_clf_probs)</span>
+
+
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">display = CalibrationDisplay.from_predictions(</span>
+<span style="color: #fa8072;">#         </span><span style="color: #99968b; font-style: italic;">y_true</span>
+<span style="color: #fa8072;">#         </span><span style="color: #99968b; font-style: italic;">,</span>
+<span style="color: #fa8072;">#         </span><span style="color: #99968b; font-style: italic;">y_test,</span>
+<span style="color: #fa8072;">#     </span><span style="color: #99968b; font-style: italic;">ax=d4</span>
+<span style="color: #fa8072;">#         </span><span style="color: #99968b; font-style: italic;"># n_bins=10,</span>
+<span style="color: #fa8072;">#         </span><span style="color: #99968b; font-style: italic;"># name='model',</span>
+<span style="color: #fa8072;">#         </span><span style="color: #99968b; font-style: italic;"># ax=ax_calibration_curve,</span>
+<span style="color: #fa8072;">#         </span><span style="color: #99968b; font-style: italic;"># color=colors(0),</span>
+<span style="color: #fa8072;">#         </span><span style="color: #99968b; font-style: italic;"># marker=markers[0],</span>
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">)</span>
+CalibrationDisplay.from_predictions(y_test_oneh[:,0], y_prob[:,0],
+                                           ax=d8)
+CalibrationDisplay.from_predictions(y_test_oneh[:,1], y_prob[:,1],
+                                           ax=d8)
+CalibrationDisplay.from_predictions(y_test_oneh[:,2], y_prob[:,2],
+                                           ax=d8)
+d8.<span style="color: #e5786d;">set</span>(title=<span style="color: #95e454;">'Calibrated'</span>, xlabel=<span style="color: #95e454;">"Mean predicted prob"</span>, ylabel=<span style="color: #95e454;">"Count"</span>)
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">plt.show()</span>
+plt.savefig(<span style="color: #95e454;">'./autoimgs/calibrating.png'</span>)
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">print(display)</span>
+</pre>
+</div>
+
+
+<div id="orge5d5ffa" class="figure">
+<p><img src="./autoimgs/calibrating.png" alt="calibrating.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-org84fd0cc" class="outline-4">
+<h4 id="org84fd0cc"><span class="section-number-4">1.11.1.</span> link</h4>
+<div class="outline-text-4" id="text-1-11-1">
+<ul class="org-ul">
+<li><a href="https://scikit-learn.org/stable/auto_examples/calibration/plot_compare_calibration.html#sphx-glr-auto-examples-calibration-plot-compare-calibration-py">https://scikit-learn.org/stable/auto_examples/calibration/plot_compare_calibration.html#sphx-glr-auto-examples-calibration-plot-compare-calibration-py</a></li>
+<li><a href="https://scikit-learn.org/stable/auto_examples/calibration/plot_calibration_multiclass.html#sphx-glr-auto-examples-calibration-plot-calibration-multiclass-py">https://scikit-learn.org/stable/auto_examples/calibration/plot_calibration_multiclass.html#sphx-glr-auto-examples-calibration-plot-calibration-multiclass-py</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb4f5162" class="outline-3">
+<h3 id="orgb4f5162"><span class="section-number-3">1.12.</span> old</h3>
+<div class="outline-text-3" id="text-1-12">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn <span style="color: #8ac6f2; font-weight: bold;">import</span> datasets
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.linear_model <span style="color: #8ac6f2; font-weight: bold;">import</span> RidgeCV
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.model_selection <span style="color: #8ac6f2; font-weight: bold;">import</span> cross_validate
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.model_selection <span style="color: #8ac6f2; font-weight: bold;">import</span> train_test_split
+<span style="color: #8ac6f2; font-weight: bold;">from</span> sklearn.metrics <span style="color: #8ac6f2; font-weight: bold;">import</span> accuracy_score
+<span style="color: #cae682;">d</span> = datasets.load_iris()
+<span style="color: #cae682;">X</span> = d[<span style="color: #95e454;">'data'</span>]
+<span style="color: #cae682;">y</span> = d[<span style="color: #95e454;">'target'</span>]
+<span style="color: #cae682;">X_train</span>, <span style="color: #cae682;">X_test</span>, <span style="color: #cae682;">y_train</span>, <span style="color: #cae682;">y_test</span> = train_test_split(X, y, test_size=0.33, random_state=42)
+c = RidgeCV()
+c.fit(X_train, y_train)
+
+accuracy_score(y_true, y_pred, normalize=<span style="color: #e5786d; font-weight: bold;">False</span>)
+<span style="color: #e5786d;">print</span>(c.predict(X_test))
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge64f6bf" class="outline-3">
+<h3 id="orge64f6bf"><span class="section-number-3">1.13.</span> links</h3>
+<div class="outline-text-3" id="text-1-13">
+<ul class="org-ul">
+<li>ISO/IEC DIS 23053 - Machine Learning Framework</li>
+<li>2022 [2205.02302] Machine Learning Operations (MLOps) Dominik Kreuzberger, Niklas Kühl, Sebastian Hirschl</li>
+<li>Probablistic Machine Learning, Kevin P. Murphy, MIT Press</li>
+<li><a href="https://towardsdatascience.com/comprehensive-guide-on-multiclass-classification-metrics-af94cfb83fbd">https://towardsdatascience.com/comprehensive-guide-on-multiclass-classification-metrics-af94cfb83fbd</a></li>
+<li><a href="https://towardsdatascience.com/comprehensive-guide-to-multiclass-classification-with-sklearn-127cc500f362">https://towardsdatascience.com/comprehensive-guide-to-multiclass-classification-with-sklearn-127cc500f362</a></li>
+<li>select sklearn algorithms for problems <a href="https://scikit-learn.org/stable/modules/multiclass.html">https://scikit-learn.org/stable/modules/multiclass.html</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org0bafdea" class="outline-2">
+<h2 id="org0bafdea"><span class="section-number-2">2.</span> pandas, numpy - Small tasks Малые задачи</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org0dcb546" class="outline-3">
+<h3 id="org0dcb546"><span class="section-number-3">2.1.</span> task 1</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #8ac6f2; font-weight: bold;">import</span> numpy <span style="color: #8ac6f2; font-weight: bold;">as</span> np
+
+<span style="color: #8ac6f2; font-weight: bold;">import</span> sklearn
+
+<span style="color: #e5786d;">print</span>(np.arange(20))
+<span style="color: #cae682;">a</span> = np.random.randint(0, 20, size=10)
+a = a.reshape((2,5))
+b = np.eye(5)
+b = b * 3
+c = np.dot(a, b)
+<span style="color: #e5786d;">print</span>(c.flatten())
+
+</pre>
+</div>
+
+<pre class="example">
+[ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19]
+[57.  0. 21. 30. 36. 30. 30. 45. 18.  3.]
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org94c1636" class="outline-3">
+<h3 id="org94c1636"><span class="section-number-3">2.2.</span> task 2 DataFrame reshape</h3>
+<div class="outline-text-3" id="text-2-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #8ac6f2; font-weight: bold;">import</span> numpy <span style="color: #8ac6f2; font-weight: bold;">as</span> np
+<span style="color: #cae682;">df</span> = pd.DataFrame({<span style="color: #95e454;">"a"</span>:[1,2,3]})
+<span style="color: #cae682;">a</span> = []
+
+<span style="color: #8ac6f2; font-weight: bold;">for</span> x <span style="color: #8ac6f2; font-weight: bold;">in</span> <span style="color: #e5786d;">range</span>(12):
+  <span style="color: #cae682;">s</span> = np.random.randint(1,11, 3)
+  <span style="color: #cae682;">df</span>[<span style="color: #e5786d;">str</span>(x+1)] = s
+<span style="color: #e5786d;">print</span>(df)
+</pre>
+</div>
+
+<pre class="example">
+   a  1  2  3  4  5  6   7   8  9  10  11  12
+0  1  9  5  1  7  2  4   6   8  2   1   6   2
+1  2  7  9  6  2  8  7   3  10  5   7   5  10
+2  3  5  6  1  1  8  1  10   3  8   4   7   1
+</pre>
+
+
+<p>
+We should transform v DataFrame to pivot table:
+</p>
+
+<p>
+We will use DataFrame.melt:
+<a href="https://pandas.pydata.org/docs/user_guide/reshaping.html#reshaping">https://pandas.pydata.org/docs/user_guide/reshaping.html#reshaping</a>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #e5786d;">print</span>(df)
+<span style="color: #e5786d;">print</span>()
+<span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">print(v.pivot(index=["a"], columns=[1], values=[v.columns])) # , columns=["a"]</span>
+<span style="color: #fa8072;">#</span>
+<span style="color: #cae682;">df2</span> = df.melt(id_vars=[<span style="color: #95e454;">"a"</span>])
+df2[<span style="color: #95e454;">"variable"</span>] = df2.variable.astype(<span style="color: #e5786d;">int</span>)
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(df2.sort_values(by=[<span style="color: #95e454;">"a"</span>, <span style="color: #95e454;">"variable"</span>]))
+</pre>
+</div>
+
+<pre class="example" id="orgc55cd4d">
+   a  1  2  3  4  5  6   7   8  9  10  11  12
+0  1  9  5  1  7  2  4   6   8  2   1   6   2
+1  2  7  9  6  2  8  7   3  10  5   7   5  10
+2  3  5  6  1  1  8  1  10   3  8   4   7   1
+
+
+    a  variable  value
+0   1         1      9
+3   1         2      5
+6   1         3      1
+9   1         4      7
+12  1         5      2
+15  1         6      4
+18  1         7      6
+21  1         8      8
+24  1         9      2
+27  1        10      1
+30  1        11      6
+33  1        12      2
+1   2         1      7
+4   2         2      9
+7   2         3      6
+10  2         4      2
+13  2         5      8
+16  2         6      7
+19  2         7      3
+22  2         8     10
+25  2         9      5
+28  2        10      7
+31  2        11      5
+34  2        12     10
+2   3         1      5
+5   3         2      6
+8   3         3      1
+11  3         4      1
+14  3         5      8
+17  3         6      1
+20  3         7     10
+23  3         8      3
+26  3         9      8
+29  3        10      4
+32  3        11      7
+35  3        12      1
+</pre>
+</div>
+
+<div id="outline-container-orgf8a3f79" class="outline-4">
+<h4 id="orgf8a3f79"><span class="section-number-4">2.2.1.</span> learned RESHAPINGS guide <a href="https://pandas.pydata.org/docs/user_guide/reshaping.html">https://pandas.pydata.org/docs/user_guide/reshaping.html</a></h4>
+<div class="outline-text-4" id="text-2-2-1">
+</div>
+<ol class="org-ol">
+<li><a id="org213a492"></a>Resample for timeseries<br />
+<div class="outline-text-5" id="text-2-2-1-1">
+<ul class="org-ul">
+<li>'M' - month boundary</li>
+<li>'A' - annual</li>
+</ul>
+
+<pre class="example">
+loan_rev_data=data['Loan Amount']
+loan_rev_data['date'] = pd.DatetimeIndex(data['Created Date'])
+loan_rev_data = loan_rev_data.set_index('date')
+monthly_loan_rev_data= loan_rev_data.resample('M').sum()
+</pre>
+
+
+<pre class="example">
+            Loan Amount
+date
+2014-10-31  13039283.00
+2014-11-30  16097733.00
+2014-12-31  29077334.00
+</pre>
+</div>
+</li>
+<li><a id="org4ceb006"></a>pivot - rows to columns without aggregation<br />
+<div class="outline-text-5" id="text-2-2-1-2">
+<p>
+Uses unique values from specified index / columns to form axes of the resulting DataFrame
+</p>
+
+<p>
+params: index, columns, values
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #cae682;">df</span> = pd.DataFrame({<span style="color: #95e454;">'foo'</span>: [<span style="color: #95e454;">'one'</span>, <span style="color: #95e454;">'one'</span>, <span style="color: #95e454;">'one'</span>, <span style="color: #95e454;">'two'</span>, <span style="color: #95e454;">'two'</span>,<span style="color: #95e454;">'two'</span>],
+                   <span style="color: #95e454;">'bar'</span>: [<span style="color: #95e454;">'A'</span>, <span style="color: #95e454;">'B'</span>, <span style="color: #95e454;">'C'</span>, <span style="color: #95e454;">'A'</span>, <span style="color: #95e454;">'B'</span>, <span style="color: #95e454;">'C'</span>],
+                   <span style="color: #95e454;">'baz'</span>: [1, 2, 3, 4, 5, 6],
+                   <span style="color: #95e454;">'zoo'</span>: [<span style="color: #95e454;">'x'</span>, <span style="color: #95e454;">'y'</span>, <span style="color: #95e454;">'z'</span>, <span style="color: #95e454;">'q'</span>, <span style="color: #95e454;">'w'</span>, <span style="color: #95e454;">'t'</span>]})
+<span style="color: #e5786d;">print</span>(df)
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(df.pivot(index=<span style="color: #95e454;">'foo'</span>, columns=<span style="color: #95e454;">'bar'</span>, values=<span style="color: #95e454;">'baz'</span>))
+</pre>
+</div>
+
+<pre class="example" id="org20db7e6">
+   foo bar  baz zoo
+0  one   A    1   x
+1  one   B    2   y
+2  one   C    3   z
+3  two   A    4   q
+4  two   B    5   w
+5  two   C    6   t
+
+bar  A  B  C
+foo
+one  1  2  3
+two  4  5  6
+</pre>
+
+<p>
+Possible misstakes example:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #cae682;">df</span> = pd.DataFrame({<span style="color: #95e454;">"foo"</span>: [<span style="color: #95e454;">'one'</span>, <span style="color: #95e454;">'one'</span>, <span style="color: #95e454;">'two'</span>, <span style="color: #95e454;">'two'</span>],
+                   <span style="color: #95e454;">"bar"</span>: [<span style="color: #95e454;">'A'</span>, <span style="color: #95e454;">'A2'</span>, <span style="color: #95e454;">'B'</span>, <span style="color: #95e454;">'C'</span>], <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">new columns should not have duplicates in one index</span>
+                   <span style="color: #95e454;">"baz"</span>: [1, 2, 3, 4]})
+<span style="color: #e5786d;">print</span>(df.pivot(index=<span style="color: #95e454;">'foo'</span>, columns=<span style="color: #95e454;">'bar'</span>, values=<span style="color: #95e454;">'baz'</span>))
+</pre>
+</div>
+
+<pre class="example">
+bar    A   A2    B    C
+foo
+one  1.0  2.0  NaN  NaN
+two  NaN  NaN  3.0  4.0
+</pre>
+
+
+<ul class="org-ul">
+<li><a href="https://pandas.pydata.org/docs/user_guide/reshaping.html#reshaping">https://pandas.pydata.org/docs/user_guide/reshaping.html#reshaping</a></li>
+<li><a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pivot.html">https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pivot.html</a></li>
+</ul>
+</div>
+</li>
+<li><a id="org5e05138"></a>stack (levels)<br />
+<div class="outline-text-5" id="text-2-2-1-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #cae682;">df_single_level_cols</span> = pd.DataFrame([[0, 1], [2, 3]],
+                                    index=[<span style="color: #95e454;">'cat'</span>, <span style="color: #95e454;">'dog'</span>],
+                                    columns=[<span style="color: #95e454;">'weight'</span>, <span style="color: #95e454;">'height'</span>])
+<span style="color: #e5786d;">print</span>(df_single_level_cols)
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(df_single_level_cols.stack())
+</pre>
+</div>
+
+<pre class="example">
+     weight  height
+cat       0       1
+dog       2       3
+
+cat  weight    0
+     height    1
+dog  weight    2
+     height    3
+dtype: int64
+</pre>
+</div>
+</li>
+
+<li><a id="org2b44afc"></a>melt - columns to rows<br />
+<ol class="org-ol">
+<li><a id="orge999584"></a>ex1<br />
+<div class="outline-text-6" id="text-2-2-1-4-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #cae682;">df</span> = pd.DataFrame(
+    {
+        <span style="color: #95e454;">"first"</span>: [<span style="color: #95e454;">"John"</span>, <span style="color: #95e454;">"Mary"</span>],
+        <span style="color: #95e454;">"last"</span>: [<span style="color: #95e454;">"Doe"</span>, <span style="color: #95e454;">"Bo"</span>],
+        <span style="color: #95e454;">"height"</span>: [5.5, 6.0],
+        <span style="color: #95e454;">"weight"</span>: [130, 150],
+    })
+<span style="color: #e5786d;">print</span>(df)
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(df.melt(id_vars=[<span style="color: #95e454;">"first"</span>, <span style="color: #95e454;">"last"</span>]))
+</pre>
+</div>
+
+<pre class="example">
+  first last  height  weight
+0  John  Doe     5.5     130
+1  Mary   Bo     6.0     150
+
+  first last variable  value
+0  John  Doe   height    5.5
+1  Mary   Bo   height    6.0
+2  John  Doe   weight  130.0
+3  Mary   Bo   weight  150.0
+</pre>
+</div>
+</li>
+
+<li><a id="org36883cb"></a>ex2<br />
+<div class="outline-text-6" id="text-2-2-1-4-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #cae682;">df</span> = pd.DataFrame({<span style="color: #95e454;">'A'</span>: {0: <span style="color: #95e454;">'a'</span>, 1: <span style="color: #95e454;">'b'</span>, 2: <span style="color: #95e454;">'c'</span>},
+                   <span style="color: #95e454;">'B'</span>: {0: 1, 1: 3, 2: 5},
+                   <span style="color: #95e454;">'C'</span>: {0: 2, 1: 4, 2: 6}})
+<span style="color: #e5786d;">print</span>(df)
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(pd.melt(df, id_vars=[<span style="color: #95e454;">'A'</span>], value_vars=[<span style="color: #95e454;">'B'</span>]))
+</pre>
+</div>
+
+<pre class="example">
+   A  B  C
+0  a  1  2
+1  b  3  4
+2  c  5  6
+
+   A variable  value
+0  a        B      1
+1  b        B      3
+2  c        B      5
+</pre>
+</div>
+</li>
+</ol>
+</li>
+
+<li><a id="orgd69c344"></a>pivot_table - allow aggs<br />
+<ol class="org-ol">
+<li><a id="org368b1e2"></a>ex1<br />
+<div class="outline-text-6" id="text-2-2-1-5-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #8ac6f2; font-weight: bold;">import</span> numpy <span style="color: #8ac6f2; font-weight: bold;">as</span> np
+<span style="color: #8ac6f2; font-weight: bold;">import</span> datetime
+<span style="color: #cae682;">df</span> = pd.DataFrame(
+    {
+        <span style="color: #95e454;">"A"</span>: [<span style="color: #95e454;">"one"</span>, <span style="color: #95e454;">"one"</span>, <span style="color: #95e454;">"two"</span>, <span style="color: #95e454;">"three"</span>] * 6,
+        <span style="color: #95e454;">"B"</span>: [<span style="color: #95e454;">"A"</span>, <span style="color: #95e454;">"B"</span>, <span style="color: #95e454;">"C"</span>] * 8,
+        <span style="color: #95e454;">"C"</span>: [<span style="color: #95e454;">"foo"</span>, <span style="color: #95e454;">"foo"</span>, <span style="color: #95e454;">"foo"</span>, <span style="color: #95e454;">"bar"</span>, <span style="color: #95e454;">"bar"</span>, <span style="color: #95e454;">"bar"</span>] * 4,
+        <span style="color: #95e454;">"D"</span>: np.random.randn(24),
+        <span style="color: #95e454;">"E"</span>: np.random.randn(24),
+        <span style="color: #95e454;">"F"</span>: [datetime.datetime(2013, i, 1) <span style="color: #8ac6f2; font-weight: bold;">for</span> i <span style="color: #8ac6f2; font-weight: bold;">in</span> <span style="color: #e5786d;">range</span>(1, 13)]
+        + [datetime.datetime(2013, i, 15) <span style="color: #8ac6f2; font-weight: bold;">for</span> i <span style="color: #8ac6f2; font-weight: bold;">in</span> <span style="color: #e5786d;">range</span>(1, 13)],
+    })
+<span style="color: #e5786d;">print</span>(df)
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(pd.pivot_table(df, values=<span style="color: #95e454;">"D"</span>, index=[<span style="color: #95e454;">"A"</span>, <span style="color: #95e454;">"B"</span>], columns=[<span style="color: #95e454;">"C"</span>]))
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(pd.pivot_table(df, values=<span style="color: #95e454;">"D"</span>, index=[<span style="color: #95e454;">"B"</span>], columns=[<span style="color: #95e454;">"A"</span>, <span style="color: #95e454;">"C"</span>], aggfunc=np.<span style="color: #e5786d;">sum</span>))
+</pre>
+</div>
+
+<pre class="example" id="org1fa159e">
+        A  B    C         D         E          F
+0     one  A  foo -0.496471  0.783972 2013-01-01
+1     one  B  foo  2.085890  0.095283 2013-02-01
+2     two  C  foo -0.803101  1.063205 2013-03-01
+3   three  A  bar -1.437647 -0.738354 2013-04-01
+4     one  B  bar  1.698936 -0.153019 2013-05-01
+5     one  C  bar  0.144399  0.121885 2013-06-01
+6     two  A  foo -1.613003  0.807403 2013-07-01
+7   three  B  foo  2.090471 -0.329079 2013-08-01
+8     one  C  foo -1.268826  1.351324 2013-09-01
+9     one  A  bar -0.490377 -0.635679 2013-10-01
+10    two  B  bar -0.493791  1.150822 2013-11-01
+11  three  C  bar  0.969203 -0.493382 2013-12-01
+12    one  A  foo -0.701644  1.328246 2013-01-15
+13    one  B  foo -0.012213 -0.926647 2013-02-15
+14    two  C  foo  0.722384 -0.391392 2013-03-15
+15  three  A  bar  1.241129  2.274940 2013-04-15
+16    one  B  bar  1.171949 -0.101210 2013-05-15
+17    one  C  bar  1.102122 -1.641848 2013-06-15
+18    two  A  foo -0.009310  0.848572 2013-07-15
+19  three  B  foo -0.984730  0.036997 2013-08-15
+20    one  C  foo -0.944353 -1.265761 2013-09-15
+21    one  A  bar  1.185517  0.252553 2013-10-15
+22    two  B  bar  0.261429 -0.522052 2013-11-15
+23  three  C  bar  0.004112  0.293106 2013-12-15
+
+C             bar       foo
+A     B
+one   A  0.347570 -0.599057
+      B  1.435442  1.036838
+      C  0.623260 -1.106589
+three A -0.098259       NaN
+      B       NaN  0.552871
+      C  0.486657       NaN
+two   A       NaN -0.811156
+      B -0.116181       NaN
+      C       NaN -0.040358
+
+A       one               three                 two
+C       bar       foo       bar       foo       bar       foo
+B
+A  0.695139 -1.198115 -0.196517       NaN       NaN -1.622313
+B  2.870885  2.073677       NaN  1.105741 -0.232362       NaN
+C  1.246521 -2.213179  0.973315       NaN       NaN -0.080716
+</pre>
+</div>
+</li>
+
+<li><a id="org6f8b3da"></a>ex2<br />
+<div class="outline-text-6" id="text-2-2-1-5-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #8ac6f2; font-weight: bold;">import</span> numpy <span style="color: #8ac6f2; font-weight: bold;">as</span> np
+<span style="color: #e5786d;">print</span>(pd.pivot_table(df[[<span style="color: #95e454;">"A"</span>, <span style="color: #95e454;">"B"</span>, <span style="color: #95e454;">"C"</span>, <span style="color: #95e454;">"D"</span>, <span style="color: #95e454;">"E"</span>]], index=[<span style="color: #95e454;">"A"</span>, <span style="color: #95e454;">"B"</span>], columns=[<span style="color: #95e454;">"C"</span>]))
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(pd.pivot_table(df, values=<span style="color: #95e454;">"D"</span>, index=pd.Grouper(freq=<span style="color: #95e454;">"M"</span>, key=<span style="color: #95e454;">"F"</span>), columns=<span style="color: #95e454;">"C"</span>))
+<span style="color: #e5786d;">print</span>()
+table = pd.pivot_table(df, index=[<span style="color: #95e454;">"A"</span>, <span style="color: #95e454;">"B"</span>], columns=[<span style="color: #95e454;">"C"</span>], values=[<span style="color: #95e454;">"D"</span>, <span style="color: #95e454;">"E"</span>])
+<span style="color: #e5786d;">print</span>(table.to_string(na_rep=<span style="color: #95e454;">""</span>))
+<span style="color: #e5786d;">print</span>()
+table = df.pivot_table(
+    index=[<span style="color: #95e454;">"A"</span>, <span style="color: #95e454;">"B"</span>],
+    columns=<span style="color: #95e454;">"C"</span>,
+    values=[<span style="color: #95e454;">"D"</span>, <span style="color: #95e454;">"E"</span>],
+    margins=<span style="color: #e5786d; font-weight: bold;">True</span>,
+    aggfunc=np.std)
+<span style="color: #e5786d;">print</span>(table)
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(table.stack())
+</pre>
+</div>
+
+<pre class="example" id="orgab8638e">
+                D                   E
+C             bar       foo       bar       foo
+A     B
+one   A  0.347570 -0.599057 -0.191563  1.056109
+      B  1.435442  1.036838 -0.127114 -0.415682
+      C  0.623260 -1.106589 -0.759982  0.042781
+three A -0.098259       NaN  0.768293       NaN
+      B       NaN  0.552871       NaN -0.146041
+      C  0.486657       NaN -0.100138       NaN
+two   A       NaN -0.811156       NaN  0.827988
+      B -0.116181       NaN  0.314385       NaN
+      C       NaN -0.040358       NaN  0.335907
+
+C                bar       foo
+F
+2013-01-31       NaN -0.599057
+2013-02-28       NaN  1.036838
+2013-03-31       NaN -0.040358
+2013-04-30 -0.098259       NaN
+2013-05-31  1.435442       NaN
+2013-06-30  0.623260       NaN
+2013-07-31       NaN -0.811156
+2013-08-31       NaN  0.552871
+2013-09-30       NaN -1.106589
+2013-10-31  0.347570       NaN
+2013-11-30 -0.116181       NaN
+2013-12-31  0.486657       NaN
+
+                D                   E
+C             bar       foo       bar       foo
+A     B
+one   A  0.347570 -0.599057 -0.191563  1.056109
+      B  1.435442  1.036838 -0.127114 -0.415682
+      C  0.623260 -1.106589 -0.759982  0.042781
+three A -0.098259            0.768293
+      B            0.552871           -0.146041
+      C  0.486657           -0.100138
+two   A           -0.811156            0.827988
+      B -0.116181            0.314385
+      C           -0.040358            0.335907
+
+                D                             E
+C             bar       foo       All       bar       foo       All
+A     B
+one   A  1.185036  0.145079  0.879671  0.628075  0.384860  0.836517
+      B  0.372636  1.483583  0.912645  0.036635  0.722614  0.449735
+      C  0.677213  0.229437  1.080685  1.247147  1.850559  1.369230
+three A  1.894181       NaN  1.894181  2.130720       NaN  2.130720
+      B       NaN  2.174496  2.174496       NaN  0.258855  0.258855
+      C  0.682422       NaN  0.682422  0.556131       NaN  0.556131
+two   A       NaN  1.133982  1.133982       NaN  0.029111  0.029111
+      B  0.534022       NaN  0.534022  1.182900       NaN  1.182900
+      C       NaN  1.078681  1.078681       NaN  1.028556  1.028556
+All      0.934619  1.220583  1.084208  0.993422  0.877783  0.909890
+
+                    D         E
+A     B C
+one   A All  0.879671  0.836517
+        bar  1.185036  0.628075
+        foo  0.145079  0.384860
+      B All  0.912645  0.449735
+        bar  0.372636  0.036635
+        foo  1.483583  0.722614
+      C All  1.080685  1.369230
+        bar  0.677213  1.247147
+        foo  0.229437  1.850559
+three A All  1.894181  2.130720
+        bar  1.894181  2.130720
+      B All  2.174496  0.258855
+        foo  2.174496  0.258855
+      C All  0.682422  0.556131
+        bar  0.682422  0.556131
+two   A All  1.133982  0.029111
+        foo  1.133982  0.029111
+      B All  0.534022  1.182900
+        bar  0.534022  1.182900
+      C All  1.078681  1.028556
+        foo  1.078681  1.028556
+All     All  1.084208  0.909890
+        bar  0.934619  0.993422
+        foo  1.220583  0.877783
+</pre>
+</div>
+</li>
+</ol>
+</li>
+
+<li><a id="org6b37680"></a>pivot tables(old)<br />
+<div class="outline-text-5" id="text-2-2-1-6">
+<div class="org-src-container">
+<pre class="src src-python">melb_df.groupby([<span style="color: #95e454;">'Rooms'</span>, <span style="color: #95e454;">'Type'</span>])[<span style="color: #95e454;">'Price'</span>].mean() <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">&#1080;&#1077;&#1088;&#1072;&#1088;&#1093;&#1080;&#1095;&#1077;&#1089;&#1082;&#1080;&#1077; &#1080;&#1085;&#1076;&#1077;&#1082;&#1089;&#1099;</span>
+melb_df.groupby([<span style="color: #95e454;">'Rooms'</span>, <span style="color: #95e454;">'Type'</span>])[<span style="color: #95e454;">'Price'</span>].mean().unstack() <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">&#1088;&#1072;&#1089;&#1082;&#1083;&#1072;&#1076;&#1099;&#1074;&#1072;&#1077;&#1090; &#1090;&#1072;&#1073;&#1083;&#1080;&#1094;&#1091; &#1074; &#1089;&#1090;&#1086;&#1083;&#1073;&#1094;&#1099;</span>
+melb_df.pivot_table(
+    values=<span style="color: #95e454;">'Price'</span>,
+    index=<span style="color: #95e454;">'Rooms'</span>,
+    columns=<span style="color: #95e454;">'Type'</span>,
+    fill_value=0
+).<span style="color: #e5786d;">round</span>() <span style="color: #fa8072;"># </span><span style="color: #99968b; font-style: italic;">&#1072;&#1085;&#1072;&#1083;&#1086;&#1075;&#1080;&#1095;&#1085;&#1086; &#1074;&#1090;&#1086;&#1088;&#1086;&#1084;&#1091;</span>
+</pre>
+</div>
+</div>
+</li>
+<li><a id="org9798e42"></a>crosstab - frequencies<br />
+<div class="outline-text-5" id="text-2-2-1-7">
+<p>
+frequency table of the factors unless an array of values and an aggregation function are passed.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #8ac6f2; font-weight: bold;">import</span> numpy <span style="color: #8ac6f2; font-weight: bold;">as</span> np
+<span style="color: #cae682;">foo</span>, <span style="color: #cae682;">bar</span>, <span style="color: #cae682;">dull</span>, <span style="color: #cae682;">shiny</span>, <span style="color: #cae682;">one</span>, <span style="color: #cae682;">two</span> = <span style="color: #95e454;">"foo"</span>, <span style="color: #95e454;">"bar"</span>, <span style="color: #95e454;">"dull"</span>, <span style="color: #95e454;">"shiny"</span>, <span style="color: #95e454;">"one"</span>, <span style="color: #95e454;">"two"</span>
+<span style="color: #cae682;">a</span> = np.array([foo, foo, bar, bar, foo, foo], dtype=<span style="color: #e5786d;">object</span>)
+b = np.array([one, one, two, one, two, one], dtype=<span style="color: #e5786d;">object</span>)
+c = np.array([dull, dull, shiny, dull, dull, shiny], dtype=<span style="color: #e5786d;">object</span>)
+<span style="color: #e5786d;">print</span>(<span style="color: #95e454;">"frequencies:"</span>)
+<span style="color: #e5786d;">print</span>(pd.crosstab(a, b))
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(pd.crosstab(a, [b, c], rownames=[<span style="color: #95e454;">"a"</span>], colnames=[<span style="color: #95e454;">"b"</span>, <span style="color: #95e454;">"c"</span>]))
+</pre>
+</div>
+
+<pre class="example" id="org03a6ae0">
+frequencies:
+col_0  one  two
+row_0
+bar      1    1
+foo      3    1
+
+b    one        two
+c   dull shiny dull shiny
+a
+bar    1     0    0     1
+foo    2     1    1     0
+</pre>
+</div>
+</li>
+
+<li><a id="org926a0e6"></a>cut - transform continuous variables to discrete or categorical variables<br />
+<div class="outline-text-5" id="text-2-2-1-8">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #8ac6f2; font-weight: bold;">import</span> numpy <span style="color: #8ac6f2; font-weight: bold;">as</span> np
+<span style="color: #cae682;">ages</span> = np.array([10, 15, 13, 12, 23, 25, 28, 59, 60])
+<span style="color: #e5786d;">print</span>(pd.cut(ages, bins=3))
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(pd.cut(ages, bins=[0, 18, 35, 70]))
+</pre>
+</div>
+
+<pre class="example">
+[(9.95, 26.667], (9.95, 26.667], (9.95, 26.667], (9.95, 26.667], (9.95, 26.667], (9.95, 26.667], (26.667, 43.333], (43.333, 60.0], (43.333, 60.0]]
+Categories (3, interval[float64, right]): [(9.95, 26.667] &lt; (26.667, 43.333] &lt; (43.333, 60.0]]
+
+[(0, 18], (0, 18], (0, 18], (0, 18], (18, 35], (18, 35], (18, 35], (35, 70], (35, 70]]
+Categories (3, interval[int64, right]): [(0, 18] &lt; (18, 35] &lt; (35, 70]]
+</pre>
+</div>
+</li>
+
+<li><a id="orge4ec079"></a>dummies<br />
+<div class="outline-text-5" id="text-2-2-1-9">
+<ul class="org-ul">
+<li>pd.get_dummies(df, prefix="new_prefix")</li>
+<li>pd.from_dummies(df, sep="_")</li>
+</ul>
+</div>
+</li>
+<li><a id="orge930a5b"></a>factorize - categories to numbers<br />
+<div class="outline-text-5" id="text-2-2-1-10">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #8ac6f2; font-weight: bold;">import</span> numpy <span style="color: #8ac6f2; font-weight: bold;">as</span> np
+<span style="color: #cae682;">x</span> = pd.Series([<span style="color: #95e454;">"A"</span>, <span style="color: #95e454;">"A"</span>, np.nan, <span style="color: #95e454;">"B"</span>, 3.14, np.inf])
+<span style="color: #cae682;">labels</span>, <span style="color: #cae682;">uniques</span> = pd.factorize(x)
+<span style="color: #e5786d;">print</span>(labels)
+<span style="color: #e5786d;">print</span>(uniques)
+</pre>
+</div>
+
+<pre class="example">
+[ 0  0 -1  1  2  3]
+Index(['A', 'B', 3.14, inf], dtype='object')
+</pre>
+</div>
+</li>
+
+<li><a id="orgfdf428c"></a>explode<br />
+<div class="outline-text-5" id="text-2-2-1-11">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #8ac6f2; font-weight: bold;">import</span> numpy <span style="color: #8ac6f2; font-weight: bold;">as</span> np
+<span style="color: #cae682;">keys</span> = [<span style="color: #95e454;">"panda1"</span>, <span style="color: #95e454;">"panda2"</span>, <span style="color: #95e454;">"panda3"</span>]
+<span style="color: #cae682;">values</span> = [[<span style="color: #95e454;">"eats"</span>, <span style="color: #95e454;">"shoots"</span>], [<span style="color: #95e454;">"shoots"</span>, <span style="color: #95e454;">"leaves"</span>], [<span style="color: #95e454;">"eats"</span>, <span style="color: #95e454;">"leaves"</span>]]
+<span style="color: #cae682;">df</span> = pd.DataFrame({<span style="color: #95e454;">"keys"</span>: keys, <span style="color: #95e454;">"values"</span>: values})
+<span style="color: #e5786d;">print</span>(df)
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(df[<span style="color: #95e454;">"values"</span>].explode())
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(df.explode(<span style="color: #95e454;">"values"</span>))
+</pre>
+</div>
+
+<pre class="example" id="orgdbd3c0d">
+     keys            values
+0  panda1    [eats, shoots]
+1  panda2  [shoots, leaves]
+2  panda3    [eats, leaves]
+
+0      eats
+0    shoots
+1    shoots
+1    leaves
+2      eats
+2    leaves
+Name: values, dtype: object
+
+     keys  values
+0  panda1    eats
+0  panda1  shoots
+1  panda2  shoots
+1  panda2  leaves
+2  panda3    eats
+2  panda3  leaves
+</pre>
+</div>
+</li>
+
+<li><a id="org33bc544"></a>assign and explode - split values to rows<br />
+<div class="outline-text-5" id="text-2-2-1-12">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #8ac6f2; font-weight: bold;">import</span> pandas <span style="color: #8ac6f2; font-weight: bold;">as</span> pd
+<span style="color: #8ac6f2; font-weight: bold;">import</span> numpy <span style="color: #8ac6f2; font-weight: bold;">as</span> np
+<span style="color: #cae682;">df</span> = pd.DataFrame([{<span style="color: #95e454;">"var1"</span>: <span style="color: #95e454;">"a,b,c,d"</span>, <span style="color: #95e454;">"var2"</span>: 1}, {<span style="color: #95e454;">"var1"</span>: <span style="color: #95e454;">"d,e,f"</span>, <span style="color: #95e454;">"var2"</span>: 2}])
+<span style="color: #e5786d;">print</span>(df)
+<span style="color: #e5786d;">print</span>()
+<span style="color: #e5786d;">print</span>(df.assign(var1=df.var1.<span style="color: #e5786d;">str</span>.split(<span style="color: #95e454;">","</span>)).explode(<span style="color: #95e454;">"var1"</span>))
+</pre>
+</div>
+
+<pre class="example" id="org61b7fb0">
+      var1  var2
+0  a,b,c,d     1
+1    d,e,f     2
+
+  var1  var2
+0    a     1
+0    b     1
+0    c     1
+0    d     1
+1    d     2
+1    e     2
+1    f     2
+</pre>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://web.stanford.edu/~hastie/Papers/ESLII.pdf">https://web.stanford.edu/~hastie/Papers/ESLII.pdf</a>
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="date">Created: 2023-04-26 Wed 17:59</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
