@@ -23,9 +23,9 @@
 - interior design - дизайн интерера
 * Выполнено
 - осмотрелся на huggingface, настроил inference через api для себя на будущее к языковым моделям
-- поговорил с ChatGPT
+- поговорил с ChatGPT, LLama2
 - был проверен arxiv.org по темам: image-to-image, RotationNet, Rotation Invariance
-- были использован scholar.google.com
+- был использован scholar.google.com
 * Набросок Стратегии
 *Задача 1)* Коммерческие продукты, которые возможно могут делать поворот: Abode Photoshop transform, DeepArt.io, OpenAI CLIP.
 
