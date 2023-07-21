@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-05-12 Fri 15:20 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+</head>
+<body>
+<div id="content" class="content">
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org23e3de1">1. task, Задача</a></li>
+<li><a href="#orgeacb262">2. analysis, Анализ задачи</a></li>
+<li><a href="#org3fdf438">3. learned tems, Изученные термины</a></li>
+<li><a href="#org6da7bd5">4. 1) High-frequency trading in a limit order book</a></li>
+<li><a href="#org499d669">5. 4) Short-Term Market Changes and Market Making with Inventory</a></li>
+<li><a href="#orgc6cb3c7">6. answer:</a></li>
+</ul>
+</div>
+</div>
+<p>
+NFT Data Engineer, HFT(High-frequency trading)
+</p>
+<div id="outline-container-org23e3de1" class="outline-2">
+<h2 id="org23e3de1"><span class="section-number-2">1.</span> task, Задача</h2>
+<div class="outline-text-2" id="text-1">
+<ol class="org-ol">
+<li>Avellaneda Stoikov, 2008 <a href="https://www.math.nyu.edu/~avellane/HighFrequencyTrading.pdf">https://www.math.nyu.edu/~avellane/HighFrequencyTrading.pdf</a></li>
+</ol>
+
+<p>
+Классическая статья по mm. Большинство из современных статей по mm так или базируются на ней или хотя бы ссылаются.
+</p>
+
+<ol class="org-ol">
+<li>Optimal Strategies of High Frequency Traders, 2015
+<a href="https://scholar.princeton.edu/sites/default/files/JiangminXu_JobMarketPaper_Revised_0.pdf">https://scholar.princeton.edu/sites/default/files/JiangminXu_JobMarketPaper_Revised_0.pdf</a></li>
+</ol>
+
+<p>
+На базе Avellaneda Stoikov было написано много статей, вот одна из них. Она добавляет ряд интересных
+ вещей по направленности рынка, имбалансам ордербуков, ping-ордерам и т. д. Все эти вещи приближают
+ исследования к реалиям рынка.
+</p>
+
+<p>
+Однако перевести ту логику в код задача не из простых. К счастью, есть хорошая серия постов с
+ разбором статьи: 3) <a href="https://www.quantalgos.ru/?p=51">https://www.quantalgos.ru/?p=51</a> За все время это чуть ли единственный случай,
+ когда на русском мы нашли что-то более серьезно проработанное, чем на английском. Они там во много
+ заходов правят код, в комментариях постятся какие-то баги, но в целом что-то более-менее рабочее у
+ них получается.
+</p>
+
+<ol class="org-ol">
+<li>Short-Term Market Changes and Market Making with Inventory, Jin Gi Kim, Sam Beatson, Bong-Gyu
+Jang, Ho-Seok Lee, and Seyoung Park, 2020
+<a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3639715">https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3639715</a> (SSRN-id3639715.pdf)</li>
+</ol>
+
+<p>
+Еще одна статья на базе Avellaneda Stoikov, которая развивает их идею в другом направлении. Нужно
+ будет понять суть этого направления и совместимо ли оно с идеями из статьи выше.
+</p>
+</div>
+</div>
+<div id="outline-container-orgeacb262" class="outline-2">
+<h2 id="orgeacb262"><span class="section-number-2">2.</span> analysis, Анализ задачи</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Avellaneda Stoikov - два автора статьи 1)
+</p>
+
+<p>
+Avellaneda Stoikov - is two authors of article 1)
+</p>
+
+<p>
+1,2,3 - одно направление, 4 - другое.
+</p>
+
+<p>
+1,2,3 - one subject, 4 - another one.
+</p>
+
+<p>
+Задача понять суть второго направления и совместимо ли оно с идеями какой-то статьи выше 1, 2 или 3.
+The task is to understand second subject and judje how ideas from second compatible with article 1,2 or 3.
+</p>
+
+<p>
+Задачи и их подзадачи. Tasks and their subtasks.
+</p>
+<ul class="org-ul">
+<li>To understand second subject from article 4.
+<ul class="org-ul">
+<li>to understand first subject from 1, 2 and 3.</li>
+</ul></li>
+<li>To judge compatibility of second subject with 1,2 or 3 article
+<ul class="org-ul">
+<li>to understand second subject</li>
+<li>to choose best article for unclear formulation.</li>
+<li>to judge difference and compatibility</li>
+</ul></li>
+
+<li>Понять вторую тему из статьи 4.
+<ul class="org-ul">
+<li>понять первый предмет из 1, 2 и 3.</li>
+</ul></li>
+<li>Оцените совместимость второго предмета с 1,2 или 3 статьей
+<ul class="org-ul">
+<li>понять второй предмет</li>
+<li>выбрать лучшую статью за неясную формулировку.</li>
+<li>оценить разницу и совместимость</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3fdf438" class="outline-2">
+<h2 id="org3fdf438"><span class="section-number-2">3.</span> learned tems, Изученные термины</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li><b>order book</b> or <b>depth-of-market (DOM)</b> - стакан заявок</li>
+<li><b>limit order</b> is an order to buy a security at no more than a specific price, or to sell a security at
+no less than a specific price (called "or better" for either direction)</li>
+<li><b>inventory</b> - the stock of securities that a trader holds at any given time. By maintaining a
+certain level of inventory, traders can take advantage of market opportunities and quickly respond
+to changes in demand. However, holding too much inventory can also increase the risk of losses if
+the market moves against the trader.</li>
+<li>A <b>call</b> option in stock trading is a contract that gives the holder the right, but not the
+obligation, to buy a specific underlying asset (such as a stock) at a predetermined price (the
+strike price) within a specified period of time.</li>
+<li><b>spread</b> - the difference between the bid price (the highest price a buyer is willing to pay for a
+stock) and the ask price (the lowest price a seller is willing to accept for the same stock). The
+spread can be used as an indicator of market liquidity and volatility.  narrower spread generally
+indicates a more liquid and stable market</li>
+<li><b>leg</b> - one part of a complex trade that involves multiple transactions. For example, if a trader
+wants to buy a stock and sell a call option on that same stock, those two transactions would be
+considered two legs of the overall trade.</li>
+<li><b>aggressor</b> in HF trading - trader who make order some distance away from the equilibrium price.</li>
+<li><b>split-second trading decisions</b> - просто скоростная торговля, ничего конкретного под этим термином нет</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org6da7bd5" class="outline-2">
+<h2 id="org6da7bd5"><span class="section-number-2">4.</span> 1) High-frequency trading in a limit order book</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+sources of risk
+</p>
+<ul class="org-ul">
+<li>the <b>inventory risk</b> from uncertainty in the asset's value (invertory effect)</li>
+<li>asymmetric information risk arising from informed dealers</li>
+</ul>
+
+<p>
+To account the effect of the inventory we specify "true" price for asset and derive optimal bid and
+ ask quotes around this price.
+</p>
+
+<p>
+Arrival rate of buy and sell orders is crucial. Model arrival rates.
+</p>
+
+<p>
+Zero intelligence agents.
+</p>
+
+<p>
+Optimal bid and aks quotes are derived in an intuitive two-step procedure.
+</p>
+<ol class="org-ol">
+<li>compute a personal indifference valuation for the stock, given his current inventory.</li>
+<li>calibrates his bid and ask quotes to the limit order book, by considering the probability with
+which his quotes will be executed as a fuction of their distance from the mid-price.</li>
+</ol>
+
+<p>
+Our solution is the balancing act between the dealer's personal risk and the market environment
+</p>
+
+<ol class="org-ol">
+<li>оценка собственного безразличия к запасам</li>
+<li>вероятность реализации квот, как функция от их расстояния до mid-price(true price)</li>
+</ol>
+
+<p>
+building blocks:
+</p>
+<ul class="org-ul">
+<li>f(the distance to the true price) = target</li>
+<li>to solve optimal bid and ask quotes, and relate them to the reservation price of the agent.</li>
+<li>approximate solution</li>
+<li>Profit and Loss (P&amp;L) profile.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org499d669" class="outline-2">
+<h2 id="org499d669"><span class="section-number-2">5.</span> 4) Short-Term Market Changes and Market Making with Inventory</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Closed form optimal bidding and asking strategies of the market maker.
+</p>
+
+<p>
+if spread is wide traders submit limit orders because an aggressive buy or sell immediately is
+ expensive.
+</p>
+
+<p>
+stochastic investment opportunities - factor.
+</p>
+
+<p>
+dynamic programming - utility
+</p>
+
+<p>
+Poisson jump processes for modeling trading intensity and stock volatility as switching
+ mechanism. (it is a key difference from 1) aricle.)
+</p>
+
+<p>
+taking a utility maximizing approach ( same with article 1))
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc6cb3c7" class="outline-2">
+<h2 id="orgc6cb3c7"><span class="section-number-2">6.</span> answer:</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Я понял вопрос как:
+</p>
+
+<p>
+Нужно понять суть направления в статье
+</p>
+
+<p>
+Short-Term Market Changes and Market Making with Inventory, Jin Gi Kim, Sam Beatson, Bong-Gyu
+ Jang, Ho-Seok Lee, and Seyoung Park, 2020
+ <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3639715">https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3639715</a> (SSRN-id3639715.pdf)
+</p>
+
+<p>
+и совместимо ли оно с идеями из статьи
+</p>
+
+<p>
+Avellaneda Stoikov, 2008 <a href="https://www.math.nyu.edu/~avellane/HighFrequencyTrading.pdf">https://www.math.nyu.edu/~avellane/HighFrequencyTrading.pdf</a>
+.
+</p>
+
+<p>
+Суть статьи в расчете торгующим агентом цен bid и ask заявок, с учетом вероятности, что заявка будет
+ выполнена, как функция растояния от истенной стоимости, при этом учитывается стоимость инветаря
+ трейда.
+Да, с идеями совместима, реализация другая. При написании статьи автор взял из статьи Avellaneda
+ Stoikov подход, ориентированный на максимизацию полезности (taking a utility maximizing approach).
+ Отличием являются Пуассоновские скачкообразные процессы для моделирования интенсивности торговли и
+ волатильности. ( Poisson jump processes for modeling trading intensity and stock volatility as
+ switching mechanism.), в то время как, в статье Avellaneda Stoikov не учитывается изменение
+ инвестиционной перспективности.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Created: 2023-05-12 Fri 15:20</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

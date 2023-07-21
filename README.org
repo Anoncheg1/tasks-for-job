@@ -1,3 +1,5 @@
-- [[perfect_ML_pipeline.org]] - Model and metrics selection, model calibration
-- [[sql-task.org]] - SQL: CASE WHEN, CTE and subquery
-- [[optimization.org]] - bit packing optimization task
+- [[perfect_ML_pipeline.org]] - Model and metrics selection, model calibration.
+- [[sql-task.org]] - SQL: CASE WHEN, CTE and subquery.
+- [[optimization.org]] - bit packing optimization task.
+- [[nft_data_engineer.org]] - answer question after analysis of articles.
+- [[task_for_interior_design.org]] - create strategy for interior design about rotation of generateion scene image with DL.
