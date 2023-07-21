@@ -32,7 +32,7 @@
 Необходама нейронная сеть особого типа с 3д информацией об объектах, такие сети сложны и узко
  специализированы в биометрии, медицине и добывающей промышленности. (в свободном доступе
  модель я не нешел пока готовых решений)
-- layers: 3D convolutional layers or volumetric convolution, Capule networks, RotationNet.
+- layers: 3D convolutional layers or volumetric convolution, Capsule networks, RotationNet.
 - rotation sensitive networks: PointNet++, IM-NET, Occupancy Net++ [fn:1]
 
 Можно попробовать большие интеллектуальные мультимодальные модели с чательно подготовленным входными
