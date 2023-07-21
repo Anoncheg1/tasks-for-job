@@ -19,8 +19,8 @@
 - серомодельные рендеры пространства (без мебели и текстур),
 - финальные рендер смежных помещений, для генерации  текстур и формы по их подобию.
 * термины
-- ракурсы - angle (camera angle, perspective jellinek);  line of sight ; shooting angle
-- interior design - дизайн интерера
+- ракурсы :: angle [æŋgl] (camera angle, perspective [pəˈspektɪv] jellinek);  line of sight ; shooting angle
+- interior design [ɪnˈtɪərɪə dɪˈzaɪn] :: дизайн интерера
 * Выполнено
 - осмотрелся на huggingface, настроил inference через api для себя на будущее к языковым моделям
 - поговорил с ChatGPT, LLama2
