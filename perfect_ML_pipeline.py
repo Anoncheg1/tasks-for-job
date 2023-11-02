@@ -5,7 +5,7 @@ d = datasets.load_iris()
 X = d['data']
 y = d['target']
 print(X[0:5])
-print(y)
+print("y", y)
 # -- one hot encoding for y
 Y = np.zeros((y.size, y.max()+1))
 Y[np.arange(y.size),y] = 1
@@ -52,14 +52,17 @@ classifiers_binary = [
         QuadraticDiscriminantAnalysis()
 ]
 
-def _select_metrics(est, X, Y, kfold):
+def _select_metrics(est1, est2, X, Y, kfold):
+    print( '{:40} {:5} {:5}'.format("metric", "dummy model", "one of effective model" ))
     print( '{:40} {:5} {:5}'.format("metric", "mean_accuracy", "std" ))
     for k in metrics.get_scorer_names():
         # print(k)
-        results = cross_validate(est, X, Y, cv=kfold, scoring=[k])
-        r = results[f'test_{k}']
-        if not all(np.isnan(r)):
-            print( '{:40} {:5} {:5}'.format(k, round(r.mean(), 3), round(r.std(),2)) )
+        results1 = cross_validate(est1, X, Y, cv=kfold, scoring=[k])
+        r1 = results1[f'test_{k}']
+        results2 = cross_validate(est2, X, Y, cv=kfold, scoring=[k])
+        r2 = results2[f'test_{k}']
+        if not all(np.isnan(r1)):
+            print( '{:40} {:5} {:5}\t{:5} {:5}'.format(k, round(r1.mean(), 3), round(r1.std(),2), round(r2.mean(), 3), round(r2.std(),2)) )
 
 def _check_model_binary(est, X, Y, kfold):
     results = cross_validate(est, X, Y, cv=kfold, scoring=['accuracy', 'roc_auc'])
@@ -121,15 +124,26 @@ classifiers_multiclass_ovo = [
 
 
 kfold = StratifiedKFold(n_splits=5)
-# ----------- select metrics ------
+# ----------- select metrics 1) dummy ----
+from sklearn.dummy import DummyClassifier
+dummy_clf = DummyClassifier()
+dummy_clf.fit(X, y)
+dummy_clf.predict(X)
+print("predict", dummy_clf.predict(X))
+print("score", dummy_clf.score(X, y))
+print('---')
+# _select_metrics(dummy_clf, X, y, kfold)
+
+# ----------- select metrics 2) model ------
 # m = linear_model.LogisticRegressionCV(max_iter=10, multi_class='multinomial')
 # m = linear_model.Lasso()
 # m=KNeighborsClassifier(5)
-# m = OneVsOneClassifier(sklearn.ensemble.AdaBoostClassifier())
-# _select_metrics(m, X, y, kfold)
-# ------------------ select model -----------
-for est in classifiers_multiclass_nativ: # classifiers_multiclass_ovo:
-    _check_model_multiclass_native(est, X, y, kfold)
+m = OneVsOneClassifier(sklearn.ensemble.AdaBoostClassifier())
+_select_metrics(dummy_clf, m, X, y, kfold)
 
-for est in classifiers_multiclass_ovo: # classifiers_multiclass_ovo:
-    _check_model_multiclass_ovo(est, X, y, kfold)
+# ------------------ select model -----------
+# for est in classifiers_multiclass_nativ: # classifiers_multiclass_ovo:
+#     _check_model_multiclass_native(est, X, y, kfold)
+
+# for est in classifiers_multiclass_ovo: # classifiers_multiclass_ovo:
+#     _check_model_multiclass_ovo(est, X, y, kfold)
