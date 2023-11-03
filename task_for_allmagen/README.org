@@ -632,7 +632,7 @@ for all analysis we take 0.05 random records from "interview.X.csv".
 Lets set tags field for nan as 0 and "with tag" as 1.
 We multiply "with tags" by 7 just to see better on plot difference.
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file graphics :file ./imgs/no_vs_tag.png  :session s1
+#+begin_src python :results file graphics :file :exports both ./imgs/no_vs_tag.png  :session s1
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -684,7 +684,7 @@ frequency_analysis(df, target='tag', image_save='./imgs/no_vs_tag.png', t0=0, t1
 
 ** "with tags" vs tag == 'fclick'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file graphics :file ./imgs/no_vs_fclick.png
+#+begin_src python :results file :exports both :file ./imgs/no_vs_fclick.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -721,7 +721,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'vregistration'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file graphics :file ./imgs/no_vs_vregistration.png
+#+begin_src python :results file :exports both :file ./imgs/no_vs_vregistration.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -758,7 +758,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'registration'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file graphics :file ./imgs/no_vs_registration.png  :session s1
+#+begin_src python :results file :exports both :file ./imgs/no_vs_registration.png  :session s1
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -795,7 +795,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'vcontent'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file graphics :file ./imgs/no_vs_vcontent.png
+#+begin_src python :results file :exports both :file ./imgs/no_vs_vcontent.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -832,7 +832,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'vsignup'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file graphics :file ./imgs/no_vs_vsignup.png
+#+begin_src python :results file :exports both :file ./imgs/no_vs_vsignup.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -869,7 +869,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'vmisc'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file graphics :file ./imgs/no_vs_vmisc.png
+#+begin_src python :results file :exports both :file ./imgs/no_vs_vmisc.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -906,7 +906,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'vlead'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file graphics :file ./imgs/no_vs_vlead.png
+#+begin_src python :results file :exports both :file ./imgs/no_vs_vlead.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -943,7 +943,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'signup'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file graphics :file ./imgs/no_vs_signup.png
+#+begin_src python :results file :exports both :file ./imgs/no_vs_signup.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -980,7 +980,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'misc'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file graphics :file ./imgs/no_vs_misc.png
+#+begin_src python :results file :exports both :file ./imgs/no_vs_misc.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -1017,7 +1017,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'lead'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file graphics :file ./imgs/no_vs_lead.png
+#+begin_src python :results file :exports both :file ./imgs/no_vs_lead.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -1054,7 +1054,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'content'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file graphics :file ./imgs/no_vs_content.png
+#+begin_src python :results file :exports both :file ./imgs/no_vs_content.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
