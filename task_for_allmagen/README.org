@@ -2767,102 +2767,6 @@ f1: 0.8201224929403879
 
 --- 31.76545810699463 seconds ---
 #+end_example
-** model finetuning and training2
-#+begin_src python :results output :exports both :session s1 :timeout 150
-from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
-from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import cross_validate
-from sklearn.multiclass import OneVsOneClassifier
-from sklearn.model_selection import LeaveOneOut
-from sklearn.experimental import enable_halving_search_cv
-import pandas as pd
-import time
-#
-from myown_pack.common import load
-
-random_state = 42
-
-from sklearn.metrics import (
-    accuracy_score,
-    f1_score,
-    precision_score,
-    recall_score)
-
-
-def forest_search_parameters(p, target:str='target'):
-    from sklearn.ensemble import RandomForestClassifier
-    from sklearn.model_selection import GridSearchCV
-    from sklearn.model_selection import HalvingGridSearchCV
-    from sklearn.model_selection import StratifiedKFold, KFold
-    from sklearn.model_selection import cross_val_score
-    X = df.drop(columns=[target])
-    y = df[target]
-
-    kfold = StratifiedKFold(n_splits=5)
-    params = { 'min_samples_split': [4], #'n_estimators': [5, 10, 15],
-              'max_leaf_nodes': list(range(10, 15)), 'max_depth': list(range(10, 18))}
-    base_estimator = RandomForestClassifier()
-    # clf = GridSearchCV(base_estimator, params, cv=kfold)
-    clf = HalvingGridSearchCV(base_estimator, params, cv=kfold,
-                              factor=3, resource='n_estimators',
-                              max_resources=30, random_state=42)
-    clf.fit(X, y)
-    print(clf.best_estimator_)
-    print(clf.best_params_)
-    # est_params = clf.best_estimator_
-    # -- cross validate on training dataset
-    print("train metrics:")
-    for k in ['accuracy', 'roc_auc', 'precision', 'recall', 'f1']:
-        s = get_scorer(k)
-        results = cross_val_score(clf.best_estimator_, X, y, cv=kfold,
-                                  scoring=s)
-        print("{}: {}".format(k, results.mean()))
-    print()
-    return clf.best_estimator_, clf.best_params_
-
-
-p1 = 'train_over.pickle'
-df: pd.DataFrame = load(p1)
-df = df.sample(frac=0.2, random_state=42)
-
-start_time = time.time()
-# -- find parameters
-est, est_params = forest_search_parameters(p1, 'tag')
-# results = clf.fit(X, y)
-# est = results.best_estimator_
-# print(est)
-# kfold = LeaveOneOut()
-# results = cross_val_score(results.best_estimator_, X, y, cv=kfold)
-# print("Accuracy: %f" % results.mean())
-# print(results)
-
-# scoring=['accuracy', 'precision_macro',
-#                                       'recall_macro']
-
-# results = cross_validate(est, X, y, cv=kfold, scoring=scoring) #
-
-
-# for x in scoring:
-#     print(x+ ": %f" % results['test_'+x].mean())
-print("--- %s seconds ---" % (time.time() - start_time))
-#+end_src
-
-#+RESULTS:
-#+begin_example
-RandomForestClassifier(max_depth=12, max_leaf_nodes=14, min_samples_split=4,
-                       n_estimators=27)
-{'max_depth': 12, 'max_leaf_nodes': 14, 'min_samples_split': 4, 'n_estimators': 27}
-train metrics:
-accuracy: 0.8109954901472346
-roc_auc: 0.9040743930689077
-precision: 0.7670022280115995
-recall: 0.8890303623898139
-f1: 0.8201224929403879
-
---- 31.76545810699463 seconds ---
-#+end_example
-
 ** test or validation of model
 We uses "est_params" variable here from [[model finetuning and training]]
 : {'max_depth': 12, 'max_leaf_nodes': 14, 'min_samples_split': 4, 'n_estimators': 27}
@@ -2940,9 +2844,6 @@ f1                                         0.0
 ** model output calibration
 We uses "est_params" variable here from [[model finetuning and training]]
 
-We will use not over
-
-steps:
 #+begin_src python :results file :exports both :file ./autoimgs/calibrating.png :session s1 :timeout 120
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.calibration import CalibrationDisplay
@@ -3027,3 +2928,24 @@ plt.close()
 
 #+RESULTS:
 [[file:./autoimgs/calibrating.png]]
+
+** test calibrated
+#+begin_src python :results output :exports both :session s1
+from sklearn.metrics import get_scorer
+# X_test
+# est.fit(X_train, y_train)
+est = cal_clf
+for k in ['accuracy', 'roc_auc', 'precision', 'recall', 'f1']:
+    s = get_scorer(k)
+    y_pred = est.predict(X_test)
+    print('{:40} {:5}'.format(k, s._score_func(y_test, y_pred)))
+    # print(k, s._score_func(y_test, y_pred)) # , average='binary'
+print()
+#+end_src
+
+#+RESULTS:
+: accuracy                                 0.8228730152627735
+: roc_auc                                  0.8231424341535153
+: precision                                0.8612325874096038
+: recall                                   0.7719902095762582
+: f1                                       0.8141732124671028
