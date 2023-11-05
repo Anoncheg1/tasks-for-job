@@ -1,4 +1,4 @@
-* task
+v* task
 [[file:Interview.test-task 1, 2.pdf]]
 
 * exploring
@@ -2949,3 +2949,12 @@ print()
 : precision                                0.8612325874096038
 : recall                                   0.7719902095762582
 : f1                                       0.8141732124671028
+* Conclusion
+In this work I made:
+1) correlation analysis between show with events: registration, content, etc. and all other shows.
+2) fast correlation analysis
+3) data preparation with oversampling by SMOTE: Synthetic Minority Over-sampling Technique
+4) model selection
+5) hyper-parameters tuning with HalvingGridSearchCV on resource of estimators
+6) model output calibration
+7) final testing of calibrated model
