@@ -1,6 +1,14 @@
-v* task
+* task
 [[file:Interview.test-task 1, 2.pdf]]
 
+https://hh.ru/vacancy/87948954?hhtmFrom=chat
+
+https://chatik.hh.ru/chat/3482754117
+
+Python программист-разработчик – Python Developer https://hh.ru/vacancy/87948954
+
+AllmaGen
+США allmagen.com
 * exploring
 interview.X.csv and interview.y.csv - показы и события.
 ** interview.X.csv
@@ -632,7 +640,7 @@ for all analysis we take 0.05 random records from "interview.X.csv".
 Lets set tags field for nan as 0 and "with tag" as 1.
 We multiply "with tags" by 7 just to see better on plot difference.
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file graphics :file :exports both ./imgs/no_vs_tag.png  :session s1
+#+begin_src python :results file graphics :file ./imgs/no_vs_tag.png  :session s1
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -684,7 +692,7 @@ frequency_analysis(df, target='tag', image_save='./imgs/no_vs_tag.png', t0=0, t1
 
 ** "with tags" vs tag == 'fclick'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file :exports both :file ./imgs/no_vs_fclick.png
+#+begin_src python :results file graphics :file ./imgs/no_vs_fclick.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -721,7 +729,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'vregistration'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file :exports both :file ./imgs/no_vs_vregistration.png
+#+begin_src python :results file graphics :file ./imgs/no_vs_vregistration.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -758,7 +766,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'registration'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file :exports both :file ./imgs/no_vs_registration.png  :session s1
+#+begin_src python :results file graphics :file ./imgs/no_vs_registration.png  :session s1
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -795,7 +803,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'vcontent'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file :exports both :file ./imgs/no_vs_vcontent.png
+#+begin_src python :results file graphics :file ./imgs/no_vs_vcontent.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -832,7 +840,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'vsignup'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file :exports both :file ./imgs/no_vs_vsignup.png
+#+begin_src python :results file graphics :file ./imgs/no_vs_vsignup.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -869,7 +877,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'vmisc'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file :exports both :file ./imgs/no_vs_vmisc.png
+#+begin_src python :results file graphics :file ./imgs/no_vs_vmisc.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -906,7 +914,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'vlead'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file :exports both :file ./imgs/no_vs_vlead.png
+#+begin_src python :results file graphics :file ./imgs/no_vs_vlead.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -943,7 +951,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'signup'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file :exports both :file ./imgs/no_vs_signup.png
+#+begin_src python :results file graphics :file ./imgs/no_vs_signup.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -980,7 +988,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'misc'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file :exports both :file ./imgs/no_vs_misc.png
+#+begin_src python :results file graphics :file ./imgs/no_vs_misc.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -1017,7 +1025,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'lead'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file :exports both :file ./imgs/no_vs_lead.png
+#+begin_src python :results file graphics :file ./imgs/no_vs_lead.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -1054,7 +1062,7 @@ frequency_analysis(df, target='tag', image_save=f'./imgs/no_vs_{tag}.png', t0=0,
 
 ** "with tags" vs tag == 'content'
 # #+begin_src python :results output :exports both :session s1
-#+begin_src python :results file :exports both :file ./imgs/no_vs_content.png
+#+begin_src python :results file graphics :file ./imgs/no_vs_content.png
 import pandas as pd
 from myown_pack.exploring import corr_analysis
 from myown_pack.exploring import frequency_analysis
@@ -1925,9 +1933,10 @@ score 0.9449945789663896
 SMOTE: Synthetic Minority Over-sampling Technique https://arxiv.org/abs/1106.1813
 #+begin_src python :results output :exports both :timeout 40 :session s1
 import numpy as np
-import pandas as pd
 # from random import randrange, choice
 from sklearn.neighbors import NearestNeighbors
+from sklearn.manifold import MDS # slow
+from sklearn.preprocessing import StandardScaler # fast
 
 TOLERANCE = 5
 p = float(10**TOLERANCE)
@@ -1950,6 +1959,14 @@ def SMOTE(T, N:int, k:int):
     -------
     S : array, shape = [(N/100) * n_minority_samples, n_features]
     """
+    # - no scaling
+    # TFIXED = T
+    # # - create scaled or dirensionaly reducted dataset, to fight mixed data types
+    TFIXED = StandardScaler(copy=False, with_mean=False).fit_transform(T)
+    # # - slow alternative
+    # embedding = MDS(n_components=2, metric=False, normalized_stress='auto')
+    # TFIXED = embedding.fit_transform(T)
+
     n_minority_samples, n_features = T.shape # rows, columns
 
     if N < 100:
@@ -1968,16 +1985,16 @@ def SMOTE(T, N:int, k:int):
     S = np.zeros(shape=(n_synthetic_samples, n_features))
     print("S.shape", S.shape)
 
-    #Learn nearest neighbours
+    # - Learn nearest neighbours
     neigh = NearestNeighbors(n_neighbors = k)
-    neigh.fit(T)
+    neigh.fit(TFIXED)
 
     print("n_minority_samples", n_minority_samples) # i - 0-> rows
     print("N", N) # n - 0 -> N
     # - for each source row
-    for i in range(n_minority_samples): # per row in source
-        # get most same rows
-        nn = neigh.kneighbors([T[i]], return_distance=False)
+    for i in range(n_minority_samples): # per rows in source
+        # - get most same rows
+        nn = neigh.kneighbors([TFIXED[i]], return_distance=False)
         # - repeat for how many we need
         for n in range(NN): # 2
             # - what row we will copy
@@ -1999,25 +2016,30 @@ def SMOTE(T, N:int, k:int):
             #    -n2
     return S
 
-
+import pandas as pd
+# own
 from myown_pack.common import load
 from myown_pack.common import save
+from myown_pack.exploring import describe
+
 p1 = 'train.pickle'
 p2 = 'test.pickle'
 df = load(p1)
-# print(df.to_numpy().shape)
 df_small = df[df['tag'] == 1]
-df_small = df_small.copy().drop(columns=['tag'], inplace=False)
-print(df_small)
-smote_result = SMOTE(df_small.to_numpy(), 1600, 9)
+df_small = df_small.drop(columns=['tag'], inplace=False)
+# a = df_small[:1000].copy()
+
+smote_result = SMOTE(df_small.to_numpy().copy(), 1600, 5)
 print([round(x, 2) for x in smote_result[30]])
+print()
 smote_result_df = pd.DataFrame(smote_result, columns=df_small.columns)
+# describe(df_small, "df_small")
+# describe(smote_result_df, "smote_result_df")
+# - as we use only rare fclick records tag=1, that is why we set tag=1
 smote_result_df['tag'] = 1
 print()
-print(df_small.describe())
-print(smote_result_df.describe())
 df_over = pd.concat([df, smote_result_df], ignore_index=True)
-print(df_over)
+# print(df_over)
 print(df_over['tag'].value_counts())
 p1 = 'train_over.pickle'
 save(p1, df_over)
@@ -2025,63 +2047,14 @@ save(p1, df_over)
 
 #+RESULTS:
 #+begin_example
-       fc_imp_chk  fc_time_chk  utmtr  ...  site_id_www.wowhead.com  site_id_www.yahoo.com  site_id_other
-7             0.0          7.0    1.0  ...                      0.0                    0.0            0.0
-12            2.0          6.0    1.0  ...                      0.0                    0.0            0.0
-25            0.0          7.0    1.0  ...                      0.0                    0.0            0.0
-43            1.0          6.0    0.0  ...                      0.0                    0.0            0.0
-55            4.0          6.0    5.0  ...                      0.0                    0.0            0.0
-...           ...          ...    ...  ...                      ...                    ...            ...
-55166         3.0          6.0    3.0  ...                      0.0                    0.0            0.0
-55244         0.0          7.0    0.0  ...                      0.0                    0.0            0.0
-55247         0.0          7.0    7.0  ...                      0.0                    0.0            0.0
-55266         0.0          7.0    7.0  ...                      0.0                    0.0            0.0
-55323         0.0          7.0    6.0  ...                      0.0                    0.0            0.0
-
-[3044 rows x 54 columns]
 16.0 3044
 48704 54
 S.shape (48704, 54)
 n_minority_samples 3044
 N 1600
-[1.71, 6.14, 0.86, 648.0, 3.0, 2.86, 8.0, 3.0, 0.14, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.14, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.86, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+[1.91, 15.49, 0.41, 3.35, 1.63, 0.41, 16.2, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.07, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.18, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
-       fc_imp_chk  fc_time_chk        utmtr  ...  site_id_www.wowhead.com  site_id_www.yahoo.com  site_id_other
-count  3044.00000  3044.000000  3044.000000  ...                   3044.0            3044.000000    3044.000000
-mean      0.42247     6.816032     3.539093  ...                      0.0               0.015769       0.165572
-std       1.04652     0.387522     2.430253  ...                      0.0               0.124600       0.371757
-min       0.00000     6.000000     0.000000  ...                      0.0               0.000000       0.000000
-25%       0.00000     7.000000     1.000000  ...                      0.0               0.000000       0.000000
-50%       0.00000     7.000000     4.000000  ...                      0.0               0.000000       0.000000
-75%       0.00000     7.000000     6.000000  ...                      0.0               0.000000       0.000000
-max       4.00000     7.000000     7.000000  ...                      0.0               1.000000       1.000000
 
-[8 rows x 54 columns]
-         fc_imp_chk   fc_time_chk         utmtr  ...  site_id_www.yahoo.com  site_id_other      tag
-count  48704.000000  48704.000000  48704.000000  ...           48704.000000   48704.000000  48704.0
-mean       0.380406      6.826594      3.536616  ...               0.014307       0.158603      1.0
-std        0.934940      0.352386      2.419591  ...               0.101077       0.327365      0.0
-min        0.000000      6.000000      0.000000  ...               0.000000       0.000000      1.0
-25%        0.000000      7.000000      1.000000  ...               0.000000       0.000000      1.0
-50%        0.000000      7.000000      4.000000  ...               0.000000       0.000000      1.0
-75%        0.000000      7.000000      6.000000  ...               0.000000       0.000000      1.0
-max        4.000000      7.000000      7.000000  ...               1.000000       1.000000      1.0
-
-[8 rows x 55 columns]
-        tag  fc_imp_chk  fc_time_chk  ...  site_id_www.wowhead.com  site_id_www.yahoo.com  site_id_other
-0       0.0         0.0          7.0  ...                      0.0                    0.0       0.000000
-1       0.0         0.0          7.0  ...                      0.0                    0.0       1.000000
-2       0.0         0.0          7.0  ...                      0.0                    0.0       0.000000
-3       0.0         0.0          7.0  ...                      0.0                    0.0       0.000000
-4       0.0         0.0          7.0  ...                      0.0                    0.0       0.000000
-...     ...         ...          ...  ...                      ...                    ...            ...
-104039  1.0         0.0          7.0  ...                      0.0                    0.0       0.000000
-104040  1.0         0.0          7.0  ...                      0.0                    0.0       0.000000
-104041  1.0         0.0          7.0  ...                      0.0                    0.0       0.000000
-104042  1.0         0.0          7.0  ...                      0.0                    0.0       0.774654
-104043  1.0         0.0          7.0  ...                      0.0                    0.0       0.000000
-
-[104044 rows x 55 columns]
 tag
 0.0    52296
 1.0    51748
@@ -2098,6 +2071,10 @@ It is unbalanced classification.
 #+begin_src python :results output :exports both :session s1
 import pandas as pd
 from sklearn.dummy import DummyClassifier
+from sklearn.metrics import get_scorer
+# own
+from myown_pack.common import load
+
 random_state = 42
 # dfx = pd.read_csv('interview.X.csv')
 # dfy = pd.read_csv('interview.y.csv')
@@ -2158,6 +2135,7 @@ from sklearn.dummy import DummyClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import StratifiedKFold
 from sklearn import metrics
+from sklearn.metrics import make_scorer
 from sklearn.metrics import (
     accuracy_score,
     balanced_accuracy_score,
@@ -2269,27 +2247,27 @@ _select_metrics(dummy_clf, m, X, y, kfold)
 y.unique() [0. 1.]
 y.isna().sum() 0
 metric                                   dummy model one of effective model
-accuracy_score                           0.522		0.662
-balanced_accuracy_score                    0.5		0.665
-brier_score_loss                         0.478		0.338
-cohen_kappa_score                          0.0		0.328
-f1_score                                   0.0		0.673
-hamming_loss                             0.478		0.338
-hinge_loss                                 1.0		 0.86
-jaccard_score                              0.0		0.507
-log_loss                                 17.219		12.172
-matthews_corrcoef                          0.0		0.332
-precision_score                            0.0		0.626
-recall_score                               0.0		0.728
-zero_one_loss                            0.478		0.338
+accuracy_score                           0.522		0.657
+balanced_accuracy_score                    0.5		0.655
+brier_score_loss                         0.478		0.343
+cohen_kappa_score                          0.0		0.311
+f1_score                                   0.0		0.637
+hamming_loss                             0.478		0.343
+hinge_loss                                 1.0		0.866
+jaccard_score                              0.0		0.467
+log_loss                                 17.219		12.38
+matthews_corrcoef                          0.0		0.311
+precision_score                            0.0		0.644
+recall_score                               0.0		 0.63
+zero_one_loss                            0.478		0.343
 auc                                        nan		  nan
-average_precision_score                  0.478		0.586
+average_precision_score                  0.478		0.582
 coverage_error                             nan		  nan
 dcg_score                                  nan		  nan
 label_ranking_average_precision_score      nan		  nan
 label_ranking_loss                         nan		  nan
 ndcg_score                                 nan		  nan
-roc_auc_score                              0.5		0.665
+roc_auc_score                              0.5		0.655
 top_k_accuracy_score                       1.0		  1.0
 #+end_example
 
@@ -2318,21 +2296,17 @@ corr_analysis(df, target = 'tag')
 #+begin_example
 (104044, 55)
 variance_inflation_factor:
-/usr/lib/python3.11/site-packages/statsmodels/regression/linear_model.py:1781: RuntimeWarning: divide by zero encountered in scalar divide
-  return 1 - self.ssr/self.centered_tss
-/usr/lib/python3.11/site-packages/statsmodels/stats/outliers_influence.py:198: RuntimeWarning: divide by zero encountered in scalar divide
-  vif = 1. / (1. - r_squared_i)
-tag                                  1.515262
-fc_imp_chk                           4.756926
-fc_time_chk                          5.151743
-utmtr                               94.153784
-mm_dma                               2.072493
-dayofweek                            1.190695
-hour                                94.028070
-month                                3.571853
+tag                                  1.457861
+fc_imp_chk                           4.597327
+fc_time_chk                          4.956993
+utmtr                               90.957306
+mm_dma                               1.969561
+dayofweek                            1.192101
+hour                                90.925846
+month                                3.593256
 quarter                              0.000000
-osName                              19.915887
-hardware                             5.709250
+osName                              16.839983
+hardware                             5.082756
 model_SM-G960U                            inf
 model_SM-G965U                            inf
 model_SM-G970U                            inf
@@ -2380,59 +2354,59 @@ site_id_other                             inf
 dtype: float64
 
 correlation to target
-site_id_other                      -0.275658
-site_id_www.dailymotion.com        -0.235200
-model_iPhone                       -0.191539
-osName                             -0.146122
-fc_time_chk                        -0.124051
+site_id_other                      -0.236824
+site_id_www.dailymotion.com        -0.230116
+model_iPhone                       -0.201054
+osName                             -0.149640
+fc_time_chk                        -0.132403
 site_id_my.xfinity.com             -0.101979
 site_id_finance.yahoo.com          -0.097590
 site_id_www.wowhead.com            -0.077699
+mm_dma                             -0.074184
 site_id_heavy.com                  -0.071901
-site_id_currently.att.yahoo.com    -0.066532
-mm_dma                             -0.066374
 site_id_metropcs.mobileposse.com   -0.065604
-model_iPhone 12 Pro Max            -0.064165
-dayofweek                          -0.060171
+site_id_thespun.com                -0.058650
 site_id_tbc.wowhead.com            -0.058650
+dayofweek                          -0.058594
 site_id_people.com                 -0.053524
 site_id_stocktwits.com             -0.050768
-site_id_thespun.com                -0.048935
-model_iPhone 11                    -0.038028
-model_iPhone 12                    -0.037759
-model_iPhone 11 Pro Max            -0.036025
-model_iPhone XR                    -0.032636
-site_id_www.yahoo.com              -0.030402
-site_id_www.stltoday.com           -0.027304
-site_id_news.yahoo.com             -0.021442
-site_id_www.elle.com               -0.015304
-site_id_www.foxbusiness.com        -0.015160
-model_iPhone 8 Plus                -0.014278
-model_SM-G970U                      0.011685
-model_SM-G960U                      0.017660
-model_SM-G965U                      0.027680
-model_SM-G998U                      0.034030
-model_iPhone 12 Pro                 0.037521
-model_SM-G991U                      0.041411
-model_SM-N986U                      0.046480
-model_SM-G986U                      0.050617
-site_id_hu.motorsport.com           0.056114
-hour                                0.067125
-model_SM-G973U                      0.069284
-site_id_www.wane.com                0.070143
-utmtr                               0.071041
-site_id_www.woodtv.com              0.075069
-site_id_whnt.com                    0.078983
-model_SM-N975U                      0.079901
-fc_imp_chk                          0.091196
-site_id_www.digitalspy.com          0.109757
-model_other                         0.135960
-hardware                            0.138262
-site_id_myfox8.com                  0.143777
-model_SM-G975U                      0.148107
-site_id_nypost.com                  0.218159
-site_id_whatculture.com             0.229939
-month                               0.241087
+site_id_currently.att.yahoo.com    -0.046594
+model_iPhone 11 Pro Max            -0.046594
+model_iPhone 12 Pro Max            -0.046466
+model_iPhone 12                    -0.046466
+site_id_www.foxbusiness.com        -0.041432
+site_id_www.yahoo.com              -0.040006
+model_iPhone XR                    -0.039008
+site_id_www.stltoday.com           -0.039008
+site_id_news.yahoo.com             -0.037756
+model_iPhone 11                    -0.029831
+site_id_www.elle.com               -0.027912
+model_iPhone 8 Plus                 0.016537
+model_SM-G970U                      0.027136
+model_iPhone 12 Pro                 0.029836
+model_SM-G960U                      0.032509
+model_SM-G998U                      0.038526
+model_SM-G986U                      0.046196
+model_SM-G965U                      0.049184
+site_id_hu.motorsport.com           0.049847
+model_SM-G991U                      0.054536
+model_SM-G973U                      0.058888
+hour                                0.064178
+site_id_whnt.com                    0.064207
+model_SM-N986U                      0.064912
+utmtr                               0.068455
+site_id_www.woodtv.com              0.074560
+model_SM-N975U                      0.078392
+site_id_www.digitalspy.com          0.079134
+site_id_www.wane.com                0.080705
+fc_imp_chk                          0.112131
+model_other                         0.112430
+model_SM-G975U                      0.128164
+site_id_myfox8.com                  0.135860
+hardware                            0.140603
+site_id_nypost.com                  0.204175
+month                               0.224128
+site_id_whatculture.com             0.226088
 tag                                 1.000000
 quarter                                  NaN
 
@@ -2441,58 +2415,58 @@ correlation max() per column:
 8                            quarter  0.000000
 40            site_id_stocktwits.com  0.050768
 41           site_id_tbc.wowhead.com  0.058650
-53             site_id_www.yahoo.com  0.066275
+53             site_id_www.yahoo.com  0.067603
 52           site_id_www.wowhead.com  0.077699
-12                    model_SM-G965U  0.089349
-49          site_id_www.stltoday.com  0.090384
-25               model_iPhone 12 Pro  0.100394
+49          site_id_www.stltoday.com  0.081065
+25               model_iPhone 12 Pro  0.082985
+50              site_id_www.wane.com  0.087051
 35            site_id_my.xfinity.com  0.101979
-50              site_id_www.wane.com  0.106611
-44                  site_id_whnt.com  0.106895
-34  site_id_metropcs.mobileposse.com  0.115109
-26           model_iPhone 12 Pro Max  0.116043
-23           model_iPhone 11 Pro Max  0.116854
-22                   model_iPhone 11  0.117999
-16                    model_SM-G986U  0.124223
-51            site_id_www.woodtv.com  0.135432
-19                    model_SM-N975U  0.150526
-39                site_id_people.com  0.151732
-20                    model_SM-N986U  0.154282
-15                    model_SM-G975U  0.159519
-13                    model_SM-G970U  0.159621
-30   site_id_currently.att.yahoo.com  0.159621
-14                    model_SM-G973U  0.165105
-31         site_id_finance.yahoo.com  0.179859
-47              site_id_www.elle.com  0.182021
-42               site_id_thespun.com  0.194688
-24                   model_iPhone 12  0.194688
-17                    model_SM-G991U  0.198278
-32                 site_id_heavy.com  0.199294
-27               model_iPhone 8 Plus  0.199294
-48       site_id_www.foxbusiness.com  0.217893
-28                   model_iPhone XR  0.217893
-18                    model_SM-G998U  0.221869
-5                          dayofweek  0.228960
-36                site_id_myfox8.com  0.236077
-46        site_id_www.digitalspy.com  0.249913
-11                    model_SM-G960U  0.250898
-37            site_id_news.yahoo.com  0.250898
-45       site_id_www.dailymotion.com  0.264987
-0                                tag  0.275658
-54                     site_id_other  0.334993
-33         site_id_hu.motorsport.com  0.434135
-10                          hardware  0.464099
-4                             mm_dma  0.464099
-7                              month  0.556598
-43           site_id_whatculture.com  0.636652
-38                site_id_nypost.com  0.656562
-29                       model_other  0.727319
-21                      model_iPhone  0.766420
-9                             osName  0.766420
-2                        fc_time_chk  0.876472
-1                         fc_imp_chk  0.876472
-6                               hour  0.994293
-3                              utmtr  0.994293
+34  site_id_metropcs.mobileposse.com  0.110402
+30   site_id_currently.att.yahoo.com  0.110596
+12                    model_SM-G965U  0.111783
+13                    model_SM-G970U  0.111783
+22                   model_iPhone 11  0.117701
+26           model_iPhone 12 Pro Max  0.118106
+39                site_id_people.com  0.122595
+51            site_id_www.woodtv.com  0.134684
+14                    model_SM-G973U  0.147587
+27               model_iPhone 8 Plus  0.149003
+32                 site_id_heavy.com  0.149003
+15                    model_SM-G975U  0.153587
+31         site_id_finance.yahoo.com  0.157568
+23           model_iPhone 11 Pro Max  0.162393
+47              site_id_www.elle.com  0.162393
+19                    model_SM-N975U  0.176429
+20                    model_SM-N986U  0.182534
+17                    model_SM-G991U  0.190930
+24                   model_iPhone 12  0.200377
+42               site_id_thespun.com  0.200377
+44                  site_id_whnt.com  0.211724
+16                    model_SM-G986U  0.211724
+18                    model_SM-G998U  0.214250
+5                          dayofweek  0.219067
+36                site_id_myfox8.com  0.231223
+0                                tag  0.236824
+46        site_id_www.digitalspy.com  0.240189
+37            site_id_news.yahoo.com  0.242417
+11                    model_SM-G960U  0.242417
+28                   model_iPhone XR  0.247344
+48       site_id_www.foxbusiness.com  0.247344
+45       site_id_www.dailymotion.com  0.260353
+54                     site_id_other  0.345493
+33         site_id_hu.motorsport.com  0.417683
+4                             mm_dma  0.448785
+10                          hardware  0.448785
+7                              month  0.555660
+43           site_id_whatculture.com  0.619393
+38                site_id_nypost.com  0.634801
+29                       model_other  0.685469
+9                             osName  0.754019
+21                      model_iPhone  0.754019
+2                        fc_time_chk  0.870653
+1                         fc_imp_chk  0.870653
+6                               hour  0.994080
+3                              utmtr  0.994080
 #+end_example
 
 ** seletion of model
@@ -2597,6 +2571,8 @@ df = df.sample(frac=0.0001, random_state=42)
 print(df.shape)
 y = df['tag']
 X = df.drop(columns=['tag'])
+from sklearn.preprocessing import StandardScaler
+X = StandardScaler().fit_transform(X)
 
 kfold = StratifiedKFold(n_splits=5)
 for est in classifiers:
@@ -2611,64 +2587,44 @@ for est in classifiers:
 #+begin_example
 (10, 55)
 KNeighborsClassifier
-Accuracy: 0.500000
-AUC: 0.500000
-
-SVC
-Accuracy: 0.700000
-AUC: 1.000000
-
-SVC
-Accuracy: 0.300000
-AUC: 0.200000
-
-GaussianProcessClassifier
-Accuracy: 0.200000
-AUC: 0.200000
-
-DecisionTreeClassifier
-Accuracy: 0.200000
-AUC: 0.200000
-
-RandomForestClassifier
 Accuracy: 0.400000
-AUC: 0.300000
+AUC: 0.400000
 
-MLPClassifier
+SVC
+Accuracy: 0.200000
+AUC: 0.200000
+
+SVC
 Accuracy: 0.600000
 AUC: 0.600000
 
-/usr/lib/python3.11/site-packages/sklearn/ensemble/_weight_boosting.py:546: FutureWarning: The SAMME.R algorithm (the default) is deprecated and will be removed in 1.6. Use the SAMME algorithm to circumvent this warning.
-  warnings.warn(
-/usr/lib/python3.11/site-packages/sklearn/ensemble/_weight_boosting.py:546: FutureWarning: The SAMME.R algorithm (the default) is deprecated and will be removed in 1.6. Use the SAMME algorithm to circumvent this warning.
-  warnings.warn(
-/usr/lib/python3.11/site-packages/sklearn/ensemble/_weight_boosting.py:546: FutureWarning: The SAMME.R algorithm (the default) is deprecated and will be removed in 1.6. Use the SAMME algorithm to circumvent this warning.
-  warnings.warn(
-/usr/lib/python3.11/site-packages/sklearn/ensemble/_weight_boosting.py:546: FutureWarning: The SAMME.R algorithm (the default) is deprecated and will be removed in 1.6. Use the SAMME algorithm to circumvent this warning.
-  warnings.warn(
-/usr/lib/python3.11/site-packages/sklearn/ensemble/_weight_boosting.py:546: FutureWarning: The SAMME.R algorithm (the default) is deprecated and will be removed in 1.6. Use the SAMME algorithm to circumvent this warning.
-  warnings.warn(
+GaussianProcessClassifier
+Accuracy: 0.600000
+AUC: 0.600000
+
+DecisionTreeClassifier
+Accuracy: 0.100000
+AUC: 0.100000
+
+RandomForestClassifier
+Accuracy: 0.300000
+AUC: 0.100000
+
+MLPClassifier
+Accuracy: 0.300000
+AUC: 0.400000
+
 AdaBoostClassifier
-Accuracy: 0.400000
-AUC: 0.300000
+Accuracy: 0.200000
+AUC: 0.100000
 
 GaussianNB
-Accuracy: 0.600000
-AUC: 0.500000
-
-/usr/lib/python3.11/site-packages/sklearn/discriminant_analysis.py:935: UserWarning: Variables are collinear
-  warnings.warn("Variables are collinear")
-/usr/lib/python3.11/site-packages/sklearn/discriminant_analysis.py:935: UserWarning: Variables are collinear
-  warnings.warn("Variables are collinear")
-/usr/lib/python3.11/site-packages/sklearn/discriminant_analysis.py:935: UserWarning: Variables are collinear
-  warnings.warn("Variables are collinear")
-/usr/lib/python3.11/site-packages/sklearn/discriminant_analysis.py:935: UserWarning: Variables are collinear
-  warnings.warn("Variables are collinear")
-/usr/lib/python3.11/site-packages/sklearn/discriminant_analysis.py:935: UserWarning: Variables are collinear
-  warnings.warn("Variables are collinear")
-QuadraticDiscriminantAnalysis
-Accuracy: 0.600000
+Accuracy: 0.400000
 AUC: 0.400000
+
+QuadraticDiscriminantAnalysis
+Accuracy: 0.400000
+AUC: 0.200000
 #+end_example
 *** result
 We choose Random Forests.
@@ -2683,6 +2639,7 @@ from sklearn.model_selection import LeaveOneOut
 from sklearn.experimental import enable_halving_search_cv
 import pandas as pd
 import time
+from sklearn.metrics import get_scorer
 #
 from myown_pack.common import load
 
@@ -2705,8 +2662,8 @@ def forest_search_parameters(p, target:str='target'):
     y = df[target]
 
     kfold = StratifiedKFold(n_splits=5)
-    params = { 'min_samples_split': [4], #'n_estimators': [5, 10, 15],
-              'max_leaf_nodes': list(range(10, 15)), 'max_depth': list(range(10, 18))}
+    params = { 'min_samples_split': [5], #'n_estimators': [5, 10, 15],
+              'max_leaf_nodes': list(range(20, 25)), 'max_depth': list(range(13, 17))}
     base_estimator = RandomForestClassifier()
     # clf = GridSearchCV(base_estimator, params, cv=kfold)
     clf = HalvingGridSearchCV(base_estimator, params, cv=kfold,
@@ -2755,6 +2712,21 @@ print("--- %s seconds ---" % (time.time() - start_time))
 
 #+RESULTS:
 #+begin_example
+RandomForestClassifier(max_depth=14, max_leaf_nodes=24, min_samples_split=5,
+                       n_estimators=27)
+{'max_depth': 14, 'max_leaf_nodes': 24, 'min_samples_split': 5, 'n_estimators': 27}
+train metrics:
+accuracy: 0.9699169111221441
+roc_auc: 0.9864212907136707
+precision: 0.9996879832896994
+recall: 0.9391772771792362
+f1: 0.9685841799451971
+
+--- 24.099985122680664 seconds ---
+#+end_example
+
+##+RESULTS: nov 5
+#+begin_example
 RandomForestClassifier(max_depth=12, max_leaf_nodes=14, min_samples_split=4,
                        n_estimators=27)
 {'max_depth': 12, 'max_leaf_nodes': 14, 'min_samples_split': 4, 'n_estimators': 27}
@@ -2780,7 +2752,7 @@ import pandas as pd
 #
 from myown_pack.common import load
 
-est_params = {'max_depth': 12, 'max_leaf_nodes': 14, 'min_samples_split': 4, 'n_estimators': 27}
+est_params = {'max_depth': 14, 'max_leaf_nodes': 24, 'min_samples_split': 5, 'n_estimators': 27}
 
 random_state = 42
 p1 = 'train_over.pickle'
@@ -2825,6 +2797,26 @@ for k in ['accuracy', 'roc_auc', 'precision', 'recall', 'f1']:
 #+RESULTS:
 #+begin_example
 test metrics:
+{'max_depth': 14, 'max_leaf_nodes': 24, 'min_samples_split': 5, 'n_estimators': 27}
+RandomForestClassifier(max_depth=14, max_leaf_nodes=24, min_samples_split=5,
+                       n_estimators=27, random_state=42)
+accuracy                                 0.9709065395409634
+roc_auc                                  0.9707525940984475
+precision                                0.9999794758122448
+recall                                   0.9415243101182654
+f1                                       0.9698719033352907
+
+test metrics for Dummy classifier:
+accuracy                                 0.5026335012110261
+roc_auc                                    0.5
+precision                                  0.0
+recall                                     0.0
+f1                                         0.0
+#+end_example
+
+##+RESULTS: nov 5
+#+begin_example
+test metrics:
 {'max_depth': 12, 'max_leaf_nodes': 14, 'min_samples_split': 4, 'n_estimators': 27}
 RandomForestClassifier(max_depth=12, max_leaf_nodes=14, min_samples_split=4,
                        n_estimators=27, random_state=42)
@@ -2844,7 +2836,12 @@ f1                                         0.0
 ** model output calibration
 We uses "est_params" variable here from [[model finetuning and training]]
 
-#+begin_src python :results file :exports both :file ./autoimgs/calibrating.png :session s1 :timeout 120
+We will use not over
+
+steps:
+1) use CalibratedClassifierCV that for each cv split calibrates
+ estimator using the testing subset.
+#+begin_src python :results file graphics :exports both :file ./autoimgs/calibrating.png :session s1 :timeout 120
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.calibration import CalibrationDisplay
 import matplotlib.pyplot as plt
@@ -2921,14 +2918,13 @@ y_test_oneh = np.zeros((y_test.size, int(y_test.max() + 1)))
 y_test_oneh[:, 1] = 1
 
 CalibrationDisplay.from_estimator(cal_clf, X_test, y_test, ax=d4)
-# plt.show()
 plt.savefig('./autoimgs/calibrating.png')
+plt.show()
 plt.close()
 #+end_src
 
 #+RESULTS:
 [[file:./autoimgs/calibrating.png]]
-
 ** test calibrated
 #+begin_src python :results output :exports both :session s1
 from sklearn.metrics import get_scorer
@@ -2944,17 +2940,16 @@ print()
 #+end_src
 
 #+RESULTS:
+: accuracy                                 0.9710410979970012
+: roc_auc                                  0.9708914087236685
+: precision                                0.9461049658743234
+: recall                                   0.9993116108306562
+: f1                                       0.9719806942984944
+
+
+##+RESULTS: Nov 5
 : accuracy                                 0.8228730152627735
 : roc_auc                                  0.8231424341535153
 : precision                                0.8612325874096038
 : recall                                   0.7719902095762582
 : f1                                       0.8141732124671028
-* Conclusion
-In this work I made:
-1) correlation analysis between show with events: registration, content, etc. and all other shows.
-2) fast correlation analysis
-3) data preparation with oversampling by SMOTE: Synthetic Minority Over-sampling Technique
-4) model selection
-5) hyper-parameters tuning with HalvingGridSearchCV on resource of estimators
-6) model output calibration
-7) final testing of calibrated model
