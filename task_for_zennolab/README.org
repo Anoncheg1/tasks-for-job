@@ -1,0 +1,2483 @@
+#-*- org-todo-keyword-faces: (("TODO" . org-warning) ("FAILED" . "red") ("DONE" . "green")); -*-
+#+TODO: TODO FAILED DONE
+* Solvation Steps. Как я выполнил задание.
+Classical approach have been used with help of OpenCV library.
+
+The task have been solved in following order:
+1) Found two rectangles at hint image for hints with help of cv.findContours and collected statistic about max/min position of them.
+2) Fixed angle for main image with help of cv.HoughLinesP
+3) Found train position on main images by HSV colour range.
+4) Found hint subimages on first main image with help of cv.SIFT and cv.FlannBasedMatcher.
+5) Calculatee closes train by x and by y coordinates to found hint subimages.
+
+Additional task is not solved.
+
+В следующем порядке:
+1) Нашел два прямоугольника на изображении подсказке с помощью cv.findContours и собрал статистику об их максимальном/минимальном положении.
+2) Исправил угол основного изображения с помощью cv.HoughLinesP.
+3) Нашел положение поезда на основных изображениях по цветовой гамме HSV.
+4) нашел подизображения-подсказки на первом основном изображении с помощью cv.SIFT и cv.FlannBasedMatcher.
+5) Расчил ближайшее положение поезда к подсказкам по координатам x и y.
+
+Дополнительно задание не выполнял.
+
+Точность 0.753921568627451
+
+* Task itself
+2023-11-18
+task file https://talantix.ru/ats/testTasks/97b2b22a922b4eac917314012f6a3505
+- [[file:task1.0/cv_researcher1.0.pdf]]
+data 52MB: https://drive.google.com/file/d/1WVZIeqPdfi7TR7rRoLkB-xRIQr9F0uWw/view
+- train_to_the_coordinates_dataset.zip
+- accuracy required 85%
+
+Task: select one image from 7 according to hint image.
+
+2023-11-22 task change: https://talantix.ru/ats/testTasks/8158a092bdd64992ae7c1318c2ff8386
+- [[file:task1.1/CVResearcherv1.1.pdf]]
+- new dataset and labels
+- accuracy required to be at least 90%.
+- additional optional variations of images to solve
+  - 4x4 grid
+  - train don't have colour
+  - background have more contrast
+- numbers and figures may occur interchangable
+- at hint figure occur more fuzzy
+- numbers have random coloured background rectangle
+
+** labelme - used for json format of target
+https://github.com/wkentaro/labelme
+dependencies that I MUST INSTALL ON MY OWN PC!
+- "gdown",
+- "imgviz>=0.11",
+- "matplotlib",
+- "natsort>=7.1.0",
+- "numpy",
+- "onnxruntime>=1.14.1",
+- "Pillow>=2.8",
+- "PyYAML",
+- "qtpy!=1.11.2",
+- "scikit-image",
+- "termcolor",
+* Data exploration
+** files task1.0
+dataset is very small:
+#+begin_src bash :results output :exports both :session s1
+ls -al train_to_the_coordinates_dataset/ | head
+ls -al train_to_the_coordinates_dataset/*.jpg | wc -l
+ls -al train_to_the_coordinates_dataset/*.json | wc -l
+#+end_src
+
+#+RESULTS:
+#+begin_example
+total 58020
+drwxrwxr-x 1 u u 35700 Oct 31 17:58 .
+drwxrwxr-x 1 u u   220 Nov 18 14:55 ..
+-rw-rw-r-- 1 u u 50349 Aug  4 02:01 2626.jpg
+-rw-rw-r-- 1 u u  5422 Aug  8 12:46 2626.json
+-rw-rw-r-- 1 u u 42980 Aug  4 02:01 2627.jpg
+-rw-rw-r-- 1 u u  5410 Aug  8 12:47 2627.json
+-rw-rw-r-- 1 u u 43888 Aug  4 02:01 2628.jpg
+-rw-rw-r-- 1 u u  5420 Aug  8 12:48 2628.json
+-rw-rw-r-- 1 u u 46580 Aug  4 02:01 2629.jpg
+1050
+1050
+#+end_example
+
+** train_to_the_coordinates_dataset/2626.jpg
+At image i see:
+- 7 same images with:
+  - digits at top: 22, 23, 24
+  - 3 images at left with fugure.
+  - dot at one of 3x3 grid
+- 1 image with:
+  - one of 3 figure with digit 22
+
+[[file:train_to_the_coordinates_dataset/2626.jpg]]
+
+#+begin_src bash :exports both :results output
+file train_to_the_coordinates_dataset/2626.jpg
+#+end_src
+
+#+RESULTS:
+: train_to_the_coordinates_dataset/2626.jpg: JPEG image data, baseline, precision 8, 1400x400, components 3
+
+** train_to_the_coordinates_dataset/2627.jpg
+At image i see:
+- 7 same images with:
+  - digits at top: 16, 17, 18
+  - 3 images at left with fugure.
+  - dot at one of 3x3 grid
+- 1 image with:
+  - one of 3 figure with digit 17
+
+orientation and size of images are different shape is the same, I guess.
+
+[[file:train_to_the_coordinates_dataset/2627.jpg]]
+** train_to_the_coordinates_dataset/2626.json
+#+begin_src bash :results output :exports both
+cat train_to_the_coordinates_dataset/2626.json | wc -l
+# cat train_to_the_coordinates_dataset/2626.json | head -n 100 | tr  '' ' '
+cat train_to_the_coordinates_dataset/2626.json | head -n 100
+#+end_src
+
+#+RESULTS:
+#+begin_example
+277
+{
+  "version": "5.2.1",
+  "flags": {},
+  "shapes": [
+    {
+      "label": "+",
+      "points": [
+        [
+          517.4107142857143,
+          99.10714285714286
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "point",
+      "flags": {}
+    },
+    {
+      "label": "1",
+      "points": [
+        [
+          22.689075630252102,
+          118.9075630252101
+        ],
+        [
+          53.78151260504201,
+          158.40336134453784
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "rectangle",
+      "flags": {}
+    },
+    {
+      "label": "2",
+      "points": [
+        [
+          23.52941176470588,
+          74.36974789915968
+        ],
+        [
+          57.14285714285714,
+          111.34453781512607
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "rectangle",
+      "flags": {}
+    },
+    {
+      "label": "3",
+      "points": [
+        [
+          24.369747899159666,
+          29.83193277310925
+        ],
+        [
+          59.66386554621849,
+          67.64705882352942
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "rectangle",
+      "flags": {}
+    },
+    {
+      "label": "4",
+      "points": [
+        [
+          67.22689075630252,
+          7.983193277310924
+        ],
+        [
+          96.63865546218487,
+          34.87394957983194
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "rectangle",
+      "flags": {}
+    },
+    {
+      "label": "5",
+      "points": [
+        [
+          110.92436974789916,
+          11.344537815126053
+        ],
+        [
+          140.3361344537815,
+          36.554621848739494
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "rectangle",
+#+end_example
+277
+{
+  "version": "5.2.1",
+  "flags": {},
+  "shapes": [
+    {
+      "label": "+",
+      "points": [
+        [
+          517.4107142857143,
+          99.10714285714286
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "point",
+      "flags": {}
+    },
+    {
+      "label": "1",
+      "points": [
+        [
+          22.689075630252102,
+          118.9075630252101
+        ],
+        [
+          53.78151260504201,
+          158.40336134453784
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "rectangle",
+      "flags": {}
+    },
+    {
+      "label": "2",
+      "points": [
+        [
+          23.52941176470588,
+          74.36974789915968
+        ],
+        [
+          57.14285714285714,
+          111.34453781512607
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "rectangle",
+      "flags": {}
+    },
+    {
+      "label": "3",
+      "points": [
+        [
+          24.369747899159666,
+          29.83193277310925
+        ],
+        [
+          59.66386554621849,
+          67.64705882352942
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "rectangle",
+      "flags": {}
+    },
+    {
+      "label": "4",
+      "points": [
+        [
+          67.22689075630252,
+          7.983193277310924
+        ],
+        [
+          96.63865546218487,
+          34.87394957983194
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "rectangle",
+      "flags": {}
+    },
+    {
+      "label": "5",
+      "points": [
+        [
+          110.92436974789916,
+          11.344537815126053
+        ],
+        [
+          140.3361344537815,
+          36.554621848739494
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "rectangle",
+#+end_example
+** labelme format
+labels:
+- + - point, others rectangles
+
+point:
+#+begin_src json
+{
+  "shapes": [
+    "label": "+",
+    "points": [
+      [
+        517.4107142857143,
+        99.10714285714286
+      ]
+    ]
+  ]
+}
+#+end_src
+
+ractangle:
+#+begin_src json
+{
+  "shapes": [
+    "label": "1",
+    "points": [
+      [
+        67.22689075630252,
+        7.983193277310924
+      ],
+      [
+        96.63865546218487,
+        34.87394957983194
+      ]
+    ]
+  ]
+}
+#+end_src
+** parse json
+#+NAME: aaa
+#+begin_src python :results output :exports both :session s1
+import json
+
+def parse_file(json_file:str):
+    with open(json_file, "r", encoding="utf-8") as infile:
+        myfile = json.load(infile)
+    plus_point = None
+    digits_rectangles = {}
+    for i, shape in enumerate(myfile["shapes"]):
+        if shape["label"] == "+":
+            plus_point = shape['points'][0]
+            # - convert to int:
+            plus_point = (round(plus_point[0]), round(plus_point[1]))
+        else:
+            # - convert to int:
+            dr = shape['points']
+            dr = ((round(dr[0][0]), round(dr[0][1])), (round(dr[1][0]), round(dr[1][1])))
+            digits_rectangles[shape["label"]] = dr
+
+    return plus_point, digits_rectangles
+
+json_file = "train_to_the_coordinates_dataset/2626.json"
+plus_point, digits_rectangles = parse_file(json_file)
+
+print("plus_point", plus_point)
+[print(k,v) for k,v in digits_rectangles.items()]
+#+end_src
+
+#+RESULTS: aaa
+#+begin_example
+plus_point (517, 99)
+1 ((19, 257), (66, 313))
+2 ((24, 74), (57, 111))
+3 ((24, 30), (60, 68))
+4 ((92, 256), (124, 284))
+5 ((111, 11), (140, 37))
+6 ((154, 12), (187, 42))
+3_5 ((103, 37), (134, 67))
+2_4 ((259, 81), (286, 111))
+1_4 ((451, 125), (482, 153))
+1_5 ((697, 136), (730, 153))
+2_6 ((955, 84), (971, 119))
+3_6 ((1155, 40), (1174, 72))
+3_4 ((1258, 37), (1288, 62))
+#+end_example
+
+#+RESULTS:
+#+begin_example
+plus_point [517.4107142857143, 99.10714285714286]
+1 [[19.327731092436977, 256.7226890756302], [66.38655462184875, 313.02521008403363]]
+2 [[23.52941176470588, 74.36974789915968], [57.14285714285714, 111.34453781512607]]
+3 [[24.369747899159666, 29.83193277310925], [59.66386554621849, 67.64705882352942]]
+4 [[91.59663865546219, 255.8823529411765], [124.36974789915968, 284.453781512605]]
+5 [[110.92436974789916, 11.344537815126053], [140.3361344537815, 36.554621848739494]]
+6 [[153.78151260504202, 12.184873949579831], [186.5546218487395, 42.43697478991597]]
+3_5 [[102.52100840336135, 36.554621848739494], [133.61344537815125, 66.80672268907563]]
+2_4 [[258.8235294117647, 81.09243697478993], [285.7142857142857, 111.34453781512607]]
+1_4 [[451.2605042016807, 124.78991596638656], [481.51260504201684, 153.36134453781514]]
+1_5 [[697.4789915966387, 135.71428571428572], [730.2521008403362, 152.52100840336135]]
+2_6 [[954.6218487394958, 84.45378151260505], [971.4285714285714, 118.9075630252101]]
+3_6 [[1155.4621848739496, 39.91596638655462], [1173.9495798319329, 71.84873949579833]]
+3_4 [[1257.9831932773109, 36.554621848739494], [1288.235294117647, 61.76470588235295]]
+#+end_example
+** explore label keys
+#+begin_src python :var x=aaa :results output :exports both :session s1
+import cv2 as cv
+import glob
+import os
+import numpy as np
+# -- get id's of files in dataset
+a = glob.glob("train_to_the_coordinates_dataset/*.jpg")
+file_ids = [os.path.basename(x).split(".")[0] for x in a]
+
+keys = []
+for d in file_ids:
+    json_file = f"train_to_the_coordinates_dataset/{d}.json"
+    plus_point, digits_rectangles = parse_file(json_file)
+    for x in digits_rectangles.keys():
+         keys.append(x)
+print(sorted(set(keys)))
+#+end_src
+
+#+RESULTS:
+: ['1', '1_4', '1_5', '1_6', '2', '2-4', '25', '2_4', '2_5', '2_6', '3', '3)_4', '3-6', '3_1', '3_4', '3_5', '3_6', '4', '5', '5_4', '5ъ', '6', '_4']
+
+** draw labels task1.0
+#+begin_src python :var x=aaa :results file graphics :exports both :file ./autoimgs/labels.png :exports both :session s1
+import cv2 as cv
+import numpy as np
+idd = 4421
+img = cv.imread(f'train_to_the_coordinates_dataset/{idd}.jpg')
+
+json_file = f"train_to_the_coordinates_dataset/{idd}.json"
+plus_point, digits_rectangles = parse_file(json_file)
+
+# -- rectangle labels:
+for k,v in digits_rectangles.items():
+    ctr = np.array(v).reshape(1, 2, 2).astype(int)
+    print(k)
+    # print(ctr[0][0])
+    cv.drawContours(img, ctr, -1, (0, 255, 0), 3)
+
+    font                   = cv.FONT_HERSHEY_SIMPLEX
+    bottomLeftCornerOfText = (10,500)
+    fontScale              = 0.5
+    fontColor              = (255,255,255)
+    thickness              = 1
+    lineType               = 2
+
+    cv.putText(img, k,
+    ctr[0][0],
+    font,
+    fontScale,
+    fontColor,
+    thickness,
+    # lineType
+                )
+# -- DOT for + label
+# ctr = np.array(plus_point).reshape(1, 2, 2).astype(int)
+print(plus_point)
+x = plus_point[0]
+y = plus_point[1]
+image = cv.circle(img, (int(x),int(y)), radius=10, color=(0, 0, 255), thickness=2)
+
+# - write image
+cv.imwrite('autoimgs/labels.png', img)
+
+#+end_src
+
+#+RESULTS:
+[[file:./autoimgs/labels.png]]
+** draw labels task1.1
+#+begin_src python :var x=library :results file graphics :exports both :file ./autoimgs/labelstask1.1.png :exports both :session s1
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
+
+def draw_labels(img, digits_rectangles, plus_point):
+    # -- rectangle labels:
+    for k,v in digits_rectangles.items():
+        ctr = np.array(v).reshape(1, 2, 2).astype(int)
+        print(k)
+        # print(ctr[0][0])
+        cv.drawContours(img, ctr, -1, (0, 255, 0), 3)
+
+        font                   = cv.FONT_HERSHEY_SIMPLEX
+        bottomLeftCornerOfText = (10,500)
+        fontScale              = 0.5
+        fontColor              = (255,255,255)
+        thickness              = 1
+        lineType               = 2
+
+        cv.putText(img, k,
+        ctr[0][0],
+        font,
+        fontScale,
+        fontColor,
+        thickness,
+        # lineType
+                    )
+    # -- DOT for + label
+    # ctr = np.array(plus_point).reshape(1, 2, 2).astype(int)
+    print(plus_point)
+    x = plus_point[0]
+    y = plus_point[1]
+    image = cv.circle(img, (int(x),int(y)), radius=10, color=(0, 0, 255), thickness=2)
+    return image
+
+img_files, plus_points, digits_rectangles, hints = get_all()
+
+img1 = cv.imread(img_files[1])
+img2 = cv.imread(img_files[2])
+img3 = cv.imread(img_files[3])
+
+img1 = draw_labels(img1, digits_rectangles[1], plus_points[1])
+img2 = draw_labels(img2, digits_rectangles[2], plus_points[2])
+img3 = draw_labels(img3, digits_rectangles[3], plus_points[3])
+
+img = np.vstack([img1, img2,img3])
+cv.imwrite('autoimgs/labelstask1.1.png', img)
+# plt.imshow()
+# plt.show()
+# plt.close()
+#+end_src
+
+#+RESULTS:
+[[file:./autoimgs/labelstask1.1.png]]
+
+** draw labels task1.1 for optional task
+#+begin_src python :var x=library :results file graphics :exports both :file ./autoimgs/labelstask1.1.png :exports both :session s1
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
+
+def draw_labels(img, digits_rectangles, plus_point):
+    # -- rectangle labels:
+    for k,v in digits_rectangles.items():
+        ctr = np.array(v).reshape(1, 2, 2).astype(int)
+        print(k)
+        # print(ctr[0][0])
+        cv.drawContours(img, ctr, -1, (0, 255, 0), 3)
+
+        font                   = cv.FONT_HERSHEY_SIMPLEX
+        bottomLeftCornerOfText = (10,500)
+        fontScale              = 0.5
+        fontColor              = (255,255,255)
+        thickness              = 1
+        lineType               = 2
+
+        cv.putText(img, k,
+        ctr[0][0],
+        font,
+        fontScale,
+        fontColor,
+        thickness,
+        # lineType
+                    )
+    # -- DOT for + label
+    # ctr = np.array(plus_point).reshape(1, 2, 2).astype(int)
+    print(plus_point)
+    x = plus_point[0]
+    y = plus_point[1]
+    image = cv.circle(img, (int(x),int(y)), radius=10, color=(0, 0, 255), thickness=2)
+    return image
+
+img_files, plus_points, digits_rectangles, hints = get_all(main_path = "task1.1/mixed_train_to_the_coordinates4x4/")
+
+img1 = cv.imread(img_files[1])
+img2 = cv.imread(img_files[2])
+img3 = cv.imread(img_files[3])
+
+img1 = draw_labels(img1, digits_rectangles[1], plus_points[1])
+img2 = draw_labels(img2, digits_rectangles[2], plus_points[2])
+img3 = draw_labels(img3, digits_rectangles[3], plus_points[3])
+
+img = np.vstack([img1, img2,img3])
+cv.imwrite('autoimgs/labelstask1.1.png', img)
+# plt.imshow()
+# plt.show()
+# plt.close()
+#+end_src
+
+#+RESULTS:
+
+[[file:./autoimgs/labelstask1.1.png]]
+
+** labels explained
+- + - solution
+- 1,2,3,4,5,6 - hint: figure, number ; figures on first image ; numbers on first image
+- x_x label - show position of dot on 7 images
+All digits are random
+* Accamulated library
+#+NAME: library
+#+begin_src python :results output :exports both :session s1
+import json
+import glob
+import os
+import numpy as np
+from matplotlib import pyplot as plt
+
+class MyException(Exception):
+    pass
+
+def parse_file(json_file:str):
+    with open(json_file, "r", encoding="utf-8") as infile:
+        myfile = json.load(infile)
+    plus_point = None
+    train_rectangles = [None for _ in range(7)] # 7
+    digits_rectangles = {}
+    for i, shape in enumerate(myfile["shapes"]):
+        if shape["label"] == "+":
+            plus_point = shape['points'][0]
+            # - convert to int:
+            plus_point = (round(plus_point[0])//200, round(plus_point[0]), round(plus_point[1]))
+        else:
+            # - convert to int:
+            dr = shape['points']
+            dr = ((round(dr[0][0]), round(dr[0][1])), (round(dr[1][0]), round(dr[1][1])))
+
+            if "_" in shape["label"]:
+                train_rectangles[dr[0][0]//200] = dr
+            else:
+                digits_rectangles[shape["label"]] = dr
+    if not all(train_rectangles):
+        raise MyException("not all train_rectangles!")
+
+    return plus_point, train_rectangles, digits_rectangles
+
+def get_subimage(img, i=0):
+    return img[0:VERTIC, HORIZ*i:HORIZ*(i+1)]
+
+
+def rectangle_parser(rec, left=0, top=0):
+    "substract left and top and convert to x,y,w,h"
+    rr = list(rec)
+    r = sorted(rr, key=lambda x: x[0])
+    x1 = r[0][0]
+    y1 = r[0][1]
+    x2 = r[1][0]
+    y2 = r[1][1]
+
+    w = x2-x1
+    h = y2-y1
+    return ((x1 - left, y1 - top, w, h))
+    # return rec
+
+
+def hint_parser(drs):
+    "get hint coordinates on hint subimage"
+    hints = []
+    for x in drs.values():
+        if x[0][0] < HINT_HORIZ and x[0][1] > VERTIC:
+            hints.append(x)
+    # assert len(hints) == 2
+    if len(hints) != 2:
+        return None, None
+    hints = sorted(hints, key=lambda x: x[0][0])
+    hintsn = np.array(hints)
+    hintsn[0][0][1] = hintsn[0][0][1] - VERTIC
+    hintsn[0][1][1] = hintsn[0][1][1] - VERTIC
+    hintsn[1][0][1] = hintsn[1][0][1] - VERTIC
+    hintsn[1][1][1] = hintsn[1][1][1] - VERTIC
+
+    return hintsn
+
+
+def get_all(main_path:str = "task1.1/mixed_train_to_the_coordinates_dataset") -> (list, list, list):
+    """get id's of files in dataset
+    returns:
+    - img_files - pathes
+    - plus_points - + label
+    - train_rectangles - x_x labels
+    - digits_rectangles - x labels
+    - hints - sorted corrdinates of xy1, xy2 on subimage"""
+    a = glob.glob(main_path + "/*.jpg")
+    assert len(a) > 0
+    idds = [os.path.basename(x).split(".")[0] for x in a]
+    img_files = []
+    plus_points = []
+    train_rectangles = []
+    digits_rectangles = []
+    hints = []
+    for idd in idds:
+        json_file = main_path + f"/{idd}.json"
+        try:
+            plus_point, train_rectangles2, digits_rectangles2 = parse_file(json_file)
+        except MyException as a:
+            continue
+        img_files.append(main_path + f"/{idd}.jpg")
+        plus_points.append(plus_point)
+        train_rectangles.append(train_rectangles2)
+        digits_rectangles.append(digits_rectangles2)
+        hints.append(hint_parser(digits_rectangles2))
+    return img_files, plus_points, train_rectangles, digits_rectangles, hints
+
+
+def diff_two_rectangles(r1, r2):
+    x1,y1,w1,h1 = r1
+    x2,y2,w2,h2 = r2
+    y_diff = abs((y1+h1/2)-(y2+h2/2))
+    x_diff = abs((x1+w1/2)-(x2+w2/2))
+    return np.mean([x_diff, y_diff])
+
+
+def diff_two_contours(c1, c2):
+    return diff_two_rectangles(cv.boundingRect(c1), cv.boundingRect(c2))
+
+
+def get_subimage_roi_xywh(img, x, y, w, h):
+    "img: BGR"
+    return img[y:y+h,x:x+w].copy()
+
+def get_subimage_roi_xy(img, xy1, xy2 ):
+    "img: BGR"
+    x1, y1 = xy1
+    x2, y2 = xy2
+    return img[y1:y2,x1:x2].copy()
+
+
+def hsv_to_gimp(hsv_orig):
+    hsv = hsv_orig.copy()
+    for i in range(3):
+        if i == 0:
+            ranges = [0, 180]
+        else:
+            ranges = [0, 100]
+        cv.normalize(hsv[i], hsv[i], alpha=ranges[0], beta=ranges[1],
+                     norm_type=cv.NORM_MINMAX)
+    return hsv, ([0, 180], [0, 100], [0, 100])
+
+def output_histogram(img, ranges, bins = 10):
+    " usage: output_histogram(hsv, [(0,255)]*3)"
+    histSize = max(bins, 2)
+    for i in range(3):
+        hist = cv.calcHist([img[i]], [0], None, [histSize], ranges[i],
+                           accumulate=False) # list of bins with values in 0-9999999 range
+
+        # cv.normalize(hist, hist, alpha=0, beta=255, norm_type=cv.NORM_MINMAX)
+        print("i", i)
+        [print(np.round(k), "\t", np.round(v,2)) for k,v in zip(np.linspace(ranges[i][0],ranges[i][1], bins+1)[1:], hist)]
+        print()
+
+def contours_calc_centers(contours):
+    " and sort by x"
+    centers = [None] *len(contours)
+    for j, c in enumerate(contours):
+        # print(c)
+        x,y,w,h = cv.boundingRect(c)
+        centers[j] = ((x+w/2), (y+h/2))
+    centers = sorted(centers, key = lambda x: x[0])
+    return centers
+
+# ------------------ local ----
+HORIZ = 200 # left edge of one in 7 images
+VERTIC = 200 # bottom edge of 7 images
+HINT_HORIZ = 135 # left edge of hint image
+
+def get_hint_subimage(img):
+    return img[VERTIC:400, 0:HINT_HORIZ].copy()
+
+def draw_points(img, pts:list):
+    for x,y in pts:
+        image = cv.circle(img, (int(x), int(y)), radius=1, color=(0, 0, 255), thickness=-1)
+    plt.imshow(image,),plt.show()
+
+
+def get_centroid(pts:np.array):
+    z = np.array(pts)
+    # Define criteria = ( type, max_iter = 10 , epsilon = 1.0 )
+    criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+    # Set flags (Just to avoid line break in the code)
+    flags = cv.KMEANS_RANDOM_CENTERS
+    z = np.float32(z)
+    compactness,labels,centers = cv.kmeans(z,2,None,criteria,10,flags)
+    big_label = int(np.median(labels))
+    return centers[big_label]
+
+
+def match_images_swift(img_src,img_dst, distance=0.9):
+    """return points on img_dst
+    bigger distance -> more points"""
+    sift = cv.SIFT_create()
+    kp1, des1 = sift.detectAndCompute(img_src,None)
+    kp2, des2 = sift.detectAndCompute(img_dst,None)
+    FLANN_INDEX_KDTREE = 1
+    index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+    search_params = dict(checks=50)   # or pass empty dictionary
+    flann = cv.FlannBasedMatcher(index_params,search_params)
+    # flann = cv.FlannBasedMatcher()
+    matches = flann.knnMatch(des1,des2,k=2)
+    # Need to draw only good matches, so create a mask
+    matchesMask = [[0,0] for i in range(len(matches))]
+    # ratio test as per Lowe's paper
+    # count = 0
+    dst_matches = []
+    for j,(m,n) in enumerate(matches):
+        if m.distance < distance*n.distance:
+            # matchesMask[j]=[1,0]
+            # count+=1
+            dst_matches.append(kp2[m.trainIdx])
+    dst_pts = [i.pt for i in dst_matches]
+
+    # draw_params = dict(matchColor = (0,255,0),
+    #                singlePointColor = (255,0,0),
+    #                matchesMask = matchesMask,
+    #                flags = cv.DrawMatchesFlags_DEFAULT)
+    # img3 = cv.drawMatchesKnn(img_src,kp1,img_dst,kp2,matches,None,**draw_params)
+    return dst_pts
+#+end_src
+
+#+RESULTS: library
+
+* Tests for accamulated library
+** test hint_parser, parse_file
+#+begin_src python :var x=library :results output :exports both :session s1
+# -- get id's of files in dataset
+import os
+import glob
+
+# -- get id's of files in dataset
+a = glob.glob("task1.1/mixed_train_to_the_coordinates_dataset/*.jpg")
+assert len(a) > 0
+file_ids = [os.path.basename(x).split(".")[0] for x in a]
+# -- test hint_parser
+keys = []
+for idd in file_ids:
+    json_file = f"task1.1/mixed_train_to_the_coordinates_dataset/{idd}.json"
+    try:
+        plus_point, train_rectangles, digits_rectangles = parse_file(json_file)
+    except MyException as a:
+        continue
+    h1, h2 = hint_parser(digits_rectangles)
+    if h1 is not None:
+        # print("h1", h1, h1[0][0])
+        # print("h2", h2)
+        assert h1[0][0] < h2[1][0]
+    # break
+
+# -- test parse_file
+for idd in file_ids:
+    try:
+        a,b,c = parse_file(f"task1.1/mixed_train_to_the_coordinates_dataset/{idd}.json")
+    except MyException as a:
+        continue
+    assert len(a) == 2
+    assert all(a)
+    assert len(b) == 7
+    assert all(b)
+#+end_src
+
+#+RESULTS:
+
+** test get_all
+#+begin_src python :var x=library :results output :exports both :session s1
+# -- test get all
+img_files, plus_points, train_rectangles, digits_rectangles, hints = get_all()
+assert len(img_files) >0
+assert len(plus_points) >0
+assert len(train_rectangles) >0
+assert len(digits_rectangles) >0
+assert len(hints) >0
+# print(plus_points[0])
+# print(plus_points[1])
+#+end_src
+
+#+RESULTS:
+: (2, 517, 99)
+: (5, 1121, 96)
+
+* DEV LOGS
+** plan
+There is 2 tasks:
+1) compare 2 images from hint
+2) find out where is tran on 7 images
+
+There is two ways to solve it:
+1) find location of tran and location of hint images on small ones,
+ then compare them
+2) find train and match features of images on top and left from it and hint's images
+
+
+for 1)
+1. with OpenCV: get rectangle
+2. calc position of blue tran on rectangle
+
+for 2):
+1. extract all 6 images from every task
+   - detect rectangle with train
+   - detect figures at left and number above
+2. train two neural networks with augmented images
+
+** extract rectangles
+# :results output
+#+begin_src python :var x=aaa :results file graphics :file ./autoimgs/tmp.png :exports both :session s1
+import cv2 as cv
+id = 2628
+img = cv.imread(f'train_to_the_coordinates_dataset/{id}.jpg')
+json_file = f"train_to_the_coordinates_dataset/{id}.json"
+plus_point, digits_rectangles = parse_file(json_file)
+def get_rectangle(img, rect):
+    "extract rectangle and return rectangle image"
+    xy1, xy2 = rect
+    return img[xy1[1]:xy2[1],xy1[0]:xy2[0],:]
+
+print(xy1)
+print(xy2)
+# print()
+img2 = get_rectangle(img, digits_rectangles["1"])
+cv.imwrite('autoimgs/tmp.png', img2)
+#+end_src
+
+#+RESULTS:
+[[file:./autoimgs/tmp.png]]
+** DONE split to subimages 1-7 and hint, at which image the dot is located?
+#+begin_src python :results output :exports both :session s1
+import cv2 as cv
+import glob
+import os
+
+HORIZ = 200 # left edge of one in 7 images
+VERTIC = 200 # bottom edge of 7 images
+HINT_HORIZ = 135 # left edge of hint image
+
+
+# -- get id's of files in dataset
+a = glob.glob("train_to_the_coordinates_dataset/*.jpg")
+file_ids = [os.path.basename(x).split(".")[0] for x in a]
+
+# -- what is what
+def hint_parser(drs):
+    hints = []
+    for x in drs.values():
+        if x[0][0] < HINT_HORIZ and x[0][1] > VERTIC:
+            hints.append(x)
+    # assert len(hints) == 2
+    if len(hints) != 2:
+        return None, None
+    hints = sorted(hints, key=lambda x: x[0][1])
+    return hints[0], hints[1]
+
+
+# -- get all dots
+images_with_hint = 0
+for d in file_ids:
+    json_file = f"train_to_the_coordinates_dataset/{d}.json"
+    plus_point, digits_rectangles = parse_file(json_file)
+    # print(d)
+    h1, h2 = hint_parser(digits_rectangles)
+    # print(h1,h2)
+    if h1 is not None:
+        images_with_hint += 1
+
+print("images with hints:\t", images_with_hint)
+print("all images:\t\t", len(file_ids))
+
+
+# img2 = img[0:200,200:400,:]
+
+
+# cv.imwrite('autoimgs/subpart.png', img2)
+#+end_src
+
+#+RESULTS:
+: images with hints:	 845
+: all images:		 1050
+
+** DONE frequencies of hints
+#+begin_src python :var x=library :results output :exports both :session s1 :timeout 3
+import cv2 as cv
+import numpy as np
+from dataclasses import dataclass
+import math
+img_files, plus_points, train_rectangles, digits_rectangles, hints = get_all()
+# --- location of xy1
+@dataclass
+class Hints:
+    # x_min = None
+    # x_max = None
+    # y_min = None
+    # y_max = None
+    circle_center_x_min = None
+    circle_center_x_max = None
+    circle_center_y_min = None
+    circle_center_y_max = None
+    circle_radius_min = None
+    circle_radius_max = None
+    # circle_area_min: float
+    # circle_area_max: float
+
+hint1s = Hints()
+hint2s = Hints()
+# --------- x, y min, max -------------------------------
+# hints1 = [h for h in hints if h[0] is not None]
+# # -- 1) h1,h2 2) xy1,xy2 3) x,y
+# xs = sorted(hints1, key=lambda x: x[0][0][0])
+# hint1s.x_min = xs[0][0][0][0]
+# hint1s.x_max = xs[-1][0][0][0]
+
+# xs = sorted(hints1, key=lambda x: x[0][0][1])
+# hint1s.y_min = xs[0][0][0][1]
+# hint1s.y_max = xs[-1][0][0][1]
+
+
+# hints2 = [h for h in hints if h[1] is not None]
+# xs = sorted(hints2, key=lambda x: x[1][0][0])
+# hint2s.x_min = xs[0][1][0][0]
+# hint2s.x_max = xs[-1][1][0][0]
+
+# xs = sorted(hints2, key=lambda x: x[1][0][1])
+# hint2s.y_min = xs[0][1][0][1]
+# hint2s.y_max = xs[-1][1][0][1]
+
+# ---------------- area ------
+h1_areas = []
+# xs = sorted(hints1, key=lambda x: x[1][0][1])
+for x in hints:
+    if x[0] is not None:
+        (x,y),radius = cv.minEnclosingCircle(x[0])
+        h1_areas.append(radius*radius*math.pi)
+h2_areas = []
+for x in hints:
+    if x[1] is not None:
+        (x,y),radius = cv.minEnclosingCircle(x[1])
+        h2_areas.append(radius*radius*math.pi)
+
+h1_areas = sorted(h1_areas)
+h2_areas = sorted(h2_areas)
+print("h1 area", int(h1_areas[0]), int(h1_areas[-1]))
+print("h2 area", int(h2_areas[0]), int(h2_areas[-1]))
+print()
+
+h1_circles = [cv.minEnclosingCircle(h[0]) for h in hints if h[0] is not None]
+h2_circles = [cv.minEnclosingCircle(h[1]) for h in hints if h[1] is not None]
+# - x
+xs = sorted(h1_circles, key=lambda x: x[0][0])
+hint1s.circle_center_x_min = xs[0][0][0]
+hint1s.circle_center_x_max = xs[-1][0][0]
+xs = sorted(h2_circles, key=lambda x: x[0][0])
+hint2s.circle_center_x_min = xs[0][0][0]
+hint2s.circle_center_x_max = xs[-1][0][0]
+# - y
+xs = sorted(h1_circles, key=lambda x: x[0][1])
+hint1s.circle_center_y_min = xs[0][0][1]
+hint1s.circle_center_y_max = xs[-1][0][1]
+xs = sorted(h2_circles, key=lambda x: x[0][1])
+hint2s.circle_center_y_min = xs[0][0][1]
+hint2s.circle_center_y_max = xs[-1][0][1]
+# - radius
+xs = sorted(h1_circles, key=lambda x: x[1])
+hint1s.circle_radius_min = xs[0][1]
+hint1s.circle_radius_max = xs[-1][1]
+xs = sorted(h2_circles, key=lambda x: x[1])
+hint2s.circle_radius_min = xs[0][1]
+hint2s.circle_radius_max = xs[-1][1]
+print(hint1s.__dict__)
+print(hint2s.__dict__)
+print()
+#+end_src
+
+#+RESULTS:
+: h1 area 2536 6038
+: h2 area 684 2096
+:
+: {'circle_center_x_min': 38.5, 'circle_center_x_max': 50.5, 'circle_center_y_min': 81.0, 'circle_center_y_max': 93.0, 'circle_radius_min': 28.41224479675293, 'circle_radius_max': 43.840721130371094}
+: {'circle_center_x_min': 104.0, 'circle_center_x_max': 116.5, 'circle_center_y_min': 56.5, 'circle_center_y_max': 70.5, 'circle_radius_min': 14.764923095703125, 'circle_radius_max': 25.831281661987305}
+
+** DONE detect hint figure and number
+#+begin_src python :var x=library :results file graphics :file ./autoimgs/detrectonhint.png :exports both :session s1 :timout 140
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
+
+from dataclasses import dataclass
+
+HINT1_AREA_MIN = 2536
+HINT1_AREA_MAX = 6038
+HINT2_AREA_MIN = 684
+HINT2_AREA_MAX = 2096
+
+@dataclass
+class ContourStats:
+    circle_center_x_min: float
+    circle_center_x_max: float
+    circle_center_y_min: float
+    circle_center_y_max: float
+    circle_radius_min: float
+    circle_radius_max: float
+    circle_area_min: float
+    circle_area_max: float
+
+dilatation_type = cv.MORPH_RECT
+dilatation_size = 1
+element = cv.getStructuringElement(dilatation_type, (2*dilatation_size + 1, 2*dilatation_size+1), (dilatation_size, dilatation_size))
+
+g = False
+def find_object(image, circle_stats: ContourStats, conti = None):
+    """ loop: 1) channels, 2) threshold 3) contours
+    continue: ((i, thrs), cnt)"""
+    contour_result = None
+    # -- 1)
+    r = cv.split(image.copy())
+    if conti is not None:
+        r = r[conti[0][0]:]
+
+    for i, gray in enumerate(r):
+        if contour_result is not None:
+            break
+        # -- 2)
+        ra = range(0, 255, 10)
+        if conti is not None:
+            ra = range(conti[0][1], 255, 10)
+        for thrs in ra:
+            if contour_result is not None:
+                break
+            # -- dilation
+            # gray2 = cv.dilate(gray, element)
+
+            gray = cv.erode(gray, element)
+
+            gray = cv.dilate(gray, element)
+            gray = cv.dilate(gray, element)
+
+            # gray2 = cv.GaussianBlur(gray2,(5,5),2)
+            # gray = cv.Laplacian(image,cv.CV_64F)
+            # gray = cv.Laplacian(gray,cv.CV_8UC1)
+            # bin = cv.dilate(bin, element)
+            # bin = cv.erode(bin, element)
+            _retval, bin = cv.threshold(gray, thrs, 255, cv.THRESH_BINARY)
+            # gray = cv.dilate(gray, element)
+            # gray = cv.erode(gray, element)
+
+
+            # bin = cv.adaptiveThreshold(gray,thrs,cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY,9,3)
+            # bin = cv.adaptiveThreshold(gray,thrs,cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY,9,3)
+            if g:
+                plt.imshow(bin)
+                plt.show()
+                plt.close()
+
+            contours, _ = cv.findContours(bin, cv.RETR_LIST,
+                                          cv.CHAIN_APPROX_SIMPLE)
+
+            # imgs.append(bin)
+            # -- 3)
+            for j, cnt in enumerate(contours):
+                if contour_result is not None:
+                    break
+                # if conti is not None:
+                    # print(all(cnt[0][0] == conti[1][0][0]))
+                if conti is not None and all(cnt[0][0] == conti[1][0][0]):
+                    continue # TODO: sort contours and filter by x,y
+                # -- features of contour
+                # x,y,w,h = cv.boundingRect(cnt)
+                (x,y),radius = cv.minEnclosingCircle(cnt)
+                # print(radius, cv.contourArea(cnt))
+                # cnt_len = cv.arcLength(cnt, True)
+                area = cv.contourArea(cnt)
+                # x,y,w,h = cv.boundingRect(cnt)
+
+
+                if circle_stats.circle_center_x_min < x < circle_stats.circle_center_x_max \
+                   and circle_stats.circle_center_y_min < y < circle_stats.circle_center_y_max \
+                   and circle_stats.circle_area_min < area < circle_stats.circle_area_max \
+                   and circle_stats.circle_radius_min < radius < circle_stats.circle_radius_max:
+
+                # if (hint_stats['hint1_y_min']/1.5 < y < hint_stats['hint1_y_max']*1.2) \
+                #    and (hint_stats['hint1_x_min']/1.5 < x < hint_stats['hint1_x_max']*1.2) \
+                #    and (area_min < area < area_max) \
+                #    and (cntlen_min < cnt_len < cntlen_max):
+                    contour_result = cnt
+                    # print("contour (x,y),radius:", (x,y), radius)
+                    break
+                    # -- loop for numbers
+                    # for thrs in range(0, 255, 20):
+                    # -- 4)
+                    # for cnt in contours:
+                    #     if cnt[0][0][0] == hint1[0][0][0]:
+                    #         continue
+                    #     cnt_len = cv.arcLength(cnt, True)
+                    #     a = cv.contourArea(cnt)
+                    #     if (600 < area < 2000) \
+                    #        and (90 < cnt_len < 200):
+                    #         hint2 = cnt
+                    #         print("hint2", "area", area, "cntlen", cnt_len)
+                    #         break
+    return contour_result, (i, thrs)
+
+
+HINT1_STATS_s = {'circle_center_x_min': 38.5, 'circle_center_x_max': 50.5, 'circle_center_y_min': 81.0, 'circle_center_y_max': 93.0, 'circle_radius_min': 28.41224479675293, 'circle_radius_max': 43.840721130371094}
+HINT2_STATS_s = {'circle_center_x_min': 104.0, 'circle_center_x_max': 116.5, 'circle_center_y_min': 56.5, 'circle_center_y_max': 70.5, 'circle_radius_min': 14.764923095703125, 'circle_radius_max': 25.831281661987305}
+# 'circle_center_x_max': 50.5 + 'circle_radius_max': 43.840721130371094 = 94
+HINT1_X_MAX = 94
+
+HINT1_STATS_s["circle_area_min"] = HINT1_AREA_MIN
+HINT1_STATS_s["circle_area_max"] = HINT1_AREA_MAX
+HINT2_STATS_s["circle_area_min"] = HINT2_AREA_MIN
+HINT2_STATS_s["circle_area_max"] = HINT2_AREA_MAX
+
+# HINT2_STATS_small = {k:((v - HINT1_X_MAX) if k.startswith("circle_center_x_") else v) for k,v in HINT2_STATS.items()}
+
+MUL = 1.3
+HINT1_STATS = {}
+for k,v in HINT1_STATS_s.items():
+    if k.endswith('min'):
+        HINT1_STATS[k] = v/ MUL
+    # elif "radius_max" in k: # max
+    #     HINT1_STATS[k] = v* 1.8
+    else:
+        HINT1_STATS[k] = v*MUL
+HINT2_STATS = {}
+for k,v in HINT2_STATS_s.items():
+    if '_x_' in k:
+        v = v - HINT1_X_MAX
+    if k.endswith('min'):
+        HINT2_STATS[k] = v/ MUL
+    # elif "radius_max" in k: # max
+    #     HINT2_STATS[k] = v* 1.8
+    else:
+        HINT2_STATS[k] = v *MUL
+
+
+h1s = ContourStats(**HINT1_STATS)
+h2s = ContourStats(**HINT2_STATS)
+# ----- single image -- old
+# idd = 2626
+# img = cv.imread(f'train_to_the_coordinates_dataset/{idd}.jpg')
+
+# image = img[200:400, 0:135]
+
+# cnt = find_object(image, area_min=1100, area_max=2000, cntlen_min=120, cntlen_max=200)
+# print(cnt is None)
+# x,y,w,h = cv.boundingRect(cnt)
+# # print(x,y,w,h)
+# ROI = image[y:y+h, x:x+w]
+# # cv2.drawContours(dice, squares, -1, (0, 255, 0), 3)
+# cv.imwrite('autoimgs/detrectonhint.png', ROI)
+
+img_files, plus_points, train_rectangles, digits_rectangles, hints = get_all()
+
+imgs = []
+# ------- all images -----
+# -- get id's of files in dataset
+# a = glob.glob("train_to_the_coordinates_dataset/*.jpg")
+# file_ids = [os.path.basename(x).split(".")[0] for x in a]
+
+for i in range(len(img_files)):
+    # if i >19:
+    #     g = True
+    #     break
+    fp = img_files[i]
+    print(fp)
+    src = cv.imread(fp)
+    assert src is not None, "img could not be read"
+
+    # keys = []
+    # for idd in file_ids:
+
+    img_hint = get_hint_subimage(src)
+    h1, h2 = hint_parser(digits_rectangles[i])
+    # print(i, "h1,h2:", h1, h2)
+    if h1 is None:
+        print(i, "h1 is None, continue")
+        continue
+
+    conti = None
+
+    # -- HINT1 find --
+    img_hint1 = img_hint[:,:HINT1_X_MAX] # cut hint at right)
+    cnt1, conti = find_object(img_hint1, h1s, conti)
+    if cnt is None:
+        print(i, "find object result is None")
+        break
+    x,y,w,h = cv.boundingRect(cnt1)
+    # print(x,y,w,h)
+    y_diff = abs(np.mean(h1[:, 1])- (y+h/2))
+    x_diff = abs(np.mean(h1[:, 0])- (x+w/2))
+    diff = np.mean([x_diff, y_diff])
+    print(i, "diff", diff)
+
+    # -- hint2 find --
+    img_hint2 = img_hint[:,HINT1_X_MAX:] # cut hint at left
+    if diff > 20:
+        imf = get_subimage_roi_xywh(img_hint1, x, y, w, h)
+        plt.imshow(imf)
+        plt.show()
+        plt.close()
+        break
+
+
+    cnt2, _ = find_object(img_hint2, h2s)
+    if cnt is None:
+        print(i, "find HINT2 is None")
+        x,y,w,h = cv.boundingRect(cnt2)
+        imf = get_subimage_roi_xywh(img_hint2, x, y, w, h)
+        # (x,y),radius = cv.minEnclosingCircle(cnt)
+        # print("(x,y),radius", (x,y),radius)
+        plt.imshow(img_hint2)
+        plt.show()
+        plt.close()
+        g = True
+        # cnt, _ = find_object(img_hint2, h2s)
+        # plt.imshow(imf)
+        # plt.show()
+        # plt.close()
+
+        # plt.imshow(img_hint2)
+        # plt.show()
+        # plt.close()
+        break
+
+    x,y,w,h = cv.boundingRect(cnt2)
+    # print(x,y,w,h)
+    y_diff = abs(np.mean(h2[:, 1])-(y+h/2))
+    x_diff = abs(np.mean(h2[:, 0])- (x+w/2+HINT1_X_MAX))
+    diff = np.mean([x_diff, y_diff])
+    print(i, "diff", diff)
+    if diff > 20:
+        imf = get_subimage_roi_xywh(img_hint2, x, y, w, h)
+        plt.imshow(imf)
+        plt.show()
+        plt.close()
+        plt.imshow(img_hint)
+        plt.show()
+        plt.close()
+        # (x,y),radius = cv.minEnclosingCircle(cnt)
+        # print("(x,y),radius", (x,y),radius)
+        break
+
+    # hrects = (cv.boundingRect(cnt1), cv.boundingRect(cnt2))
+    # # -- check by diff of x and y --
+
+    # x,y,w,h = hrects[1]
+    # y_diff = abs(np.mean(h2[:, 1])-(y+h/2))
+    # x_diff = abs(np.mean(h2[:, 0])- (x+w/2))
+    # diff2 = np.mean([x_diff, y_diff])
+    # x,y,w,h = hrects[0]
+    # y_diff = abs(np.mean(h1[:, 1])-(y+h/2))
+    # x_diff = abs(np.mean(h1[:, 0])- (x+w/2))
+    # diff1 = np.mean([x_diff, y_diff])
+
+
+    # print(i, "diff", diff1, diff2)
+
+    # ROI = image[y:y+h, x:x+w]
+    # cv.imwrite('autoimgs/detrectonhint.png', ROI)
+
+    # if diff1 > 63 : # or diff2 > 50
+    #     print("Big diff")
+    #     break
+
+    # if idd == "2779":
+    #     break
+
+# imgs_stacked  = np.hstack(imgs)
+# cv.imwrite('autoimgs/detrectonhint.png', imgs_stacked)
+
+#+end_src
+
+#+RESULTS:
+[[file:./autoimgs/detrectonhint.png]]
+
+** DONE detect hint figure and number inFunction
+#+begin_src python :var x=library :results output :exports both :session s1 :timout 140
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
+
+from dataclasses import dataclass
+
+HINT1_AREA_MIN = 2536
+HINT1_AREA_MAX = 6038
+HINT2_AREA_MIN = 684
+HINT2_AREA_MAX = 2096
+
+@dataclass
+class ContourStats:
+    circle_center_x_min: float
+    circle_center_x_max: float
+    circle_center_y_min: float
+    circle_center_y_max: float
+    circle_radius_min: float
+    circle_radius_max: float
+    circle_area_min: float
+    circle_area_max: float
+
+dilatation_type = cv.MORPH_RECT
+dilatation_size = 1
+element = cv.getStructuringElement(dilatation_type, (2*dilatation_size + 1, 2*dilatation_size+1), (dilatation_size, dilatation_size))
+
+g = False
+def find_object(image, circle_stats: ContourStats, conti = None):
+    """ loop: 1) channels, 2) threshold 3) contours
+    continue: ((i, thrs), cnt)"""
+    contour_result = None
+    # -- 1)
+    r = cv.split(image.copy())
+    if conti is not None:
+        r = r[conti[0][0]:]
+
+    for i, gray in enumerate(r):
+        if contour_result is not None:
+            break
+        # -- 2)
+        ra = range(0, 255, 10)
+        if conti is not None:
+            ra = range(conti[0][1], 255, 10)
+        for thrs in ra:
+            if contour_result is not None:
+                break
+            # -- dilation
+            # gray2 = cv.dilate(gray, element)
+
+            gray = cv.erode(gray, element)
+
+            gray = cv.dilate(gray, element)
+            gray = cv.dilate(gray, element)
+
+            # gray2 = cv.GaussianBlur(gray2,(5,5),2)
+            # gray = cv.Laplacian(image,cv.CV_64F)
+            # gray = cv.Laplacian(gray,cv.CV_8UC1)
+            # bin = cv.dilate(bin, element)
+            # bin = cv.erode(bin, element)
+            _retval, bin = cv.threshold(gray, thrs, 255, cv.THRESH_BINARY)
+            # gray = cv.dilate(gray, element)
+            # gray = cv.erode(gray, element)
+
+
+            # bin = cv.adaptiveThreshold(gray,thrs,cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY,9,3)
+            # bin = cv.adaptiveThreshold(gray,thrs,cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY,9,3)
+            if g:
+                plt.imshow(bin)
+                plt.show()
+                plt.close()
+
+            contours, _ = cv.findContours(bin, cv.RETR_LIST,
+                                          cv.CHAIN_APPROX_SIMPLE)
+
+            # imgs.append(bin)
+            # -- 3)
+            for j, cnt in enumerate(contours):
+                if contour_result is not None:
+                    break
+                # if conti is not None:
+                    # print(all(cnt[0][0] == conti[1][0][0]))
+                if conti is not None and all(cnt[0][0] == conti[1][0][0]):
+                    continue # TODO: sort contours and filter by x,y
+                # -- features of contour
+                # x,y,w,h = cv.boundingRect(cnt)
+                (x,y),radius = cv.minEnclosingCircle(cnt)
+                # print(radius, cv.contourArea(cnt))
+                # cnt_len = cv.arcLength(cnt, True)
+                area = cv.contourArea(cnt)
+                # x,y,w,h = cv.boundingRect(cnt)
+
+
+                if circle_stats.circle_center_x_min < x < circle_stats.circle_center_x_max \
+                   and circle_stats.circle_center_y_min < y < circle_stats.circle_center_y_max \
+                   and circle_stats.circle_area_min < area < circle_stats.circle_area_max \
+                   and circle_stats.circle_radius_min < radius < circle_stats.circle_radius_max:
+
+                # if (hint_stats['hint1_y_min']/1.5 < y < hint_stats['hint1_y_max']*1.2) \
+                #    and (hint_stats['hint1_x_min']/1.5 < x < hint_stats['hint1_x_max']*1.2) \
+                #    and (area_min < area < area_max) \
+                #    and (cntlen_min < cnt_len < cntlen_max):
+                    contour_result = cnt
+                    # print("contour (x,y),radius:", (x,y), radius)
+                    break
+                    # -- loop for numbers
+                    # for thrs in range(0, 255, 20):
+                    # -- 4)
+                    # for cnt in contours:
+                    #     if cnt[0][0][0] == hint1[0][0][0]:
+                    #         continue
+                    #     cnt_len = cv.arcLength(cnt, True)
+                    #     a = cv.contourArea(cnt)
+                    #     if (600 < area < 2000) \
+                    #        and (90 < cnt_len < 200):
+                    #         hint2 = cnt
+                    #         print("hint2", "area", area, "cntlen", cnt_len)
+                    #         break
+    return contour_result, (i, thrs)
+
+
+HINT1_STATS_s = {'circle_center_x_min': 38.5, 'circle_center_x_max': 50.5, 'circle_center_y_min': 81.0, 'circle_center_y_max': 93.0, 'circle_radius_min': 28.41224479675293, 'circle_radius_max': 43.840721130371094}
+HINT2_STATS_s = {'circle_center_x_min': 104.0, 'circle_center_x_max': 116.5, 'circle_center_y_min': 56.5, 'circle_center_y_max': 70.5, 'circle_radius_min': 14.764923095703125, 'circle_radius_max': 25.831281661987305}
+# 'circle_center_x_max': 50.5 + 'circle_radius_max': 43.840721130371094 = 94
+HINT1_X_MAX = 94
+
+HINT1_STATS_s["circle_area_min"] = HINT1_AREA_MIN
+HINT1_STATS_s["circle_area_max"] = HINT1_AREA_MAX
+HINT2_STATS_s["circle_area_min"] = HINT2_AREA_MIN
+HINT2_STATS_s["circle_area_max"] = HINT2_AREA_MAX
+
+# HINT2_STATS_small = {k:((v - HINT1_X_MAX) if k.startswith("circle_center_x_") else v) for k,v in HINT2_STATS.items()}
+
+MUL = 1.3
+HINT1_STATS = {}
+for k,v in HINT1_STATS_s.items():
+    if k.endswith('min'):
+        HINT1_STATS[k] = v/ MUL
+    # elif "radius_max" in k: # max
+    #     HINT1_STATS[k] = v* 1.8
+    else:
+        HINT1_STATS[k] = v*MUL
+HINT2_STATS = {}
+for k,v in HINT2_STATS_s.items():
+    if '_x_' in k:
+        v = v - HINT1_X_MAX
+    if k.endswith('min'):
+        HINT2_STATS[k] = v/ MUL
+    # elif "radius_max" in k: # max
+    #     HINT2_STATS[k] = v* 1.8
+    else:
+        HINT2_STATS[k] = v *MUL
+
+
+h1s = ContourStats(**HINT1_STATS)
+h2s = ContourStats(**HINT2_STATS)
+# ----- single image -- old
+# idd = 2626
+# img = cv.imread(f'train_to_the_coordinates_dataset/{idd}.jpg')
+
+# image = img[200:400, 0:135]
+
+# cnt = find_object(image, area_min=1100, area_max=2000, cntlen_min=120, cntlen_max=200)
+# print(cnt is None)
+# x,y,w,h = cv.boundingRect(cnt)
+# # print(x,y,w,h)
+# ROI = image[y:y+h, x:x+w]
+# # cv2.drawContours(dice, squares, -1, (0, 255, 0), 3)
+# cv.imwrite('autoimgs/detrectonhint.png', ROI)
+
+img_files, plus_points, train_rectangles, digits_rectangles, hints = get_all()
+
+imgs = []
+# ------- all images -----
+# -- get id's of files in dataset
+# a = glob.glob("train_to_the_coordinates_dataset/*.jpg")
+# file_ids = [os.path.basename(x).split(".")[0] for x in a]
+
+def find_hint_images(hint_img):
+    global HINT1_X_MAX, h1s, h2s
+    img_hint1 = hint_img[:,:HINT1_X_MAX] # cut hint at right)
+    cnt1, conti = find_object(img_hint1, h1s)
+    if cnt1 is None:
+        print(i, "find object result is None")
+        return None
+    # -- hint2 find --
+    img_hint2 = hint_img[:,HINT1_X_MAX:] # cut hint at left
+
+    cnt2, _ = find_object(img_hint2, h2s)
+    if cnt2 is None:
+        print(i, "find HINT2 is None")
+        return None
+    r1 = cv.boundingRect(cnt1)
+    x,y,w,h = cv.boundingRect(cnt2)
+    x += HINT1_X_MAX
+    return r1, (x,y,w,h)
+
+for i in range(len(img_files)):
+    if i >19:
+        break
+    fp = img_files[i]
+    print(i, fp)
+    src = cv.imread(fp)
+    assert src is not None, "img could not be read"
+
+    # keys = []
+    # for idd in file_ids:
+
+    img_hint = get_hint_subimage(src)
+    h1, h2 = hint_parser(digits_rectangles[i])
+    # print(i, "h1,h2:", h1, h2)
+    if h1 is None:
+        print(i, "h1 is None, continue")
+        continue
+
+    hrec1, hrec2 = find_hint_images(img_hint)
+    print(hrec1, hrec2)
+    # ------- test hrec1
+    x,y,w,h = hrec1
+    y_diff = abs(np.mean(h1[:, 1])- (y+h/2))
+    x_diff = abs(np.mean(h1[:, 0])- (x+w/2))
+    diff = np.mean([x_diff, y_diff])
+    print(i, "diff", diff)
+    # ------- test hrec1
+    x,y,w,h = hrec2
+    y_diff = abs(np.mean(h2[:, 1])-(y+h/2))
+    # x_diff = abs(np.mean(h2[:, 0])- (x+w/2+HINT1_X_MAX))
+    x_diff = abs(np.mean(h2[:, 0])- (x+w/2))
+    diff = np.mean([x_diff, y_diff])
+    print(i, "diff", diff)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+0 task1.1/mixed_train_to_the_coordinates_dataset/2626.jpg
+(18, 54, 53, 55) (94, 49, 38, 42)
+0 diff 2.75
+0 diff 2.5
+1 task1.1/mixed_train_to_the_coordinates_dataset/2627.jpg
+(0, 65, 69, 83) (94, 49, 32, 32)
+1 diff 12.5
+1 diff 1.25
+2 task1.1/mixed_train_to_the_coordinates_dataset/2628.jpg
+(12, 53, 65, 59) (94, 46, 36, 48)
+2 diff 1.5
+2 diff 2.0
+3 task1.1/mixed_train_to_the_coordinates_dataset/2629.jpg
+(18, 61, 52, 56) (94, 36, 35, 58)
+3 diff 2.5
+3 diff 2.5
+4 task1.1/mixed_train_to_the_coordinates_dataset/2630.jpg
+4 h1 is None, continue
+5 task1.1/mixed_train_to_the_coordinates_dataset/2632.jpg
+(11, 58, 62, 57) (94, 41, 31, 41)
+5 diff 1.0
+5 diff 2.5
+6 task1.1/mixed_train_to_the_coordinates_dataset/2633.jpg
+(11, 49, 67, 64) (94, 42, 38, 47)
+6 diff 2.25
+6 diff 1.5
+7 task1.1/mixed_train_to_the_coordinates_dataset/2634.jpg
+(13, 56, 60, 65) (94, 50, 29, 37)
+7 diff 1.0
+7 diff 2.25
+8 task1.1/mixed_train_to_the_coordinates_dataset/2635.jpg
+(14, 50, 51, 68) (94, 39, 34, 44)
+8 diff 1.5
+8 diff 3.75
+9 task1.1/mixed_train_to_the_coordinates_dataset/2637.jpg
+(22, 52, 50, 72) (94, 39, 35, 47)
+9 diff 0.25
+9 diff 0.75
+10 task1.1/mixed_train_to_the_coordinates_dataset/2638.jpg
+(19, 54, 57, 65) (94, 40, 36, 49)
+10 diff 2.0
+10 diff 1.25
+11 task1.1/mixed_train_to_the_coordinates_dataset/2639.jpg
+(18, 54, 66, 66) (95, 36, 37, 48)
+11 diff 1.75
+11 diff 0.75
+12 task1.1/mixed_train_to_the_coordinates_dataset/2642.jpg
+(14, 54, 65, 65) (100, 32, 32, 50)
+12 diff 1.0
+12 diff 2.25
+13 task1.1/mixed_train_to_the_coordinates_dataset/2643.jpg
+(8, 52, 66, 72) (94, 48, 30, 38)
+13 diff 0.25
+13 diff 2.0
+14 task1.1/mixed_train_to_the_coordinates_dataset/2644.jpg
+(16, 60, 52, 55) (94, 48, 31, 37)
+14 diff 1.5
+14 diff 1.25
+15 task1.1/mixed_train_to_the_coordinates_dataset/2645.jpg
+(0, 35, 89, 102) (98, 51, 32, 39)
+15 diff 1.25
+15 diff 0.5
+16 task1.1/mixed_train_to_the_coordinates_dataset/2646.jpg
+(11, 52, 60, 66) (94, 44, 37, 43)
+16 diff 1.0
+16 diff 4.25
+17 task1.1/mixed_train_to_the_coordinates_dataset/2647.jpg
+(19, 52, 54, 62) (94, 35, 35, 53)
+17 diff 3.5
+17 diff 3.5
+18 task1.1/mixed_train_to_the_coordinates_dataset/2649.jpg
+(5, 46, 63, 63) (94, 46, 35, 46)
+18 diff 7.0
+18 diff 2.0
+19 task1.1/mixed_train_to_the_coordinates_dataset/2650.jpg
+(8, 52, 64, 65) (94, 47, 32, 39)
+19 diff 0.5
+19 diff 1.75
+#+end_example
+
+** DONE match images SIFT
+#+begin_src python :var x=library :results output :exports both :session s1 :timout 20
+import cv2 as cv
+from matplotlib import pyplot as plt
+
+img_files, plus_points, train_rectangles, digits_rectangles, hints = get_all()
+
+def compare_two_images_swift(img1, img2):
+    # bf = cv.BFMatcher(cv.NORM_L2, crossCheck=True)
+    # img_jg = cv.cvtColor(img_j, cv.COLOR_BGR2GRAY)
+    img1 = cv.cvtColor(img1, cv.COLOR_BGR2GRAY)
+    img2 = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)
+    sift = cv.SIFT_create()
+    kp1, des1 = sift.detectAndCompute(img1,None)
+    kp2, des2 = sift.detectAndCompute(img2,None)
+
+    FLANN_INDEX_KDTREE = 1
+    index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+    search_params = dict(checks=50)   # or pass empty dictionary
+    flann = cv.FlannBasedMatcher(index_params,search_params)
+    # flann = cv.FlannBasedMatcher()
+    matches = flann.knnMatch(des1,des2,k=2)
+    # Need to draw only good matches, so create a mask
+    matchesMask = [[0,0] for i in range(len(matches))]
+    # ratio test as per Lowe's paper
+    count = 0
+    for i,(m,n) in enumerate(matches):
+        if m.distance < 0.7*n.distance:
+            matchesMask[i]=[1,0]
+            count+=1
+    return count
+
+# create BFMatcher object
+
+
+for i in range(len(img_files)):
+    if i != 0:
+        break
+    fp = img_files[i]
+    print(fp)
+    src = cv.imread(fp)
+
+    assert src is not None, "img could not be read"
+
+
+    # keys = []
+    # for idd in file_ids:
+    #
+    img_hint = get_hint_subimage(src)
+    h1, h2 = hint_parser(digits_rectangles[i])
+    # print(i, "h1,h2:", h1, "\n", h2)
+    if h1 is None:
+        print(i, "h1 is None, continue")
+        continue
+    x1, y1 = h1[0]
+    x2, y2 = h1[1]
+    a = 10
+    # img_h = get_subimage_roi_xy(img_hint, h1[0], h1[1]) # simple
+    img_h1 = get_subimage_roi_xywh(img_hint, x1-a, y1-a, x2-x1+a*2, y2-y1+a*2) # 24
+    x1, y1 = h2[0]
+    x2, y2 = h2[1]
+    # img_h2 = get_subimage_roi_xy(img_hint, h2[0], h2[1]) # simple
+    img_h2 = get_subimage_roi_xywh(img_hint, x1-a, y1-a, x2-x1+a*2, y2-y1+a*2) # 24
+
+
+    # img1 = img[0:200, 0:200].copy()
+    j=0
+    img_j = src[0:200, 200*j:(1+j)*200].copy()
+
+
+    xy1, xy2 = digits_rectangles[i]['5'] # 1- 24 2-23 3-cubic 4-romb 5-prizrak
+    # subimg = get_subimage_roi_xy(src, xy1, xy2)
+    img_jg = cv.cvtColor(img_j, cv.COLOR_BGR2GRAY)
+    img_h1g = cv.cvtColor(img_h1, cv.COLOR_BGR2GRAY)
+    img_h2g = cv.cvtColor(img_h2, cv.COLOR_BGR2GRAY)
+    img1 = img_jg
+    img2 = img_h1g
+    r = compare_two_images_swift(img_j, img_h1)
+    print("r", r)
+
+    # find the keypoints and descriptors with ORB
+
+    # img_h1g = cv.Laplacian(img_h1g,cv.CV_8UC1)
+    # img_jg = cv.Laplacian(img_jg,cv.CV_8UC1)
+    # img_h1g = cv.Canny(img_h1g,50,200)
+    # img_jg = cv.Canny(img_jg,50,200)
+    # plt.imshow(img_jg),plt.show()
+
+    # Initiate ORB detector
+    # orb = cv.ORB_create()
+    # kp1, des1 = orb.detectAndCompute(img1,None)
+    # kp2, des2 = orb.detectAndCompute(img2,None)
+
+
+    # # Match descriptors.
+    # print(des1)
+    # print(des2)
+
+    sift = cv.SIFT_create()
+    kp1, des1 = sift.detectAndCompute(img1,None)
+    kp2, des2 = sift.detectAndCompute(img2,None)
+
+    FLANN_INDEX_KDTREE = 1
+    index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+    search_params = dict(checks=50)   # or pass empty dictionary
+    flann = cv.FlannBasedMatcher(index_params,search_params)
+    # flann = cv.FlannBasedMatcher()
+    matches = flann.knnMatch(des1,des2,k=2)
+    # Need to draw only good matches, so create a mask
+    matchesMask = [[0,0] for i in range(len(matches))]
+    # ratio test as per Lowe's paper
+    a = 0
+    for i,(m,n) in enumerate(matches):
+        if m.distance < 0.7*n.distance:
+            matchesMask[i]=[1,0]
+            a+=1
+    print(a, matchesMask)
+
+    draw_params = dict(matchColor = (0,255,0),
+                   singlePointColor = (255,0,0),
+                   matchesMask = matchesMask,
+                   flags = cv.DrawMatchesFlags_DEFAULT)
+    img3 = cv.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,**draw_params)
+    plt.imshow(img3,),plt.show()
+    # akaze = cv.AKAZE_create(diffusivity =0.0001)
+    # kp1, des1 = akaze.detectAndCompute(img_jg, None)
+    # kp2, des2 = akaze.detectAndCompute(img_h1g, None)
+
+    # print(des1)
+    # print(des2)
+
+    # matcher = cv.DescriptorMatcher_create(cv.DescriptorMatcher_BRUTEFORCE_HAMMING)
+    # nn_matches = matcher.knnMatch(desc1, desc2, 2)
+
+
+    # matches = bf.match(des1,des2)
+    # # Sort them in the order of their distance.
+    # matches = sorted(matches, key = lambda x:x.distance)
+    # # Draw first 10 matches.
+    # img3 = cv.drawMatches(img_j,kp1,img_h1,kp2,matches[:10],None,flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+
+    # plt.imshow(img3)
+    # plt.show()
+    # plt.close()
+#+end_src
+
+#+RESULTS:
+: task1.1/mixed_train_to_the_coordinates_dataset/2626.jpg
+: r 26
+: 26 [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [1, 0], [1, 0], [0, 0], [0, 0], [0, 0], [1, 0], [1, 0], [0, 0], [1, 0], [1, 0], [1, 0], [0, 0], [1, 0], [1, 0], [1, 0], [1, 0], [0, 0], [1, 0], [0, 0], [0, 0], [1, 0], [0, 0], [0, 0], [1, 0], [1, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [1, 0], [0, 0], [0, 0], [0, 0], [1, 0], [0, 0], [0, 0], [0, 0], [1, 0], [1, 0], [1, 0], [1, 0], [0, 0], [1, 0], [1, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [1, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [1, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [1, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
+
+** DONE rotate small images - many
+#+begin_src python :var x=library :results file graphics :file ./autoimgs/rotatesingle.png :exports both :session s1 :timeout 160
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
+import os
+# own
+from shared_image_functions import fix_angle, get_lines_c, crop
+
+img_files, plus_points, train_rectangles, digits_rectangles, hints = get_all()
+
+for i in range(len(img_files)):
+    if i <5:
+        continue
+    if i > 20:
+        break
+    fp = img_files[i]
+    img = cv.imread(fp)
+    assert img is not None, "img could not be read"
+    img = img[0:200, 0:200]
+    # img2, _ = crop(img.copy(), rotate=False, rate=1.6)
+    # img2 = cv.resize(img, (900, 900))
+    # plt.imshow(img)
+    # plt.show()
+    img2 = fix_angle(img, get_lines_c)
+    # a = img
+    # b = img2
+    # larger = a if a.size > b.size else b
+    # smaller =  a if a.size < b.size else b
+    # smaller = np.resize(smaller, larger.shape)
+    _, axs = plt.subplots(1, 2, figsize=(10, 4))
+    axs[0].imshow(img)
+    axs[1].imshow(img2)
+    plt.title(fp)
+    # plt.savefig('autoimgs/rotatesingle.png')
+    plt.show()
+    plt.close()
+    # break
+#+end_src
+
+#+RESULTS:
+[[file:./autoimgs/rotatesingle.png]]
+** DONE train detection - histogram/back_projection
+https://docs.opencv.org/4.8.0/da/d7f/tutorial_back_projection.html
+
+1) src to HSV format
+2)
+#+begin_src python :var x=library :results output :exports both :session s1
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
+import os
+from scipy.spatial.distance import pdist
+from scipy.spatial.distance import squareform
+# own
+from shared_image_functions import find_angle, fix_angle, get_lines_c
+
+# -------------- ANALYSE TEMPLATE ---------------------
+template = cv.imread('train.png') # , cv.IMREAD_GRAYSCALE # , cv.IMREAD_GRAYSCALE
+
+# -- exctract HUE from source
+src = template
+hsv = cv.cvtColor(src, cv.COLOR_BGR2HSV)
+# hue = np.empty(hsv.shape, hsv.dtype)
+# ch = (0, 0)
+# cv.mixChannels([hsv], [hue], ch) #(400, 1400, 3) copy 0 channel
+
+# -- get histogram for template --
+# hsv, ranges = hsv_to_gimp(hsv)
+output_histogram(hsv, [(0,255)]*3)
+
+# ---------------------- TEST ON ALL ---------------
+# template = template[:,:,0] # BGR
+img_files, plus_points, train_rectangles, digits_rectangles, hints = get_all()
+
+dilatation_type = cv.MORPH_RECT
+dilatation_size = 5
+element = cv.getStructuringElement(dilatation_type, (2*dilatation_size + 1, 2*dilatation_size+1), (dilatation_size, dilatation_size))
+
+for i in range(len(img_files)):
+    if i != 49:
+        continue
+    fp = img_files[i]
+    print(fp)
+    src = cv.imread(fp)
+    assert src is not None, "img could not be read"
+    # --------------- 1) BGR to HSV -------------
+    hsv = cv.cvtColor(src.copy(), cv.COLOR_BGR2HSV)
+    # --------------- 2) split and rotate
+    imgs = [hsv[0:200, 200*j:(1+j)*200].copy() for j in range(7)]
+    # [print(x.shape) for x in imgs]
+    # --------------- 3) fix orientation
+    a = find_angle(imgs[0], get_lines_c)
+    imgs = [fix_angle(img, angle=a) for img in imgs]
+    hsv = np.hstack(imgs)
+    # --------------- 4) find train contours
+    low_H, high_H = 102, 128
+    low_S, high_S = 102, 153
+    low_V, high_V = 102, 204
+    mask = cv.inRange(hsv, (low_H, low_S, low_V), (high_H, high_S, high_V))
+    # hsv = cv.cvtColor(src, cv.COLOR_HSV2GRAY)
+    print("mask.shape", mask.shape)
+    # _retval, th = cv.threshold(mask, 80, 255, cv.THRESH_BINARY)
+    # print("th.shape", th.shape)
+    # hsv_filtered = cv.bitwise_and(hsv, hsv, mask = mask)
+    img = mask
+    img = cv.dilate(img, element)
+    img = cv.erode(img, element)
+    plt.imshow(img)
+    plt.show()
+    contours, hierarchy = cv.findContours(img, cv.RETR_TREE,
+                                          cv.CHAIN_APPROX_SIMPLE)
+    # [print(cv.contourArea(c)) for c in contours]
+    contours = [contours for c in contours if cv.contourArea(c) > 70]
+    # print(len(contours))
+    assert len(contours) == 7
+    # ------------- 5) calc contour centers --------------
+    centers = contours_calc_centers(contours) # and sort
+    # ------------- 6) calc distance on grid - vertical and horizontal
+    centers_single = [(c[0] - 200*j,c[1]) for j, c in enumerate(centers)]
+    print(centers_single)
+    # -- x
+    distvec = pdist(centers_single, metric = lambda x, y: abs(abs(x[0] - y[0])/1.5 + abs(x[1] - y[1])))
+    sqf = squareform(distvec)
+    np.fill_diagonal(sqf, np.inf)
+    i, j = np.where(sqf==sqf.min())
+    i, j = i[0], j[0]
+    xdist = abs(centers_single[i][0] -  centers_single[j][0])
+    print("x", centers_single[i], centers_single[j])
+    print("closest by x", xdist)
+    # -- y
+    distvec = pdist(centers_single, metric = lambda x, y: abs(abs(x[0] - y[0]) + abs(x[1] - y[1])/1.5))
+    sqf = squareform(distvec)
+    np.fill_diagonal(sqf, np.inf)
+    i, j = np.where(sqf==sqf.min())
+    i, j = i[0], j[0]
+    print("y", centers_single[i], centers_single[j])
+    ydist = abs(centers_single[i][1] - centers_single[j][1])
+    print("closest by y", ydist)
+    # ------------- 7) get vertical and horizontal figures-numbers
+    for c in centers_single:
+        print("c", c)
+        # (|  |)
+        xr = (round(c[0]-xdist/2), round(c[0]+xdist/2))
+        print("xr", xr)
+        # (=)
+        yr = (round(c[1]-ydist/2), round(c[1]+ydist/2))
+        print("yr", yr)
+        # 1-----------\.
+        # -----------2/
+        cx = round(c[0])
+        cy = round(c[1])
+        ractx = ((0, yr[0]), (cx, yr[1])) # (1, 2)
+        # |1 |
+        # \./2
+        racty = ((xr[0], 0), (xr[1], cy)) # (1, 2)
+        print("ractx", ractx)
+        print("racty", racty)
+        # src = cv.drawContours(src, [ractx], 0, (0), -1)
+        # cv.rectangle(src, ractx[0], ractx[1], (255,0,0), 10)
+        cv.rectangle(src, racty[0], racty[1], (255,0,0), 10)
+        # ------------ 8) cut rectangle per x and y
+        # -- x
+        print("subimg", ractx[0][1],(ractx[1][1] - ractx[0][1]),
+                     ractx[0][0],(ractx[1][0] - ractx[0][0]))
+        subimgx = src[ractx[0][1]:ractx[1][1],
+                     ractx[0][0]:ractx[1][0]].copy()
+        # -- y
+        subimgy = src[racty[0][1]:racty[1][1],
+                     racty[0][0]:racty[1][0]].copy()
+        # plt.imshow(src)
+        # plt.show()
+        plt.imshow(subimgx)
+        plt.show()
+        plt.imshow(subimgy)
+        plt.show()
+
+        break
+
+    # for c in centers:
+    #     print(c)
+    #     break
+
+    # output = cv.cvtColor(hsv_filtered, cv.COLOR_HSV2BGR)
+    # _retval, bin = cv.threshold(gray, 80, 255, cv.THRESH_BINARY)
+    # cv.normalize(hist, hist, alpha=0, beta=255, norm_type=cv.NORM_MINMAX)
+    # print(np.max(frame_threshold))
+    break
+
+# plt.imshow(output)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+i 0
+26.0 	 [2.]
+51.0 	 [6.]
+76.0 	 [7.]
+102.0 	 [2.]
+128.0 	 [16.]
+153.0 	 [3.]
+178.0 	 [1.]
+204.0 	 [1.]
+230.0 	 [2.]
+255.0 	 [1.]
+
+i 1
+26.0 	 [0.]
+51.0 	 [1.]
+76.0 	 [3.]
+102.0 	 [3.]
+128.0 	 [26.]
+153.0 	 [7.]
+178.0 	 [2.]
+204.0 	 [0.]
+230.0 	 [0.]
+255.0 	 [0.]
+
+i 2
+26.0 	 [0.]
+51.0 	 [1.]
+76.0 	 [0.]
+102.0 	 [3.]
+128.0 	 [23.]
+153.0 	 [3.]
+178.0 	 [5.]
+204.0 	 [7.]
+230.0 	 [0.]
+255.0 	 [0.]
+
+task1.1/mixed_train_to_the_coordinates_dataset/2683.jpg
+mask.shape (200, 1400)
+#+end_example
+
+** final3
+:PROPERTIES:
+:ORDERED:  t
+:END:
+#+begin_src python :var x=library :results output :exports both :session s1 :timeout 900
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
+from dataclasses import dataclass
+from shared_image_functions import find_angle, fix_angle, get_lines_c
+from scipy.spatial.distance import pdist
+from scipy.spatial.distance import squareform
+
+def find_train(src)->list:
+    """ src - big image"""
+    MIN_TRAIN_AREA = 100
+    # --------------- 1) BGR to HSV -------------
+    hsv = cv.cvtColor(src.copy(), cv.COLOR_BGR2HSV)
+    # --------------- 2) split and rotate
+    imgs = [hsv[0:200, 200*j:(1+j)*200].copy() for j in range(7)]
+    imgs_src = [src[0:200, 200*j:(1+j)*200].copy() for j in range(7)]
+
+    # --------------- 3) fix orientation
+    # ss = imgs_src[0]
+    # # ss = ss[30:, 40:]
+    # a = find_angle(imgs[0], get_lines_c)
+    # print("aaaaaaaaaaaaaaaaaaaaa", a)
+    # ss = fix_angle(imgs_src[0], angle=a)
+    # imgs = [fix_angle(img, angle=a) for img in imgs]
+    # imgs_src0 = fix_angle(imgs_src[0], angle=a)
+    imgs_src0 = imgs_src[0]
+    hsv = np.hstack(imgs)
+    # --------------- 4) find train contours
+    low_H, high_H = 112, 128
+    low_S, high_S = 102, 153
+    low_V, high_V = 102, 204
+    mask = cv.inRange(hsv, (low_H, low_S, low_V), (high_H, high_S, high_V))
+    # print("mask.shape", mask.shape)
+
+    dilatation_type = cv.MORPH_RECT
+    dilatation_size = 5
+    element = cv.getStructuringElement(dilatation_type, (2*dilatation_size + 1, 2*dilatation_size+1), (dilatation_size, dilatation_size))
+
+    img = mask
+    img = cv.dilate(img, element)
+    img = cv.erode(img, element)
+    contours, hierarchy = cv.findContours(img, cv.RETR_TREE,
+                                          cv.CHAIN_APPROX_SIMPLE)
+    contours = [c for c in contours if cv.contourArea(c) > MIN_TRAIN_AREA]
+    # print(len(contours))
+    assert len(contours) == 7
+
+    # ------------- 5) calc contour centers --------------
+    centers = contours_calc_centers(contours) # and sort
+    # ------------- 6) calc distance on grid - vertical and horizontal
+    centers_single = [(c[0] - 200*j,c[1]) for j, c in enumerate(centers)]
+    # print(centers_single)
+    # -- x
+    distvec = pdist(centers_single, metric = lambda x, y: abs(abs(x[0] - y[0])/1.5 + abs(x[1] - y[1])))
+    sqf = squareform(distvec)
+    np.fill_diagonal(sqf, np.inf)
+    i, j = np.where(sqf==sqf.min())
+    i, j = i[0], j[0]
+    xdist = abs(centers_single[i][0] -  centers_single[j][0])
+    # print("x", centers_single[i], centers_single[j])
+    # print("closest by x", xdist)
+    # -- y
+    distvec = pdist(centers_single, metric = lambda x, y: abs(abs(x[0] - y[0]) + abs(x[1] - y[1])/1.5))
+    sqf = squareform(distvec)
+    np.fill_diagonal(sqf, np.inf)
+
+    i, j = np.where(sqf==sqf.min())
+    i, j = i[0], j[0]
+    # print("y", centers_single[i], centers_single[j])
+    ydist = abs(centers_single[i][1] - centers_single[j][1])
+    # print("closest by y", ydist)
+    # ------------- 7) get vertical and horizontal figures-numbers
+    rects = []
+    for c in centers_single:
+        # print("c", c)
+        # (|  |)
+        xr = (round(c[0]-xdist/2), round(c[0]+xdist/2))
+        # print("xr", xr)
+        # (=)
+        yr = (round(c[1]-ydist/2), round(c[1]+ydist/2))
+        # print("yr", yr)
+        # 1-----------\.
+        # -----------2/
+        cx = round(c[0])
+        cy = round(c[1])
+        ractx = ((0, yr[0]), (cx, yr[1])) # (1, 2)
+        # |1 |
+        # \./2
+        racty = ((xr[0], 0), (xr[1], cy)) # (1, 2)
+        # ------------ 8) cut rectangle per x and y
+        # -- x
+        # print("subimg", ractx[0][1],(ractx[1][1] - ractx[0][1]),
+        #              ractx[0][0],(ractx[1][0] - ractx[0][0]))
+
+        subimgx = imgs_src0[ractx[0][1]:ractx[1][1],
+                     ractx[0][0]:ractx[1][0]].copy()
+        # -- y
+        subimgy = imgs_src0[racty[0][1]:racty[1][1],
+                     racty[0][0]:racty[1][0]].copy()
+        rects.append({"subimgx": subimgx, "subimgy": subimgy,
+        "ractx": ractx, "racty": racty, "center": c})
+        # plt.imshow(src)
+        # plt.show()
+        # plt.imshow(subimgx)
+        # plt.show()
+        # plt.imshow(subimgy)
+        # plt.show()
+        # break
+
+    return rects
+
+
+
+
+
+HINT1_AREA_MIN = 2536
+HINT1_AREA_MAX = 6038
+HINT2_AREA_MIN = 684
+HINT2_AREA_MAX = 2096
+
+@dataclass
+class ContourStats:
+    circle_center_x_min: float
+    circle_center_x_max: float
+    circle_center_y_min: float
+    circle_center_y_max: float
+    circle_radius_min: float
+    circle_radius_max: float
+    circle_area_min: float
+    circle_area_max: float
+
+
+def find_object(image, circle_stats: ContourStats, conti = None):
+    """ image - BGR
+    loop: 1) channels, 2) threshold 3) contours
+    continue: ((i, thrs), cnt)
+    used in def find_hint_images """
+    dilatation_type = cv.MORPH_RECT
+    dilatation_size = 1
+    element = cv.getStructuringElement(dilatation_type, (2*dilatation_size + 1, 2*dilatation_size+1), (dilatation_size, dilatation_size))
+
+
+    contour_result = None
+    # -- 1)
+    r = cv.split(image.copy())
+    if conti is not None:
+        r = r[conti[0][0]:]
+
+    for i, gray in enumerate(r):
+        if contour_result is not None:
+            break
+        # -- 2)
+        ra = range(0, 255, 10)
+        if conti is not None:
+            ra = range(conti[0][1], 255, 10)
+        for thrs in ra:
+            if contour_result is not None:
+                break
+            # -- dilation
+            gray = cv.erode(gray, element)
+
+            gray = cv.dilate(gray, element)
+            gray = cv.dilate(gray, element)
+
+            _retval, bin = cv.threshold(gray, thrs, 255, cv.THRESH_BINARY)
+            contours, _ = cv.findContours(bin, cv.RETR_LIST,
+                                          cv.CHAIN_APPROX_SIMPLE)
+            # -- 3)
+            for j, cnt in enumerate(contours):
+                if contour_result is not None:
+                    break
+                if conti is not None and all(cnt[0][0] == conti[1][0][0]):
+                    continue # TODO: sort contours and filter by x,y
+                # -- features of contour
+                (x,y),radius = cv.minEnclosingCircle(cnt)
+                area = cv.contourArea(cnt)
+
+                if circle_stats.circle_center_x_min < x < circle_stats.circle_center_x_max \
+                   and circle_stats.circle_center_y_min < y < circle_stats.circle_center_y_max \
+                   and circle_stats.circle_area_min < area < circle_stats.circle_area_max \
+                   and circle_stats.circle_radius_min < radius < circle_stats.circle_radius_max:
+
+                    contour_result = cnt
+                    break
+    return contour_result, (i, thrs)
+
+
+def find_hint_images(hint_img):
+    global HINT1_X_MAX, h1s, h2s
+    img_hint1 = img_hint[:,:HINT1_X_MAX] # cut hint at right)
+    cnt1, conti = find_object(img_hint1, h1s)
+    if cnt1 is None:
+        print(i, "find object result is None")
+        return None
+    # -- hint2 find --
+    img_hint2 = img_hint[:,HINT1_X_MAX:] # cut hint at left
+
+    cnt2, _ = find_object(img_hint2, h2s)
+    if cnt2 is None:
+        print(i, "find HINT2 is None")
+        return None
+    r1 = cv.boundingRect(cnt1)
+    x,y,w,h = cv.boundingRect(cnt2)
+    x += HINT1_X_MAX
+    return r1, (x,y,w,h)
+
+# ------------------- PREPARE HINT STATISITCS
+HINT1_STATS_s = {'circle_center_x_min': 38.5, 'circle_center_x_max': 50.5, 'circle_center_y_min': 81.0, 'circle_center_y_max': 93.0, 'circle_radius_min': 28.41224479675293, 'circle_radius_max': 43.840721130371094}
+HINT2_STATS_s = {'circle_center_x_min': 104.0, 'circle_center_x_max': 116.5, 'circle_center_y_min': 56.5, 'circle_center_y_max': 70.5, 'circle_radius_min': 14.764923095703125, 'circle_radius_max': 25.831281661987305}
+# 'circle_center_x_max': 50.5 + 'circle_radius_max': 43.840721130371094 = 94
+HINT1_X_MAX = 94
+
+HINT1_STATS_s["circle_area_min"] = HINT1_AREA_MIN
+HINT1_STATS_s["circle_area_max"] = HINT1_AREA_MAX
+HINT2_STATS_s["circle_area_min"] = HINT2_AREA_MIN
+HINT2_STATS_s["circle_area_max"] = HINT2_AREA_MAX
+
+# HINT2_STATS_small = {k:((v - HINT1_X_MAX) if k.startswith("circle_center_x_") else v) for k,v in HINT2_STATS.items()}
+
+MUL = 1.3
+HINT1_STATS = {}
+for k,v in HINT1_STATS_s.items():
+    if k.endswith('min'):
+        HINT1_STATS[k] = v/ MUL
+    # elif "radius_max" in k: # max
+    #     HINT1_STATS[k] = v* 1.8
+    else:
+        HINT1_STATS[k] = v*MUL
+HINT2_STATS = {}
+for k,v in HINT2_STATS_s.items():
+    if '_x_' in k:
+        v = v - HINT1_X_MAX
+    if k.endswith('min'):
+        HINT2_STATS[k] = v/ MUL
+    # elif "radius_max" in k: # max
+    #     HINT2_STATS[k] = v* 1.8
+    else:
+        HINT2_STATS[k] = v *MUL
+
+
+h1s = ContourStats(**HINT1_STATS)
+h2s = ContourStats(**HINT2_STATS)
+
+
+
+
+
+def solve_captcha(image_path):
+    src = cv.imread(image_path)
+    assert src is not None, "img could not be read"
+    # ------- 2) prepare hint images
+    img_hint = get_hint_subimage(src)
+    # ------- find hint subimages
+    hrec1, hrec2 = find_hint_images(img_hint)
+
+    # print(hrec1, hrec2)
+    # ------- extract hint subimages
+    x,y,w,h = hrec1
+
+    x1, y1 = (x,y)
+    x2, y2 = (x+w, y+h)
+    # with padding approach
+    HINT_PADDING = 5
+
+
+    # print("wtf", hrec1, x1, y1, x2, y2)
+    yh = y+h + HINT_PADDING
+    xw = x+w + HINT_PADDING
+    y = y - HINT_PADDING
+    x = x - HINT_PADDING
+    y = y if y>=0 else 0
+    x =x if x>=0 else 0
+    yh = yh if yh<=200 else 200
+    xw = xw if xw<=HINT_HORIZ else HINT_HORIZ
+    # plt.imshow(img_hint)
+    # plt.show()
+    HINT_PADDING = 3
+    img_h1 = img_hint[y:yh,x:xw].copy()
+    x,y,w,h = hrec2
+    yh = y+h + HINT_PADDING
+    xw = x+w + HINT_PADDING
+    y = y - HINT_PADDING
+    x = x - HINT_PADDING
+    y = y if y>=0 else 0
+    x =x if x>=0 else 0
+    yh = yh if yh<=200 else 200
+    xw = xw if xw<=HINT_HORIZ else HINT_HORIZ
+
+
+    img_h2 = img_hint[y:yh,x:xw].copy()
+    # ----- hint images to gray
+    img_h1 = cv.cvtColor(img_h1, cv.COLOR_BGR2GRAY)
+    img_h2 = cv.cvtColor(img_h2, cv.COLOR_BGR2GRAY)
+
+    # ------- 3) prepare main image - fix orientation
+    imgs = [src[0:200, 200*j:(1+j)*200].copy() for j in range(7)]
+    a = find_angle(imgs[0], get_lines_c)
+
+    imgs = [fix_angle(img, angle=a) for img in imgs]
+    # ------- 4) find train
+
+    ftrains = find_train(np.hstack(imgs))
+    # break
+
+
+    # print("train keys", ftrains[0].keys())
+    # --------- 4) compare hint images with ones near train
+    SIGNIFICANT_DIFFERENCE_BETWEEN_TRAINS = 10
+    trains = []
+
+    for j, ft in enumerate(ftrains):
+        trains.append(ft['center'])
+        # print(j, ft['center'])
+
+    # ------- 5) find hint images on main image
+    img_src1 = img_h1
+    img_src2 = img_h2
+    img_dst = imgs[0]
+
+
+    dst_pts1 = match_images_swift(img_src1,img_dst, distance=1)
+    # TODO: may be null
+    dst_pts2 = match_images_swift(img_src2,img_dst, distance=1)
+    # TODO: may be null
+    # print(dst_pts1)
+    # print(dst_pts2)
+
+    # plt.imshow(img_src2),plt.show()
+    # print("dst_pts1", dst_pts1)
+    # print("dst_pts2", dst_pts2)
+    # center1 = get_centroid(dst_pts1)
+    if len(dst_pts1) == 1:
+        center1 = dst_pts1[0]
+    elif len(dst_pts1)> 1:
+        center1 = get_centroid(dst_pts1)
+    else:
+        raise Exception()
+
+    if len(dst_pts2) == 1:
+        center2 = dst_pts2[0]
+    elif len(dst_pts2)> 1:
+        center2 = get_centroid(dst_pts2)
+    else:
+        raise Exception()
+
+
+    # print(center1)
+    # print(center2)
+    # # trains = [[x[0], x[1]] for x in trains]
+    # # trains = sum(trains,[])
+    # print("trains", trains)
+    # v = [plus_points[i][0]] + list(center1) + list(center2) + trains
+    # np.train
+    # assert len(v) == 19
+    # table.append(v)
+    # print("wtf", i,plus_points[i][0], center1, center2, trains)
+    # draw_points(img_dst, [center2])
+    r = []
+    for t in trains:
+        # print(t, center1, center2)
+        # print(abs(center1[1] - t[1]), abs(center2[0] - t[0]))
+        sub = abs(center1[1] - t[1]) + abs(center2[0] - t[0])
+        r.append(sub)
+    return np.argmin(r)
+
+
+# ---------------------- TEST ON ALL ---------------
+img_files, plus_points, train_rectangles, digits_rectangles, hints = \
+  get_all(main_path = "task1.1/mixed_train_to_the_coordinates_dataset")
+
+
+res = []
+for i in range(len(img_files)):
+    # if i > 20:
+    #     continue
+    res.append(solve_captcha(img_files[i]))
+print(len(res))
+# print(len(plus_points[:20+1]))
+print(len(plus_points))
+# v = [int(x1 == x2[0]) for x1, x2 in zip(res, plus_points[:20+1])]
+v = [int(x1 == x2[0]) for x1, x2 in zip(res, plus_points)]
+
+print("accuracy", len([x for x in v if x ==1])/len(v) )
+#+end_src
+
+#+RESULTS:
+: 1020
+: 1020
+: accuracy 0.753921568627451
