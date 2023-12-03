@@ -15,6 +15,9 @@ Additional task is not solved.
 
 Accuracy: 0.9137254901960784 or 91%
 
+This task may be solved with better accuracy and speed if NN would be used. I don't have GPU now.
+
+If I would use NNs I would train of PyTorch Object Detection model and simple CNN with fully connected layers to match images and predict result.
 
 В следующем порядке:
 1) Нашел два прямоугольника на изображении подсказке с помощью cv.findContours и собрал статистику об их максимальном/минимальном положении.
@@ -28,6 +31,9 @@ Accuracy: 0.9137254901960784 or 91%
 
 Точность 0.9137254901960784 или 91%
 
+Эту задачу можно решить с большей точностью и скоростью, если использовать NN. Просто у меня сейчас нет GPU и я не хочу тратить время на веб интервейс в Kaggle или Google Colab.
+
+Если бы я использовал NN, я бы обучил модель обнаружения объектов PyTorch и простую CNN с полностью связанными слоями для сопоставления изображений и прогнозирования результата.
 ** How to test
 python final.py task1.1/mixed_train_to_the_coordinates_dataset/2627.jpg | head -n1
 : 2
