@@ -3,7 +3,6 @@ import json
 import glob
 import os
 import numpy as np
-from matplotlib import pyplot as plt
 
 class MyException(Exception):
     pass
@@ -168,7 +167,7 @@ def get_hint_subimage(img):
 def draw_points(img, pts:list):
     for x,y in pts:
         image = cv.circle(img, (int(x), int(y)), radius=1, color=(0, 0, 255), thickness=-1)
-    plt.imshow(image,),plt.show()
+    # plt.imshow(image,),plt.show()
 
 
 def get_centroid(pts:np.array):
@@ -218,7 +217,7 @@ def match_images_swift(img_src,img_dst, distance=0.9):
 #------------------------------------------------- MAIN -----------------------------------------------------------
 import cv2 as cv
 import numpy as np
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 from dataclasses import dataclass
 from shared_image_functions import find_angle, fix_angle, get_lines_c
 from scipy.spatial.distance import pdist
@@ -462,6 +461,27 @@ h2s = ContourStats(**HINT2_STATS)
 
 
 
+def get_hint_sub(img, xywh, padding):
+    x,y,w,h = xywh
+
+    x1, y1 = (x,y)
+    x2, y2 = (x+w, y+h)
+    # with padding approach
+    HINT_PADDING = 5
+
+    # print("wtf", hrec1, x1, y1, x2, y2)
+    yh = y+h + padding
+    xw = x+w + padding
+    y = y - padding
+    x = x - padding
+    y = y if y>=0 else 0
+    x =x if x>=0 else 0
+    yh = yh if yh<=200 else 200
+    xw = xw if xw<=HINT_HORIZ else HINT_HORIZ
+    img_h1 = img[y:yh,x:xw].copy()
+    img_h1 = cv.cvtColor(img_h1, cv.COLOR_BGR2GRAY)
+    return img_h1
+
 
 def solve_captcha(image_path):
     src = cv.imread(image_path)
@@ -473,48 +493,14 @@ def solve_captcha(image_path):
 
     # print(hrec1, hrec2)
     # ------- extract hint subimages
-    x,y,w,h = hrec1
-
-    x1, y1 = (x,y)
-    x2, y2 = (x+w, y+h)
-    # with padding approach
-    HINT_PADDING = 5
-
-
-    # print("wtf", hrec1, x1, y1, x2, y2)
-    yh = y+h + HINT_PADDING
-    xw = x+w + HINT_PADDING
-    y = y - HINT_PADDING
-    x = x - HINT_PADDING
-    y = y if y>=0 else 0
-    x =x if x>=0 else 0
-    yh = yh if yh<=200 else 200
-    xw = xw if xw<=HINT_HORIZ else HINT_HORIZ
-    # plt.imshow(img_hint)
-    # plt.show()
-    HINT_PADDING = 3
-    img_h1 = img_hint[y:yh,x:xw].copy()
-    x,y,w,h = hrec2
-    yh = y+h + HINT_PADDING
-    xw = x+w + HINT_PADDING
-    y = y - HINT_PADDING
-    x = x - HINT_PADDING
-    y = y if y>=0 else 0
-    x =x if x>=0 else 0
-    yh = yh if yh<=200 else 200
-    xw = xw if xw<=HINT_HORIZ else HINT_HORIZ
-
-
-    img_h2 = img_hint[y:yh,x:xw].copy()
-    # ----- hint images to gray
-    img_h1 = cv.cvtColor(img_h1, cv.COLOR_BGR2GRAY)
-    img_h2 = cv.cvtColor(img_h2, cv.COLOR_BGR2GRAY)
+    # plt.imshow(img_hint),plt.show()
 
     # ------- 3) prepare main image - fix orientation
     imgs = [src[0:200, 200*j:(1+j)*200].copy() for j in range(7)]
     a = find_angle(imgs[0], get_lines_c)
 
     imgs = [fix_angle(img, angle=a) for img in imgs]
+    # plt.imshow(imgs[0]),plt.show()
     # ------- 4) find train
 
     ftrains = find_train(np.hstack(imgs))
@@ -531,19 +517,32 @@ def solve_captcha(image_path):
         # print(j, ft['center'])
 
     # ------- 5) find hint images on main image
-    img_src1 = img_h1
-    img_src2 = img_h2
     img_dst = imgs[0]
 
 
-    dst_pts1 = match_images_swift(img_src1,img_dst, distance=1)
+    for d, p in [(0.8, 5), (0.9,20), (0.8,1),  (0.7, -1)]:
+        img_h1 = get_hint_sub(img_hint, hrec1, p)
+        img_src1 = img_h1
+        dst_pts1 = match_images_swift(img_src1,img_dst, distance=d)
+        dst_pts1 = [x for x in dst_pts1 if x[0] < 70]
+        if len(dst_pts1) > 9 or len(dst_pts1) == 1:
+            break
+
+    for d, p in [(0.7, 5), (0.7,20), (0.7, 3), (0.9,15), (0.8, 5)]:
+        img_h2 = get_hint_sub(img_hint, hrec2, p)
+        img_src2 = img_h2
+        dst_pts2 = match_images_swift(img_src2,img_dst, distance=d)
+        dst_pts2 = [x for x in dst_pts2 if x[1] < 70]
+        if len(dst_pts2) > 9 or len(dst_pts2) == 1:
+            break
+    # plt.imshow(img_dst),plt.show()
+    # print("dst_pts1", len(dst_pts1))
     # TODO: may be null
-    dst_pts2 = match_images_swift(img_src2,img_dst, distance=1)
+
     # TODO: may be null
     # print(dst_pts1)
     # print(dst_pts2)
 
-    # plt.imshow(img_src2),plt.show()
     # print("dst_pts1", dst_pts1)
     # print("dst_pts2", dst_pts2)
     # center1 = get_centroid(dst_pts1)
@@ -552,16 +551,18 @@ def solve_captcha(image_path):
     elif len(dst_pts1)> 1:
         center1 = get_centroid(dst_pts1)
     else:
-        raise Exception()
+        # print("error1")
+        return 0
 
     if len(dst_pts2) == 1:
         center2 = dst_pts2[0]
     elif len(dst_pts2)> 1:
         center2 = get_centroid(dst_pts2)
     else:
-        raise Exception()
+        # print("error2")
+        return 0
 
-
+    # print("len(dst_pts1), len(dst_pts2)", len(dst_pts1), len(dst_pts2))
     # print(center1)
     # print(center2)
     # # trains = [[x[0], x[1]] for x in trains]
@@ -572,6 +573,9 @@ def solve_captcha(image_path):
     # assert len(v) == 19
     # table.append(v)
     # print("wtf", i,plus_points[i][0], center1, center2, trains)
+    # draw_points(img_dst, [center1])
+    # plt.imshow(img_h2),plt.show()
+    # draw_points(img_dst.copy(), dst_pts2)
     # draw_points(img_dst, [center2])
     r = []
     for t in trains:
@@ -579,8 +583,7 @@ def solve_captcha(image_path):
         # print(abs(center1[1] - t[1]), abs(center2[0] - t[0]))
         sub = abs(center1[1] - t[1]) + abs(center2[0] - t[0])
         r.append(sub)
-    return np.argmin(r)
-
+    return np.argmin(r) #, center1, center2
 
 # ---------------------- TEST ON ALL ---------------
 # img_files, plus_points, train_rectangles, digits_rectangles, hints = \
