@@ -1,6 +1,6 @@
 - [[file:task_for_zennolab/README.org]] - Computer Vision: solvation of captcha with OpenCV. (2023-12-01)
 - [[file:task_for_allmagen/README.org]] - Model and metrics selection, model calibration. (2023-10-13)
-- [[file:perfect_ML_pipeline.org]] - Model and metrics selection, model calibration.
+- [[file:perfect_ML_pipeline/perfect_ML_pipeline.org]] - Model and metrics selection, model calibration.
 - [[file:sql-task.org]] - SQL: CASE WHEN, CTE and subquery.
 - [[file:optimization.org]] - optimization task for bit-packing.
 - [[file:nft_data_engineer.org]] - answer question after analysis of articles.
