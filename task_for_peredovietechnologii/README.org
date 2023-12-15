@@ -195,8 +195,6 @@ import time
 import numpy as np
 grid = np.zeros((1000, 1000))+1
 c = 0
-# grid = []
-
 
 start_time = time.time()
 
@@ -205,19 +203,12 @@ for i, x in enumerate(range(1000,2000)):
         s = sum([int(x) for x in str(x)]) + sum([int(y) for y in str(y)])
         if s <=5:
             grid[i,j]=0
-        # grid
-# print(grid)
 for i, x in enumerate(range(1000,2000)):
     for j, y in enumerate(range(1000,2000)):
-        # print(i,j,possiblePath(i+1, j+1, grid))
         if grid[i,j]==0:
-            # print(i+1, j+1, possiblePath(i+1, j+1, grid))
             if possiblePath(i+1, j+1, grid) >= 0:
                 c+=1
-#         s = sum([int(x) for x in str(x)]) + sum([int(y) for y in str(y)])
-#         print([int(x) for x in str(x)], [int(y) for y in str(y)], s)
-#         if s <=25:
-#             c+=1
+
 print("--- %s seconds ---" % (time.time() - start_time))
 print(c)
 #+end_src
@@ -268,7 +259,6 @@ import time
 import numpy as np
 grid = np.zeros((1000, 1000))+1
 c = 0
-# grid = []
 
 maxi = 20
 
@@ -280,18 +270,13 @@ for i, x in enumerate(range(1000,2000)):
         if s <= maxi:
             grid[i,j]=0
         # grid
-# print(grid)
 for i, x in enumerate(range(1000,2000)):
     for j, y in enumerate(range(1000,2000)):
-        # print(i,j,possiblePath(i+1, j+1, grid))
         if grid[i,j]==0:
             # print(i+1, j+1, possiblePath(i+1, j+1, grid))
             if possiblePath(i+1, j+1, grid) >= 0:
                 c+=1
-#         s = sum([int(x) for x in str(x)]) + sum([int(y) for y in str(y)])
-#         print([int(x) for x in str(x)], [int(y) for y in str(y)], s)
-#         if s <=25:
-#             c+=1
+
 print("--- %s seconds ---" % (time.time() - start_time))
 print(c)
 #+end_src
@@ -320,7 +305,6 @@ x_poly = poly.fit_transform(np.array(x).reshape(-1,1))
 ridge.fit(x_poly, y)
 pyplot.scatter(x, y)
 y = ridge.predict(x_poly)
-# plot input vs output
 
 
 x_poly = poly.fit_transform(np.array(x_appr).reshape(-1,1))
@@ -329,7 +313,6 @@ pyplot.plot(x_appr, y)
 pyplot.scatter([25], y[-1])
 pyplot.ylabel("time in minutes")
 pyplot.title("approximation of time for 25 max: "+ str(round(y[-1], 2)))
-# pyplot.show()
 plt.savefig('./autoimgs/time_appr.png')
 plt.close()
 #+end_src
@@ -359,17 +342,15 @@ x_poly = poly.fit_transform(np.array(x).reshape(-1,1))
 ridge.fit(x_poly, y)
 pyplot.scatter(x, y)
 y = ridge.predict(x_poly)
-# plot input vs output
 
 
 x_poly = poly.fit_transform(np.array(x_appr).reshape(-1,1))
 y = ridge.predict(x_poly)
 pyplot.plot(x_appr, y)
 pyplot.scatter([25], y[-1])
-# plt.legend(bbox_to_anchor = (1.0, 1), loc = )
+
 pyplot.ylabel("time in minutes")
 pyplot.title("approximation of result for 25 max: "+ str(round(y[-1], 2)))
-# pyplot.show()
 plt.savefig('./autoimgs/result_appr.png')
 plt.close()
 #+end_src
@@ -381,6 +362,10 @@ plt.close()
 We solved task for mas sum of numbers of 20, the answer is 12175. It
  tooks 47 minutes to calcuate, while the task was for 1 hour as was
  said.
+
+We took BFS (Breadth-First Search) for check of reachability for cell by ant.
+
+We used pandas, numpy, sklearn and matplotlib.
 
 1 CPU with 2000 MHZ was used.
 
