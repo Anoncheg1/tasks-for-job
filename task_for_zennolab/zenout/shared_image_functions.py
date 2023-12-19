@@ -555,6 +555,7 @@ def contours_calc_centers(contours):
     return centers
 
 if __name__ == '__main__':
+    pass
     # pass
     # p = '/mnt/hit4/hit4user/Desktop/passport_and_vod11.10_to_vod/45-176-1.png'
     # -------------- crop -------------
@@ -568,26 +569,26 @@ if __name__ == '__main__':
     # plt.show()
 
     # ---------------- fix angle -----------
-    from matplotlib import pyplot as plt
+    # from matplotlib import pyplot as plt
 
-    p = '/home/u/sources/tasks-for-job/task_for_zennolab/train_to_the_coordinates_dataset/2749.jpg'
-    img = cv.imread(p)
-    assert img is not None, "img could not be read"
-    img = img[0:200, 0:200]
-    # img, _ = crop(img, rotate=False, rate=2.3)
+    # p = '/home/u/sources/tasks-for-job/task_for_zennolab/train_to_the_coordinates_dataset/2749.jpg'
+    # img = cv.imread(p)
+    # assert img is not None, "img could not be read"
+    # img = img[0:200, 0:200]
+    # # img, _ = crop(img, rotate=False, rate=2.3)
 
-    # r = get_lines_c(img)
-    # img2 = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    # for i in range(25):  # less points
-    #     # print(i)
-    #     lines1 = get_lines_canny(img2, k=1 + i)
-    #     print(lines1)
-    # print(r)
-    # img2 = cv.resize(img, (900, 900))
-    # img = rotate(img, -6, 1.01)
-    img = fix_angle(img, get_lines_c)
-    plt.imshow(img)
-    plt.show()
+    # # r = get_lines_c(img)
+    # # img2 = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    # # for i in range(25):  # less points
+    # #     # print(i)
+    # #     lines1 = get_lines_canny(img2, k=1 + i)
+    # #     print(lines1)
+    # # print(r)
+    # # img2 = cv.resize(img, (900, 900))
+    # # img = rotate(img, -6, 1.01)
+    # img = fix_angle(img, get_lines_c)
+    # plt.imshow(img)
+    # plt.show()
 
 
     # cv.imshow('Result', img2)
