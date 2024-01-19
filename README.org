@@ -1,3 +1,4 @@
+- [[file:yandex_multitrack.org]] - Algorithmical: Yandex MultiTrack (2024-01-018)
 - [[file:task_for_peredovietechnologii/README.org]] - Algorithmical: path finding on 2d grid. (2023-12-15)
 - [[file:task_for_zennolab/README.org]] - Computer Vision: solvation of captcha with OpenCV. (2023-12-01)
 - [[file:task_for_allmagen/README.org]] - Model and metrics selection, model calibration. (2023-10-13)
