@@ -1,0 +1,87 @@
+1. How many years have you been programming in Python?
+   - 5
+2. Please describe your experience working with Rest API and
+ Microservices. What goals have you achieved? What plugins & libraries
+ were used? What serialization libraries did you use?
+   - I created services with RESTful APIs with Web based UI to it. I
+    used Swagger stand alone without dependencies software and python
+    Flask framework extenstion to generate Swagger OpenAPI specification
+    from code.
+3. Do you have experience working with sockets and websockets? What
+ was the scope of this work? Why have you used sockets?
+   - I have experience in Java when I implement NNTP network protocol
+   and I had experience in C++ language with raw websockts under MS
+   Windows very long time ago. In Python I used high level API of
+   requests and multiprocessing libraries.
+4. Do you have experience working with any async library in Python?
+ What was this library and what did you do? When is async code
+ useless?
+   - No. By I studies this. Async useles when there is hight CPU-Bound
+   program that require usage of all CPU to solve problem.
+5. Do you use OOP principles? What is the most common pattern that you
+ use? What other coding principles do you plan to use or research
+ using in your work?
+   - Rarely. Dependency inversion and encapsulation, singleton. I plan to
+    use Clean Architecture and clean codeprinciples. And I plan to learn
+    names for all patterns just to speak with you at the same language.
+6. What other programming languages do you have experience with? How
+ proficient (entry/good/expert) are you in these languages?
+   - Python, Java, Julia, Lisp, C++, C. From high to low, read my CV for
+    details, please.
+7. Please describe your experience in plugin development for the DCC
+ software: Maya, Blender, Substance Painter.
+   - Never heard about it.
+8. Please describe your experience working with Unreal Engine. Did you
+ use Blueprints or C++ code? Have you created any Python plugins?
+   - No.
+9. What frameworks and databases did you use for the backend development?
+   - Redis, MySQL, PostgreSQL, sqlight.
+10. Do you have a long term career plan for e.g. 5 years or more? In
+  what position/level of expertise do you see yourself?
+    - MLops engineer, unemployed startup founder or freelancer.
+11. Can you tell us a little about your best and most challenging work
+  project? What inspires you to do your best work?
+    - All my work projects are challenging. "Document recognition
+     service" with OCR and document classification is the biggest
+     one. Apache Airflow ELT was advanced also. Distributed Tensorflow and
+     PyTorch was almost impossible. What inspire me is long living
+       software and control of dependencies.
+
+12. How would you rate your level of English?
+    - Oral (elementary / intermediate / advanced) - intermediate
+    - Written (elementary / intermediate / advanced) - intermediate
+    - Do you have experience communicating verbally with English speaking clients?
+      - With clients - no.
+13. What are your salary expectations?
+    - 14$ per hour.
+
+
+1. Сколько лет опыта в качестве ML-инженера в продукте?
+4 года я работал в банке РУСНАРБАНК, я занимался задачами машинного обучения, data science и Apache Airflow. У меня не было должности ML-инженер.
+Но большую часть времени я занимался именно машинным обучением.
+Последние два месяца я работал именно ML-инженером, и отлично справлялся.
+   2. Какими инструментами и технологиями вы пользуетесь для разработки и развертывания моделей
+   машинного обучения?
+PyTorch, Tensorflow, scikit-learn, huggingface, SHAP, Kubernetes, Kubeflow, XGBoost, Apache Airflow.
+   3. Какими методами вы проверяете и оцениваете качество моделей машинного обучения? Какие метрики
+   использовали?
+Разбиение на выборки, Кросс-валидация, функцией потерь. Метрики: accuracy, precision, recall, F1, ROC, PR AUC, Gini.
+   4. Какие методы использовали в оптимизации и ускорении работы моделей машинного обучения?
+Исползовал Early stopping, оптимизационные алгоритмы с накапливающимся моментом и адаптивной регуляризацией. Делал профилирование кода, переписывал код с pandas на numpy, распаралеливал.
+   5. Какими библиотеками пользуетесь?
+Technical stack: Python, Tensorflow, Keras, PyTorch, OpenCV, matplotlib, pandas, numpy, featuretools, XGBoost, scipy,
+ sklearn, Docker, Kubernetes, Apache Airflow, Java, Julia, Linux, POSIX Shell, SQL.  Emacs, Gentoo, open source.
+   6. В каких областях ML вы хотели бы развиваться (CV, NLP, другое)? Расскажите подробнее.
+MLOps, потому что универсальная, а будущее за мультимодальными моделями, потому, больше заработные плата. Еще заработная плата зависит от того, насколько технологи недоступны, здесь MLOps тоже выигрывают, так как на персональном компьютере такие системы невозможно развернуть. Работа с большими данными меня тоже интересует, по тем же причинам.
+   8. Гражданство ?
+РФ.
+   9. Локация на данный момент ?
+РФ, Москва.
+   10. Желаемый формат работы ?
+Удаленный формат работы, но я рассмотрю любые варианты.
+   11. Телеграм (никнейм) ?
+@vitdata
+   12. Если мы сойдёмся, через какое время можем перейти к сотрудничеству ?
+Через неделю готов приступить, если необходимо, можно сразу же.
+   13. Желаемая сумма компенсации (ЗП NET на руки) ?
+220 тысяч рублей в месяц, после вычета налогов.
