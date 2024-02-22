@@ -1,0 +1,25 @@
+Machine Learning Engineer - Middle - No experince of work in group. No
+ researches and Ph.D. in Information Science. https://towardsdatascience.com/a-checklist-to-track-your-data-science-progress-bf92e878edf2
+
+Python developer - "Middle". No much experience with big projects
+ that require OOP, Web Frameworks and ORM, event driving programming.
+
+System administrator - Junior - have experience with tools, but no
+ experice of work in role: writing reports, monitoring, planning. https://www.redhat.com/sysadmin/job-levels
+
+Business Intelligence (BI) Analyst - "Junior", have experience with
+ tools, but not much practice as business analyst.
+
+Data Engineer - "Junior" - no experience with Hadoop, Spark and clouds.
+
+Java developer - "Junior" - Diploma project, no production, not enought work experience, big "no work" gap.
+
+NLP Engineer - "Junior" - have projects with ASR, OCR, fuzzy search, LLM research without practice.
+
+CV Engineer - "Middle-" - no experience with video and perspective.
+
+Data Scientist - "Junior" - no experience with inference optimization,
+ stats of ML Models and research-experimentation.
+
+MLOps - "junior-". Much of DevOps experience and MLOps knowledge without
+ experience.
