@@ -18,7 +18,7 @@ Two days I spent to get access to YandexGPT API: to insert credit card number an
 
 One day I spent for coding and writing this report about solution that generates customer reviews.
 
-I generated this CSV file: TODO!!!!!!! Link to file will be added later
+I generated this CSV file: [[file:generated_reviews.csv]]
 
 I added randomness to review with prompt "look at this color", random color adds emotional color to model and change it's inner state.
 
