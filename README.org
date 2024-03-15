@@ -4,8 +4,8 @@
 - [[file:task_for_peredovietechnologii/README.org]] - Algorithmical: path finding on 2d grid. (2023-12-15)
 - [[file:task_for_zennolab/README.org]] - Computer Vision: solvation of captcha with OpenCV. (2023-12-01)
 - [[file:task_for_allmagen/README.org]] - Model and metrics selection, model calibration. (2023-10-13)
-- [[file:perfect_ML_pipeline/perfect_ML_pipeline.org]] - Model and metrics selection, model calibration.
-- [[file:sql-task.org]] - SQL: CASE WHEN, CTE and subquery.
-- [[file:optimization.org]] - optimization task for bit-packing.
-- [[file:nft_data_engineer.org]] - answer question after analysis of articles.
-- [[file:task_for_interior_design.org]] - create strategy for interior design about rotation of generateion scene image with DL.
+- [[file:others/perfect_ML_pipeline/perfect_ML_pipeline.org]] - Model and metrics selection, model calibration.
+- [[file:others/sql-task.org]] - SQL: CASE WHEN, CTE and subquery.
+- [[file:others/optimization.org]] - optimization task for bit-packing.
+- [[file:others/nft_data_engineer.org]] - answer question after analysis of articles.
+- [[file:others/task_for_interior_design.org]] - create strategy for interior design about rotation of generateion scene image with DL.
