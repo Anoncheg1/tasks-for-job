@@ -1,0 +1,239 @@
+* definition
+MySQL
+
+tables:
+1. clients_table
+   - client_id
+   - gender
+2. loans_table (docs)
+   - loan_id
+   - client_id
+   - loan_date
+
+Task to select count of first, second, thirst counts of loans in october of 2022
+|        | count of first docs | count of second docs |
+|        | in october of 2022  | in october of 2022   |
+|--------+---------------------+----------------------|
+| male   | ?                   |                      |
+| female | ?                   |                      |
+
+#+name: create client_table
+#+begin_src sqlite :db /tmp/test-sqlite.db :colnames yes
+-- DROP TABLE clients_table;
+
+CREATE TABLE clients_table (
+client_id INTEGER PRIMARY KEY,
+gender VARCHAR(10)
+);
+
+INSERT INTO clients_table VALUES(NULL, 'male');
+INSERT INTO clients_table VALUES(NULL, 'male');
+INSERT INTO clients_table VALUES(NULL, 'female');
+INSERT INTO clients_table VALUES(NULL, 'male');
+INSERT INTO clients_table VALUES(NULL, 'female');
+
+SELECT * FROM clients_table;
+#+end_src
+
+#+RESULTS: create client_table
+| client_id | gender |
+|-----------+--------|
+|         1 | male   |
+|         2 | male   |
+|         3 | female |
+|         4 | male   |
+|         5 | female |
+
+
+#+name: create loans_table
+#+begin_src sqlite :db /tmp/test-sqlite.db :colnames yes
+-- DROP TABLE loans_table;
+
+CREATE TABLE loans_table (
+loan_id INTEGER PRIMARY KEY,
+client_id INTEGER,
+loan_date DATE
+);
+
+INSERT INTO loans_table VALUES(NULL, 1, '2022-10-01');
+INSERT INTO loans_table VALUES(NULL, 2, '2022-10-02');
+INSERT INTO loans_table VALUES(NULL, 2, '2022-10-09');
+INSERT INTO loans_table VALUES(NULL, 2, '2022-10-11');
+INSERT INTO loans_table VALUES(NULL, 2, '2022-10-12');
+INSERT INTO loans_table VALUES(NULL, 2, '2022-10-13');
+INSERT INTO loans_table VALUES(NULL, 3, '2022-10-02');
+INSERT INTO loans_table VALUES(NULL, 3, '2022-10-03');
+INSERT INTO loans_table VALUES(NULL, 3, '2022-10-04');
+INSERT INTO loans_table VALUES(NULL, 4, '2022-10-04');
+INSERT INTO loans_table VALUES(NULL, 4, '2022-10-08');
+INSERT INTO loans_table VALUES(NULL, 5, '2023-10-08');
+
+SELECT * FROM loans_table;
+#+end_src
+
+#+RESULTS: create loans_table
+| loan_id | client_id |  loan_date |
+|---------+-----------+------------|
+|       1 |         1 | 2022-10-01 |
+|       2 |         2 | 2022-10-02 |
+|       3 |         2 | 2022-10-09 |
+|       4 |         2 | 2022-10-11 |
+|       5 |         2 | 2022-10-12 |
+|       6 |         2 | 2022-10-13 |
+|       7 |         3 | 2022-10-02 |
+|       8 |         3 | 2022-10-03 |
+|       9 |         3 | 2022-10-04 |
+|      10 |         4 | 2022-10-04 |
+|      11 |         4 | 2022-10-08 |
+|      12 |         5 | 2023-10-08 |
+
+
+#+name: step 1: select subspace
+#+begin_src sqlite :db /tmp/test-sqlite.db :colnames yes
+SELECT * from loans_table as l
+LEFT JOIN clients_table as c ON l.client_id = c.client_id
+WHERE l.loan_date BETWEEN '2022-10-01' AND '2022-11-01'
+;
+-- select NULL;
+
+#+end_src
+
+#+RESULTS: step 1: select subspace
+| loan_id | client_id |  loan_date | client_id | gender |
+|---------+-----------+------------+-----------+--------|
+|       1 |         1 | 2022-10-01 |         1 | male   |
+|       2 |         2 | 2022-10-02 |         2 | male   |
+|       3 |         2 | 2022-10-09 |         2 | male   |
+|       4 |         2 | 2022-10-11 |         2 | male   |
+|       5 |         2 | 2022-10-12 |         2 | male   |
+|       6 |         2 | 2022-10-13 |         2 | male   |
+|       7 |         3 | 2022-10-02 |         3 | female |
+|       8 |         3 | 2022-10-03 |         3 | female |
+|       9 |         3 | 2022-10-04 |         3 | female |
+|      10 |         4 | 2022-10-04 |         4 | male   |
+|      11 |         4 | 2022-10-08 |         4 | male   |
+* Solution 1 "CASE WHEN"
+#+name: preparation
+#+begin_src sqlite :db /tmp/test-sqlite.db :colnames yes :exports both
+SELECT c.gender, COUNT(l.client_id) lc, l.client_id from loans_table as l
+LEFT JOIN clients_table as c ON l.client_id = c.client_id
+WHERE l.loan_date BETWEEN '2022-10-01' AND '2022-11-01'
+GROUP BY gender, l.client_id;
+select NULL;
+#+end_src
+
+#+RESULTS: preparation
+| gender | lc | client_id |
+|--------+----+-----------|
+| female |  3 |         3 |
+| male   |  1 |         1 |
+| male   |  5 |         2 |
+| male   |  2 |         4 |
+| NULL   |    |           |
+
+#+name: select count of first, second, thirst counts of loans in october of 2022 -  SQL 'case when' solution
+#+begin_src sqlite :db /tmp/test-sqlite.db :colnames yes :exports both
+select fff.gender,
+SUM(case when lc > 0 then 1 else 0 end) c_first_202210,
+SUM(case when lc > 1 then 1 else 0 end) c_second_202210,
+SUM(case when lc > 2 then 1 else 0 end) c_third_202210,
+SUM(case when lc > 3 then 1 else 0 end) c_forth_202210
+from
+( SELECT c.gender, COUNT(l.client_id) lc, l.client_id from loans_table as l
+LEFT JOIN clients_table as c ON l.client_id = c.client_id
+WHERE l.loan_date BETWEEN '2022-10-01' AND '2022-11-01'
+GROUP BY gender, l.client_id) as fff
+group by gender;
+#+end_src
+
+#+RESULTS: select count of first, second, thirst counts of loans in october of 2022 -  SQL 'case when' solution
+| gender | c_first_202210 | c_second_202210 | c_third_202210 | c_forth_202210 |
+|--------+----------------+-----------------+----------------+----------------|
+| female |              1 |               1 |              1 |              0 |
+| male   |              3 |               2 |              1 |              1 |
+* Solution 2 "CTE and subquery"
+#+name: select count of first, second, thirst counts of loans in october of 2022 -  SQL 'CTE' solution
+#+begin_src sqlite :db /tmp/test-sqlite.db :colnames yes :exports both
+WITH RECURSIVE  cte_pre AS (
+SELECT * from loans_table as l
+LEFT JOIN clients_table as c ON l.client_id = c.client_id
+WHERE l.loan_date BETWEEN '2022-10-01' AND '2022-11-01'
+), cte_first AS (
+  SELECT gender, COUNT(*) cc FROM (
+    SELECT COUNT(*) fc, gender from cte_pre
+    GROUP BY client_id
+  --HAVING fc >=1
+  )
+  GROUP BY gender
+
+), cte_second AS (
+  SELECT gender, COUNT(*) cc FROM (
+    SELECT COUNT(*) fc, gender from cte_pre
+    GROUP BY client_id
+    HAVING fc >=2
+  )
+  GROUP BY gender
+
+), cte_third AS (
+  SELECT gender, COUNT(*) cc FROM (
+    SELECT COUNT(*) fc, gender from cte_pre
+    GROUP BY client_id
+    HAVING fc >=3
+  )
+  GROUP BY gender
+
+)
+select cf1.gender, cf1.cc c_first_202210, cf2.cc c_second_202210, cf3.cc c_third_202210 from cte_first cf1
+JOIN cte_second cf2 ON cf1.gender = cf2.gender
+JOIN cte_third cf3 ON cf1.gender = cf3.gender
+
+;
+#+end_src
+
+#+RESULTS: select count of first, second, thirst counts of loans in october of 2022 -  SQL 'CTE' solution
+| gender | c_first_202210 | c_second_202210 | c_third_202210 |
+|--------+----------------+-----------------+----------------|
+| female |              1 |               1 |              1 |
+| male   |              3 |               2 |              1 |
+* Solution 3 Python
+#+begin_src python :results output :exports both
+import pandas as pd
+import sqlite3
+con = sqlite3.connect("/tmp/test-sqlite.db")
+cur = con.cursor()
+res = cur.execute("""SELECT * from loans_table as l
+LEFT JOIN clients_table as c ON l.client_id = c.client_id
+WHERE l.loan_date BETWEEN '2022-10-01' AND '2022-11-01'
+;""")
+# print(cur.description())
+# print(len(cur))
+a = res.fetchall()
+field_names = [x[0] for x in cur.description]
+# print(field_names)
+
+df = pd.DataFrame(a, columns = ['loan_id', 'client_id1', 'loan_date', 'client_id2', 'gender'])
+# print(df)
+# print()
+# for x in df:
+#     first = 0
+v = df.groupby(['gender', 'client_id1'],as_index=False).count()
+# v.groupby('gender').
+male = v[v['gender'] == 'male']
+female = v[v['gender'] == 'female']
+
+res_male = []
+res_female = []
+for i, c in enumerate(['first', 'second', 'third']):
+    rm = (v[v['gender'] == 'male']['loan_id'] >= i).sum()
+    rf = (v[v['gender'] == 'female']['loan_id'] >= i).sum()
+    res_male.append(rm)
+    res_female.append(rf)
+
+
+print('female', res_female)
+print('male', res_male)
+#+end_src
+
+#+RESULTS:
+: female [1, 1, 1]
+: male [3, 3, 2]
