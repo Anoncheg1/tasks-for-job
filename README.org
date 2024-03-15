@@ -1,5 +1,6 @@
+- [[file:task_for_ml_questions/README.org]] - Questions about ML, DL, DS. (2024-03-08)
 - [[file:task_for_prompt_engineer/README.org]] - LLM Prompt-Engineer: generate people comments with YandexGPT API  (2024-03-02)
-- [[file:yandex_multitrack.org]] - Algorithmical: Yandex MultiTrack (2024-01-18)
+- [[file:yandex_multitrack.org]] - Algorithmical: Yandex MultiTrack (2024-01-18, 2024-03-14)
 - [[file:task_for_peredovietechnologii/README.org]] - Algorithmical: path finding on 2d grid. (2023-12-15)
 - [[file:task_for_zennolab/README.org]] - Computer Vision: solvation of captcha with OpenCV. (2023-12-01)
 - [[file:task_for_allmagen/README.org]] - Model and metrics selection, model calibration. (2023-10-13)
