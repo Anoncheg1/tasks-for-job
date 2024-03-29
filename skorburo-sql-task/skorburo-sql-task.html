@@ -1,0 +1,936 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2024-03-25 Mon 15:40 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+</head>
+<body>
+<div id="content" class="content">
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org60cd782">1. solution</a>
+<ul>
+<li><a href="#org19530cf">1.1. create table</a></li>
+<li><a href="#org12c12c6">1.2. ChatGPT support</a>
+<ul>
+<li><a href="#org47955a8">1.2.1. request 1</a></li>
+<li><a href="#orgceeb591">1.2.2. answer 1</a></li>
+<li><a href="#org03314de">1.2.3. request 2</a></li>
+<li><a href="#orgc9e040a">1.2.4. answer 2</a></li>
+<li><a href="#org46920a6">1.2.5. answer 3 - combination of request 1 and request 2</a></li>
+<li><a href="#org737ed8d">1.2.6. request 4</a></li>
+<li><a href="#org6004d49">1.2.7. answer 4</a></li>
+</ul>
+</li>
+<li><a href="#orgfd66036">1.3. test answer 1  - failed</a></li>
+<li><a href="#org91c742a">1.4. test answer 3 - success</a></li>
+<li><a href="#org14141d3">1.5. test answer 4 - success</a></li>
+</ul>
+</li>
+<li><a href="#org5a2ec80">2. final solution</a>
+<ul>
+<li><a href="#orge9af53f">2.1. explanation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Есть таблица TABLE_APPLICATIONS, содержащая все заявки
+ на кредиты со всех банков, то есть каждый раз, когда клиент приходит
+ в какой-нибудь банк, в таблице появляется строчка.
+</p>
+
+<p>
+Список полей таблицы:
+</p>
+<ul class="org-ul">
+<li>Applicat_ID – уникальный идентификатор заявки</li>
+<li>Applicat_Date – Дата заявки с точностью до секунды</li>
+<li>Bank_Name – название банка</li>
+<li>Passport_Number – номер паспорта клиента</li>
+</ul>
+
+<p>
+Задание. Посещение банков.
+</p>
+<ul class="org-ul">
+<li>Вывести паспорта всех клиентов, у которых в жизни была следующая
+ситуация: клиент пришел в Альфабанк, а до этого никогда не посещал
+ХоумКредит.</li>
+</ul>
+
+
+
+<div id="outline-container-org60cd782" class="outline-2">
+<h2 id="org60cd782"><span class="section-number-2">1.</span> solution</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Другими словая это задание: Вывести уникальные passport_number у которых есть есть запись
+ Bank_Name равная 'Альфабанк' но у других записей c этим
+ passport_number, у которых Applicat_Date меньше, Bank_Name != 'ХоумКредит'.
+</p>
+
+<p>
+Нужно составить SQL select запрос.
+</p>
+
+<p>
+Here is a SQL table
+</p>
+</div>
+<div id="outline-container-org19530cf" class="outline-3">
+<h3 id="org19530cf"><span class="section-number-3">1.1.</span> create table</h3>
+<div class="outline-text-3" id="text-1-1">
+<div class="org-src-container">
+<pre class="src src-sqlite" id="org40d6aa8">DROP TABLE table_applications;
+
+CREATE TABLE table_applications (
+Applicat_ID INTEGER PRIMARY KEY, -- уникальный идентификатор посещения
+Applicat_Date INTEGER, -- epoch -- Дата посещения
+Bank_Name TEXT, -- название банка
+Passport_Number VARCHAR(30) -- номер паспорта клиента
+);
+
+INSERT INTO table_applications VALUES(NULL, 2147483640, 'Альфабанк', '999999900');
+INSERT INTO table_applications VALUES(NULL, 2147483645, 'ХоумКредит', '999999900');
+
+INSERT INTO table_applications VALUES(NULL, 2147483639, 'ХоумКредит', '0733223445');
+INSERT INTO table_applications VALUES(NULL, 2147483640, 'ХоумКредит', '0733223445');
+INSERT INTO table_applications VALUES(NULL, 2147483641, 'Альфабанк', '0733223445');
+INSERT INTO table_applications VALUES(NULL, 2147483645, 'ХоумКредит', '0733223445');
+
+INSERT INTO table_applications VALUES(NULL, 2147483641, 'Альфабанк', '1133223411');
+INSERT INTO table_applications VALUES(NULL, 2147483647, 'Альфабанк', '1133223411');
+
+SELECT * FROM table_applications;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org12c12c6" class="outline-3">
+<h3 id="org12c12c6"><span class="section-number-3">1.2.</span> ChatGPT support</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-org47955a8" class="outline-4">
+<h4 id="org47955a8"><span class="section-number-4">1.2.1.</span> request 1</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<div class="org-src-container">
+<pre class="src src-text">Here is a SQL table
+    CREATE TABLE table_applications (
+    Applicat_ID INTEGER PRIMARY KEY, -- уникальный идентификатор посещения
+    Applicat_Date INTEGER, -- epoch -- Дата посещения
+    Bank_Name TEXT, -- название банка
+    Passport_Number VARCHAR(30) -- номер паспорта клиента
+    );
+
+    Задание: Вывести паспорта всех клиентов, которые приходили в Альфабанк, а до этого никогда не
+    посещали
+     ХоумКредит.
+
+    Другими словая это задание: Вывести уникальные passport_number у которых есть есть запись
+     Bank_Name равная 'Альфабанк' но у других записей c этим
+     passport_number, у которых Applicat_Date меньше, Bank_Name != 'ХоумКредит'.
+
+    Cоставь SQL select запрос. Объяснить как если бы ты его составлял поэтапно с логической цепочкой
+    рассуждений.
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgceeb591" class="outline-4">
+<h4 id="orgceeb591"><span class="section-number-4">1.2.2.</span> answer 1</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+Чтобы выполнить данное задание, нужно последовательно следовать данным требованиям с
+    использованием подзапросов:
+</p>
+
+<ol class="org-ol">
+<li>Начнем с выбора всех уникальных номеров паспортов
+(passport_number), у которых есть запись с `Bank_Name` равным
+'Альфабанк':</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-sql">SELECT DISTINCT Passport_Number
+    FROM table_applications
+    WHERE Bank_Name = 'Альфабанк';
+</pre>
+</div>
+
+<ol class="org-ol">
+<li>Далее нам нужно проверить, что для этих номеров паспортов нет
+записей, у которых `Bank_Name` равно 'ХоумКредит' и `Applicat_Date`
+меньше, чем у записей для 'Альфабанк'. Для этого используем подзапрос
+в операторе NOT IN:</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-sql">    SELECT DISTINCT Passport_Number
+    FROM table_applications
+    WHERE Bank_Name = 'Альфабанк'
+    AND Passport_Number NOT IN (
+        SELECT Passport_Number
+        FROM table_applications
+        WHERE Bank_Name = 'ХоумКредит'
+        AND Applicat_Date &lt;
+            (SELECT MIN(Applicat_Date)
+             FROM table_applications
+             WHERE Bank_Name = 'Альфабанк'
+             AND Passport_Number = table_applications.Passport_Number)
+    );
+</pre>
+</div>
+
+<p>
+```sql
+</p>
+
+<p>
+```
+</p>
+
+<p>
+Этот запрос позволит вывести уникальные номера паспортов клиентов, которые посещали Альфабанк,
+но не посещали ХоумКредит.
+</p>
+
+<p>
+Таким образом, вы поэтапно создаете логическую цепочку запросов, чтобы выбрать нужную информацию
+из базы данных.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org03314de" class="outline-4">
+<h4 id="org03314de"><span class="section-number-4">1.2.3.</span> request 2</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<p>
+What approch can you suggest to build this SELECT request, dont build it yourself but explain
+    how would you select approch to build it?
+</p>
+</div>
+</div>
+<div id="outline-container-orgc9e040a" class="outline-4">
+<h4 id="orgc9e040a"><span class="section-number-4">1.2.4.</span> answer 2</h4>
+<div class="outline-text-4" id="text-1-2-4">
+<p>
+To build the SELECT request to achieve the desired outcome, you would
+ need to use a combination of subqueries, joins, and the GROUP BY
+ clause. Here is an outline of the approach:
+</p>
+
+<ol class="org-ol">
+<li>Use a subquery to select the passport numbers of clients who visited 'Альфабанк'.</li>
+<li>Join the table with itself based on the passport numbers to find
+other records with the same passport number.</li>
+<li>Filter the joined results to include only those where the
+Applicat_Date is less than the visited date at 'Альфабанк' and the
+Bank_Name is not 'ХоумКредит'.</li>
+<li><p>
+Group the results by passport number to get unique passport
+numbers.
+</p>
+
+<p>
+By following this approach, you can identify and retrieve the
+passport numbers of clients who visited 'Альфабанк' but never visited
+'ХоумКредит' before.
+</p></li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org46920a6" class="outline-4">
+<h4 id="org46920a6"><span class="section-number-4">1.2.5.</span> answer 3 - combination of request 1 and request 2</h4>
+</div>
+<div id="outline-container-org737ed8d" class="outline-4">
+<h4 id="org737ed8d"><span class="section-number-4">1.2.6.</span> request 4</h4>
+<div class="outline-text-4" id="text-1-2-6">
+<p>
+Упрости этот запрос, чтобы SELECT вы выполнял подзапросы, чтобы не было подциклов.
+</p>
+</div>
+</div>
+<div id="outline-container-org6004d49" class="outline-4">
+<h4 id="org6004d49"><span class="section-number-4">1.2.7.</span> answer 4</h4>
+<div class="outline-text-4" id="text-1-2-7">
+<p>
+Для упрощения запроса и избежания подциклов можно использовать JOIN вместо подзапросов. Вот
+    упрощенный запрос:
+</p>
+
+<p>
+SELECT DISTINCT t1.Passport_Number
+FROM table_applications t1
+LEFT JOIN table_applications t2
+    ON t1.Passport_Number = t2.Passport_Number
+    AND t2.Applicat_Date &lt; t1.Applicat_Date
+    AND t2.Bank_Name = 'ХоумКредит'
+WHERE t1.Bank_Name = 'Альфабанк'
+    AND t2.Passport_Number IS NULL;
+</p>
+
+
+<p>
+Этот запрос использует LEFT JOIN для соединения таблицы table_applications саму с собой по
+условиям, указанным в JOIN. Затем он фильтрует строки, где соединение не удалось (т.е. где нет
+соответствующей записи в таблице t2), и выводит уникальные Passport_Number из заявок в
+Альфабанк, которые не имеют соответствующих заявок в ХоумКредит с более ранней датой.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgfd66036" class="outline-3">
+<h3 id="orgfd66036"><span class="section-number-3">1.3.</span> test answer 1  - failed</h3>
+<div class="outline-text-3" id="text-1-3">
+<div class="org-src-container">
+<pre class="src src-sqlite" id="org22117a2">SELECT DISTINCT Passport_Number
+    FROM table_applications
+    WHERE Bank_Name = 'Альфабанк'
+    AND Passport_Number NOT IN (
+        SELECT Passport_Number
+        FROM table_applications
+        WHERE Bank_Name = 'ХоумКредит'
+        AND Applicat_Date &lt;
+            (SELECT MIN(Applicat_Date)
+             FROM table_applications
+             WHERE Bank_Name = 'Альфабанк'
+             AND Passport_Number = table_applications.Passport_Number)
+    );
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Passport_Number</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">999999900</td>
+</tr>
+
+<tr>
+<td class="org-right">733223445</td>
+</tr>
+
+<tr>
+<td class="org-right">1133223411</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Fail. Не верно.
+</p>
+</div>
+</div>
+<div id="outline-container-org91c742a" class="outline-3">
+<h3 id="org91c742a"><span class="section-number-3">1.4.</span> test answer 3 - success</h3>
+<div class="outline-text-3" id="text-1-4">
+<div class="org-src-container">
+<pre class="src src-sqlite" id="org6c5f550">SELECT DISTINCT t1.Passport_Number
+    FROM table_applications t1
+    WHERE t1.Bank_Name = 'Альфабанк'
+    AND NOT EXISTS (
+        SELECT 1
+        FROM table_applications t2
+        WHERE t2.Passport_Number = t1.Passport_Number
+        AND t2.Applicat_Date &lt; t1.Applicat_Date
+        AND t2.Bank_Name = 'ХоумКредит'
+    );
+</pre>
+</div>
+
+<p>
+Success! Успех!
+</p>
+
+<p>
+Select 1 - вовращает константу
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sqlite" id="orgbd5ca65">SELECT 1
+        FROM table_applications t2
+        WHERE t2.Bank_Name = 'ХоумКредит'
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org14141d3" class="outline-3">
+<h3 id="org14141d3"><span class="section-number-3">1.5.</span> test answer 4 - success</h3>
+<div class="outline-text-3" id="text-1-5">
+<div class="org-src-container">
+<pre class="src src-sqlite" id="orgde1d2bd">SELECT DISTINCT t1.Passport_Number
+    FROM table_applications t1
+    LEFT JOIN table_applications t2
+        ON t1.Passport_Number = t2.Passport_Number
+        AND t2.Applicat_Date &lt; t1.Applicat_Date
+        AND t2.Bank_Name = 'ХоумКредит'
+    WHERE t1.Bank_Name = 'Альфабанк'
+        AND t2.Passport_Number IS NULL;
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Passport_Number</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">999999900</td>
+</tr>
+
+<tr>
+<td class="org-right">1133223411</td>
+</tr>
+</tbody>
+</table>
+
+
+<div class="org-src-container">
+<pre class="src src-sqlite" id="org6ed102b">SELECT DISTINCT *
+    FROM table_applications t1
+    LEFT JOIN table_applications t2
+        ON t1.Passport_Number = t2.Passport_Number
+        AND t2.Applicat_Date &lt; t1.Applicat_Date
+        AND t2.Bank_Name = 'ХоумКредит'
+    -- WHERE t1.Bank_Name = 'Альфабанк'
+    --     AND t2.Passport_Number IS NULL;
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Applicat_ID</th>
+<th scope="col" class="org-right">Applicat_Date</th>
+<th scope="col" class="org-left">Bank_Name</th>
+<th scope="col" class="org-right">Passport_Number</th>
+<th scope="col" class="org-right">Applicat_ID</th>
+<th scope="col" class="org-right">Applicat_Date</th>
+<th scope="col" class="org-left">Bank_Name</th>
+<th scope="col" class="org-right">Passport_Number</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2147483640</td>
+<td class="org-left">Альфабанк</td>
+<td class="org-right">999999900</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">2147483645</td>
+<td class="org-left">ХоумКредит</td>
+<td class="org-right">999999900</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-right">2147483639</td>
+<td class="org-left">ХоумКредит</td>
+<td class="org-right">733223445</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-right">2147483640</td>
+<td class="org-left">ХоумКредит</td>
+<td class="org-right">733223445</td>
+<td class="org-right">3</td>
+<td class="org-right">2147483639</td>
+<td class="org-left">ХоумКредит</td>
+<td class="org-right">733223445</td>
+</tr>
+
+<tr>
+<td class="org-right">5</td>
+<td class="org-right">2147483641</td>
+<td class="org-left">Альфабанк</td>
+<td class="org-right">733223445</td>
+<td class="org-right">3</td>
+<td class="org-right">2147483639</td>
+<td class="org-left">ХоумКредит</td>
+<td class="org-right">733223445</td>
+</tr>
+
+<tr>
+<td class="org-right">5</td>
+<td class="org-right">2147483641</td>
+<td class="org-left">Альфабанк</td>
+<td class="org-right">733223445</td>
+<td class="org-right">4</td>
+<td class="org-right">2147483640</td>
+<td class="org-left">ХоумКредит</td>
+<td class="org-right">733223445</td>
+</tr>
+
+<tr>
+<td class="org-right">6</td>
+<td class="org-right">2147483645</td>
+<td class="org-left">ХоумКредит</td>
+<td class="org-right">733223445</td>
+<td class="org-right">3</td>
+<td class="org-right">2147483639</td>
+<td class="org-left">ХоумКредит</td>
+<td class="org-right">733223445</td>
+</tr>
+
+<tr>
+<td class="org-right">6</td>
+<td class="org-right">2147483645</td>
+<td class="org-left">ХоумКредит</td>
+<td class="org-right">733223445</td>
+<td class="org-right">4</td>
+<td class="org-right">2147483640</td>
+<td class="org-left">ХоумКредит</td>
+<td class="org-right">733223445</td>
+</tr>
+
+<tr>
+<td class="org-right">7</td>
+<td class="org-right">2147483641</td>
+<td class="org-left">Альфабанк</td>
+<td class="org-right">1133223411</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">8</td>
+<td class="org-right">2147483647</td>
+<td class="org-left">Альфабанк</td>
+<td class="org-right">1133223411</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Попробуем оптимизировать запрос, чтобы уменьшить талицу t2
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sqlite" id="org9db47dd">SELECT DISTINCT t1.Passport_Number
+    FROM table_applications t1
+    LEFT JOIN (
+        SELECT Passport_Number, MIN(Applicat_Date) AS Max_Applicat_Date
+        FROM table_applications
+        WHERE Bank_Name = 'ХоумКредит'
+        GROUP BY Passport_Number
+    ) t2 ON t1.Passport_Number = t2.Passport_Number AND t2.Max_Applicat_Date &lt; t1.Applicat_Date
+    WHERE t1.Bank_Name = 'Альфабанк' AND t2.Passport_Number IS NULL;
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Passport_Number</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">999999900</td>
+</tr>
+
+<tr>
+<td class="org-right">1133223411</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>
+Подзапрос из test6:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sqlite" id="org6d5c032">SELECT Passport_Number, MIN(Applicat_Date) AS Max_Applicat_Date
+        FROM table_applications
+        WHERE Bank_Name = 'ХоумКредит'
+        GROUP BY Passport_Number
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Passport_Number</th>
+<th scope="col" class="org-right">Max_Applicat_Date</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">733223445</td>
+<td class="org-right">2147483639</td>
+</tr>
+
+<tr>
+<td class="org-right">999999900</td>
+<td class="org-right">2147483645</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Как видим t2 стал меньше, что уменьшело вычисления в JOIN операции
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org5a2ec80" class="outline-2">
+<h2 id="org5a2ec80"><span class="section-number-2">2.</span> final solution</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Хотя индексы не могут быть использоваты в подзапросах, этот подзапрос
+ агрегирует записи в MIN(Applicat_Date) пред JOIN, за счет чего
+ выполняется максимально эффективно.
+</p>
+<div class="org-src-container">
+<pre class="src src-sqlite" id="org874fe98">SELECT DISTINCT t1.Passport_Number
+    FROM table_applications t1
+    LEFT JOIN (
+        SELECT Passport_Number, MIN(Applicat_Date) AS Max_Applicat_Date
+        FROM table_applications
+        WHERE Bank_Name = 'ХоумКредит'
+        GROUP BY Passport_Number
+    ) t2 ON t1.Passport_Number = t2.Passport_Number AND t2.Max_Applicat_Date &lt; t1.Applicat_Date
+    WHERE t1.Bank_Name = 'Альфабанк' AND t2.Passport_Number IS NULL;
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Passport_Number</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">999999900</td>
+</tr>
+
+<tr>
+<td class="org-right">1133223411</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div id="outline-container-orge9af53f" class="outline-3">
+<h3 id="orge9af53f"><span class="section-number-3">2.1.</span> explanation</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Это запрос выполняет LEFT JOIN на записях из оригинальной таблицы и
+ подзапроса, который выбирает запись Bank_Name = 'ХоумКредит' с MIN(Applicat_Date).
+Запись добавленная в правую часть, означает, что клиент посещал банк 'ХоумКредит' до этого.
+</p>
+
+<p>
+Объединение выбирает записи без правой части, чтобы отобрать
+ клиентов не посещавших 'ХоумКредит' до посещения 'Альфабанк'.
+</p>
+
+<p>
+Последним этапом происходит выбор уникальных записей по Passport_number.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Created: 2024-03-25 Mon 15:40</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

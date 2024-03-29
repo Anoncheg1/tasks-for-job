@@ -1,3 +1,4 @@
+- [[file:skorburo-sql-task/skorburo-sql-task.org]] - SQL small task. (2024-03-25)
 - [[file:task_for_ml_questions/README.org]] - Questions about ML, DL, DS. (2024-03-08)
 - [[file:task_for_prompt_engineer/README.org]] - LLM Prompt-Engineer: generate people comments with YandexGPT API  (2024-03-02)
 - [[file:yandex_multitrack.org]] - Algorithmical: Yandex MultiTrack (2024-01-18, 2024-03-14)
