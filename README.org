@@ -1,3 +1,4 @@
+- SQLite + Telegram Bot (2024-04-19) - [[file:task_for_stepbystep/README.org]]
 - SQL small task. (2024-03-25) - [[file:skorburo-sql-task/skorburo-sql-task.org]]
 - Questions about ML, DL, DS. (2024-03-08) - [[file:task_for_ml_questions/README.org]]
 - LLM Prompt-Engineer: generate people comments with YandexGPT API  (2024-03-02) - [[file:task_for_prompt_engineer/README.org]]
