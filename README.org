@@ -1,3 +1,4 @@
+Without payment:
 - 2024-04-19 - SQLite + Telegram Bot [[file:task_for_stepbystep/README.org]]
 - 2024-03-25 - SQL small task. [[file:skorburo-sql-task/skorburo-sql-task.org]]
 - 2024-03-14 - Algorithmical: Yandex MultiTrack (2024-01-18) - [[file:yandex_multitrack.org]]
