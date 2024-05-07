@@ -66,7 +66,7 @@ Yes, but I wrote a number of open source programs, visited
  conferences, completed assignments from employers, wrote several
  articles on my blog. All works are available for your review.
 15. What is important to you in a new workplace?
-Money, the absence of excessive control and bureaucracy, and the presence of projects with great responsibility.
+Salary, the absence of excessive control and bureaucracy, and the presence of projects with great responsibility.
 
 1. Сколько лет опыта в качестве ML-инженера в продукте?
 4 года я работал в банке РУСНАРБАНК, я занимался задачами машинного обучения, data science и Apache Airflow. У меня не было должности ML-инженер.
@@ -102,4 +102,4 @@ MLOps, потому что универсальная, а будущее за м
  конференции, выполнял задания от работодателей, написал несколько
  статей в моем блоге. Все работы доступны для вашего ознакомления.
 15. Что для вас важно на новом месте работы?
-Деньги, отсутствие чрезмерного контроля и бюрократии, наличие проектой с большой ответственностью.
+Оклад, отсутствие чрезмерного контроля и бюрократии, наличие проектой с большой ответственностью.
