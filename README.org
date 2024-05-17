@@ -6,6 +6,7 @@ Without payment:
 - 2024-03-02 - LLM Prompt-Engineer: generate people comments with YandexGPT API  [[file:task_for_prompt_engineer/README.org]]
 - 2023-12-15 - Algorithmical: path finding on 2d grid. [[file:task_for_peredovietechnologii/README.org]]
 - 2023-12-01 - Computer Vision: solvation of captcha with OpenCV. [[file:task_for_zennolab/README.org]]
+- 2023-11-11 - GreenScreens, Regression analysis. [[file:task_for_greenscreensai/README_green.org]]
 - 2023-10-13 - Model and metrics selection, model calibration. [[file:task_for_allmagen/README.org]]
 - Model and metrics selection, model calibration. [[file:others/perfect_ML_pipeline/perfect_ML_pipeline.org]]
 - SQL: CASE WHEN, CTE and subquery. [[file:others/sql-task.org]]

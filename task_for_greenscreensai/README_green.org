@@ -1,0 +1,1250 @@
+* task
+Homework to be completed by Monday, December 11, 2023.
+https://github.com/GreenScreens-company/GS-homework
+
+You should predict rate per mile "rate".
+1) we are expecting loss less than 9%. zero point - 34.85%
+2) Try to enhance the current Rate Engine by pushing knowledge about
+ origin and destination KMA into model.
+
+DataSet:
+- the number of miles of the route
+- the type of the transport (there are three main types of transport),
+ used for transporting the cargo
+- the weight of the cargo
+- the date when the cargo was picked up
+- the KMA origin point and the KMA destination point.
+** rate, what is it? domain or subject area
+truck freight rate per mile - price a shipper or broker will pay you, the carrier, to haul a load.
+
+1) number of miles between your starting point and the destination.
+2) the weight of the shipment
+3) Shipment density
+4) Freight classification
+
+** task code
+#+begin_src python :results output :exports both :session s1
+import pandas as pd
+import numpy as np
+
+path_train = '/home/u/DataSets/greenscreens/train.csv'
+path_validation = '/home/u/DataSets/greenscreens/validation.csv'
+path_test = '/home/u/DataSets/greenscreens/test.csv'
+
+class Model:
+    def __init__(self):
+        self.mean_rate = None
+
+    def fit(self, x, y):
+        self.mean_rate = y.mean()
+        return self
+
+    def predict(self, x):
+        return [self.mean_rate] * len(x)
+
+
+def loss(real_rates, predicted_rates):
+    "MAPE"
+    print(predicted_rates[:3] / real_rates[:3] )
+
+    return np.average(abs(predicted_rates / real_rates - 1.0)) * 100.0
+
+
+def train_and_validate():
+    "train for Train, validation for test"
+    df = pd.read_csv(path_train)
+    model = Model()
+    model.fit(df, df.rate)
+
+    df = pd.read_csv(path_validation)
+    predicted_rates = model.predict(df)
+    mape = loss(df.rate, predicted_rates)
+    mape = np.round(mape, 2)
+    return mape
+
+
+def generate_final_solution():
+    "train+validation for Train, test for test"
+    # combine train and validation to improve final predictions
+    df = pd.read_csv(path_train)
+    df_val = pd.read_csv(path_validation)
+    df = df.append(df_val).reset_index(drop=True)
+
+
+
+    model = Model()
+    model.fit(df, df.rate)
+
+    # generate and save test predictions
+    df_test = pd.read_csv(path_test)
+    df_test['predicted_rate'] = np.exp(model.predict(df_test))
+    df_test.to_csv('dataset/predicted.csv', index=False) # save to Company!
+
+
+if __name__ == "__main__":
+    mape = train_and_validate()
+    print(f'Accuracy of validation is {mape}%')
+
+    if mape < 9:  # try to reach 9% or less for validation
+        generate_final_solution()
+        print("'predicted.csv' is generated, please send it to us")
+#+end_src
+
+#+RESULTS: before
+: 0    1.380905
+: 1    0.780718
+: 2    1.383796
+: Name: rate, dtype: float64
+: Accuracy of validation is 34.85%
+
+* explore dataset
+- train	2019-11-10 - 2022-09-05
+- test		2022-09-22 - 2022-10-14
+- valid	2022-09-05 - 2022-09-22
+
+I think origin_kma and destination_kma codes is generated randomly
+ without meaning.
+** explore fast
+#+begin_src python :results output :exports both :session s1
+import pandas as pd
+import numpy as np
+from myown_pack.exploring import describe
+
+path_train = '/home/u/DataSets/greenscreens/train.csv'
+path_validation = '/home/u/DataSets/greenscreens/validation.csv'
+path_test = '/home/u/DataSets/greenscreens/test.csv'
+
+
+df = pd.read_csv(path_train)
+print("TRAIN")
+df = df.sort_values(by='pickup_date', ignore_index=True)
+print(df.head(2).to_string())
+print(df.tail(2).to_string())
+print()
+describe(df)
+# print("TEST")
+# df = pd.read_csv(path_test)
+# df = df.sort_values(by='pickup_date', ignore_index=True)
+# print(df.head(2).to_string())
+# print(df.tail(2).to_string())
+# describe(df)
+# print("VALIDATETION")
+# df = pd.read_csv(path_validation)
+# df = df.sort_values(by='pickup_date', ignore_index=True)
+# print(df.head(2).to_string())
+# print(df.tail(2).to_string())
+# describe(df)
+# --------- KMA -----------
+# print(sorted(df.origin_kma.unique()))
+# print(df.origin_kma.str[0:2])
+#+end_src
+
+#+RESULTS:
+#+begin_example
+TRAIN
+     rate  valid_miles transport_type    weight          pickup_date origin_kma destination_kma
+0  4.7203     521.8451          MKPFX   9231.75  2019-11-10 10:42:00      OMUOI           LFUHN
+1  4.9005     532.6675          MKPFX  11754.95  2019-11-10 10:42:00      OMUOI           LFUHN
+          rate  valid_miles transport_type   weight          pickup_date origin_kma destination_kma
+296725  5.2722      432.854          MKPFX  11450.0  2022-09-05 20:42:00      OKPES           NTODX
+296726  4.5741      785.650          GJROY  41850.0  2022-09-05 20:42:00      NTODX           VCEUE
+
+describe :
+                rate    valid_miles         weight
+count  296727.000000  296727.000000  296647.000000
+mean        5.221752     454.873515   23157.860583
+std         2.979281     447.267275   12562.164968
+min         1.288400      24.780100    4800.950000
+25%         3.522500     184.784300   12433.250000
+50%         4.574100     303.982000   19050.000000
+75%         6.018600     548.732000   37755.500000
+max       248.973000    2876.446900  190050.000000
+       transport_type          pickup_date origin_kma destination_kma
+count          296727               296727     296727          296727
+unique              3                39783        135             13  q5
+top             MKPFX  2020-02-05 10:42:00      QGHCU           NTODX
+freq           275748                  328      16064           58336
+.isna().sum():
+rate                0
+valid_miles         0
+transport_type      0
+weight             80
+pickup_date         0
+origin_kma          0
+destination_kma     0
+dtype: int64
+
+Values counts:
+transport_type object
+transport_type
+MKPFX    275748
+GJROY     17604
+KFEGT      3375
+Name: count, dtype: int64
+
+pickup_date object
+pickup_date
+2020-02-05 10:42:00    328
+2020-08-06 10:42:00    326
+2020-07-02 10:42:00    317
+2020-03-12 10:42:00    309
+2020-04-09 10:42:00    301
+Name: count, dtype: int64
+others count: 39778
+
+origin_kma object
+origin_kma
+QGHCU    16064
+VCEUE    15928
+FPZNC    12954
+HRQLD    12679
+MJGXM    11362
+Name: count, dtype: int64
+others count: 130
+
+destination_kma object
+destination_kma
+NTODX    58336
+QUERU    27239
+MJGXM     8125
+QWBPO     6300
+AWWEE     6137
+Name: count, dtype: int64
+others count: 130
+
+['ANCVH', 'AQUVM', 'AVEJW', 'AWWEE', 'BFHYB', 'BFTJT', 'BKBAJ', 'BQMUZ', 'CBZDP', 'CFBLH', 'CTJQI', 'CUZBH', 'CXAKM', 'DKNNO', 'DLGVW', 'DNDBK', 'DRRUD', 'DUXGP', 'EBAEC', 'EEEAA', 'EJLNQ', 'EKGTE', 'EPXAM', 'EQJKI', 'EWHXH', 'FDBUH', 'FKQGG', 'FNCRU', 'FPZNC', 'FYCWC', 'GFKMC', 'GFSKU', 'GKKOS', 'GLLFQ', 'GLVAR', 'GRIOF', 'GVJCT', 'HBILN', 'HECXW', 'HHUHT', 'HLRGX', 'HQWLT', 'HRQLD', 'HTFOW', 'IAZJQ', 'IUNUS', 'IZYJN', 'JESUD', 'JHFLR', 'JLSPJ', 'JQQMB', 'KEXIX', 'KFJBP', 'KJMHB', 'KMMBI', 'KPOER', 'KWGZQ', 'LCILG', 'LFUHN', 'LHDSM', 'LKTOK', 'LMLEC', 'MJGXM', 'MJJOV', 'MZUAW', 'NFSLJ', 'NHDWT', 'NJKTZ', 'NKFBU', 'NMNUX', 'NNJFK', 'NPCXM', 'NSBMC', 'NTODX', 'NTQBJ', 'NUTZC', 'NWEJP', 'NWGSX', 'NYBZO', 'OCJCF', 'OIANS', 'OKPES', 'OKWUS', 'OMSVL', 'OMUOI', 'OQOLJ', 'OUHDS', 'OXDKT', 'PEXPT', 'PKGHG', 'PNBXA', 'QAHLZ', 'QCLHO', 'QGHCU', 'QGIHN', 'QUERU', 'QWBPO', 'RCDSS', 'RJGHA', 'RMBXT', 'RONUZ', 'RPJIS', 'RUEXZ', 'SCTWG', 'SQSHO', 'SZJLZ', 'TNFCQ', 'TVZUE', 'TXLFD', 'UKOGN', 'UKWZA', 'UOIXN', 'URQTI', 'UXLVW', 'VCEUE', 'VFWTB', 'VJBFX', 'VKUUR', 'VRVHM', 'WMWKO', 'WPEEG', 'WWRQI', 'WZUHV', 'XAYQS', 'XNCMK', 'XXIZJ', 'XYHVH', 'YFPKE', 'YNBDR', 'YPKAJ', 'YXTDU', 'ZSLFG', 'ZSZDM', 'ZUVHM', 'ZYKLC']
+0         OM
+1         OM
+2         OM
+3         OM
+4         OM
+          ..
+296722    FP
+296723    NU
+296724    RC
+296725    OK
+296726    NT
+Name: origin_kma, Length: 296727, dtype: object
+#+end_example
+
+** skewness
+#+begin_src python :results output :exports both :session s1
+import pandas as pd
+import numpy as np
+
+path_train = '/home/u/DataSets/greenscreens/train.csv'
+df = pd.read_csv(path_train)
+# ---------- skewness --------
+TARGET = 'rate'
+from scipy.stats import kurtosis, skew
+from sklearn import preprocessing
+# x = preprocessing.StandardScaler().fit_transform(df_train[TARGET].to_numpy().reshape(-1, 1))
+x = df_train[TARGET].to_numpy().reshape(-1, 1)
+print( 'excess kurtosis of normal distribution (should be 0): {}'.format( kurtosis(x) ))
+print( 'skewness of normal distribution (should be 0): {}'.format( skew(x) ))
+import matplotlib.pyplot as plt
+plt.hist(x, density=True, bins=40)  # density=False would make counts
+plt.ylabel('Probability')
+plt.xlabel('Data');
+# plt.show()
+#+end_src
+
+#+RESULTS:
+: excess kurtosis of normal distribution (should be 0): [10.60324478]
+: skewness of normal distribution (should be 0): [2.52499908]
+
+#+begin_src bash :results output
+mkdir autoimgs
+#+end_src
+
+#+RESULTS:
+
+#+begin_src python :results file graphics :exports both :file ./autoimgs/skew.png :session s1
+plt.title("original")
+plt.savefig('./autoimgs/skew.png')
+plt.close()
+#+end_src
+
+#+RESULTS:
+[[file:./autoimgs/skew.png]]
+
+
+
+#+begin_src python :results file graphics :exports both :file ./autoimgs/skew-log.png :session s1
+plt.hist(np.log(x), density=True, bins=40)  # density=False would make counts
+plt.title("log-transformed")
+plt.ylabel('Probability')
+plt.xlabel('Data');
+plt.savefig('./autoimgs/skew-log.png')
+plt.close()
+#+end_src
+
+#+RESULTS:
+[[file:./autoimgs/skew-log.png]]
+
+* data preparation and development
+** prepare
+steps:
+1) read csv
+2) preprocess by hands: correct types, feature engineering with domain
+ knowledge
+3) split or save indexes
+4) clear training only! dataset from outliers
+5) fill empty np.NaN in all datasets separately
+6) encode categorical column and numerical separately (advanced
+ programming required)
+   1. training dataset - train encoders and transform with them training dataset
+   2. test datasets - apply trained encoders to test datasets.
+7) save separately encoded data. (TODO: Encoders may be saved and applyed
+ later for new incoming data.)
+#+begin_src python :results output :exports both :session s1
+import pandas as pd
+import numpy as np
+from myown_pack.common import outliers_numerical
+from myown_pack.common import fill_na
+from myown_pack.common import sparse_classes
+from myown_pack.common import split
+from myown_pack.common import encode_categorical_pipe
+from myown_pack.common import load
+from myown_pack.common import save
+from myown_pack.exploring import describe
+from myown_pack.common import values_byfreq
+from myown_pack.common import split_datetime
+from sklearn.model_selection import train_test_split
+TARGET = 'rate'
+# --------- 1. read csv
+path_train = '/home/u/DataSets/greenscreens/train.csv'
+path_validation = '/home/u/DataSets/greenscreens/validation.csv'
+path_test = '/home/u/DataSets/greenscreens/test.csv'
+
+df_train = pd.read_csv(path_train)
+df_validation = pd.read_csv(path_validation)
+df_test2 = pd.read_csv(path_test)
+# ------- 2. process_by_handes: check unbalanced and empty columns, remove
+# ------- columns, correct types, unite columns, feature engineering,
+df_train = split_datetime(df_train, 'pickup_date')
+df_train['kmaend'] = df_train.origin_kma.str[3:5] + df_train.destination_kma.str[3:5]
+df_train['newwm'] = df_train.weight*df_train.valid_miles
+# df_train['kmabeg'] = df_train.origin_kma.str[0:2] + df_train.destination_kma.str[0:2]
+print(df_train.head(3))
+# df_train['kma3'] = df_train.origin_kma.str[0:2]
+
+# df_train['origin_kma3'] = df_train.origin_kma.str[3:5]
+df_test = split_datetime(df_validation, 'pickup_date')
+df_test['kmaend'] = df_test.origin_kma.str[3:5] + df_test.destination_kma.str[3:5]
+df_test['newwm'] = df_test.weight*df_test.valid_miles
+
+df_test2 = split_datetime(df_test2, 'pickup_date')
+df_test2['kmaend'] = df_test2.origin_kma.str[3:5] + df_test2.destination_kma.str[3:5]
+df_test2['newwm'] = df_test2.weight*df_test2.valid_miles
+# df_test['kmabeg'] = df_test.origin_kma.str[0:2] + df_test.destination_kma.str[0:2]
+# df_test['origin_kma2'] = df_test.origin_kma.str[0:3]
+# df_test['origin_kma3'] = df_test.origin_kma.str[3:5]
+# - correct types
+# print(df.dtypes)
+# ------- 2. split to train and test and save indexes
+p1 = 'split_train.pickle'
+p2 = 'split_test.pickle'
+p3 = 'split_test2.pickle'
+df_train.reset_index(drop=True, inplace=True)
+df_test.reset_index(drop=True, inplace=True)
+df_test2.reset_index(drop=True, inplace=True)
+save('id_train.pickle', df_train.index.tolist())
+save('id_test.pickle', df_test.index.tolist())
+save('id_test2.pickle', df_test2.index.tolist())
+save(p1, df_train)
+save(p2, df_test)
+save(p3, df_test2)
+df = df_train
+# split(df, p1, p2, target_col=TARGET)  # and select columns, remove special cases, save id
+# ------- 3. train: remove outlieners in numerical columns
+p1 = outliers_numerical(p1, 0.0006, target=TARGET,
+                            ignore_columns=[])  # require fill_na for skew test
+
+# ------- 4. fill NaN values with mode
+p1 = fill_na(p1, 'fill_na_p1.pickle', id_check1='id_train.pickle')
+p1 = 'fill_na_p1.pickle'
+p2 = fill_na(p2, 'fill_na_p2.pickle', id_check1='id_test.pickle')
+p2 = 'fill_na_p2.pickle'
+p3 = fill_na(p2, 'fill_na_p3.pickle', id_check1='id_test2.pickle')
+p3 = 'fill_na_p3.pickle'
+# ------- 5. encode categorical
+# - select frequence to fix sparse classes
+# df = load(p1)
+
+# for c in df.columns:
+#     l, h = values_byfreq(df[c], min_freq=0.005)
+#     # print(l, h)
+#     print(len(l), len(h))
+#     print()
+
+p1, encoders = encode_categorical_pipe(p1, id_check='id_train.pickle',
+                                       p_save='train.pickle',
+                                       min_frequency=0.009)  # 1 or 0 # fill_na required
+# print(p1, encoders)
+p2, encoders = encode_categorical_pipe(p2, id_check='id_test.pickle',
+                                             encoders_train=encoders,
+                                             p_save='test.pickle')  # 1 or 0 # fill_na required
+p3, encoders = encode_categorical_pipe(p3, id_check='id_test2.pickle',
+                                             encoders_train=encoders,
+                                             p_save='test2.pickle')  # 1 or 0 # fill_na required
+p1 = 'train.pickle'
+p2 = 'test.pickle'
+p3 = 'test2.pickle'
+# # print("p2", p2)
+# p2 = 'test.pickle'
+df_train = load(p1)
+df_test = load(p2)
+df_test2 = load(p3)
+print(" -------- final explore -----")
+# print(df_train[TARGET])
+print(df_train.shape)
+print(df_test.shape)
+print(df_test2.shape)
+# print(df[TARGET].value_counts())
+# describe(df, 'p1')
+#+end_src
+
+#+RESULTS:
+#+begin_example
+     rate  valid_miles transport_type    weight origin_kma  ... p_date_quarter  p_date_dofy  p_date_monthall  kmaend         newwm
+0  4.7203     521.8451          MKPFX   9231.75      OMUOI  ...              4          314         1.090909    OIHN  4.817544e+06
+1  4.9005     532.6675          MKPFX  11754.95      OMUOI  ...              4          314         1.090909    OIHN  6.261480e+06
+2  4.7018     523.9188          MKPFX   9603.20      OMUOI  ...              4          314         1.090909    OIHN  5.031297e+06
+
+[3 rows x 14 columns]
+-- save -- id_train.pickle
+
+-- save -- id_test.pickle
+
+-- save -- id_test2.pickle
+
+-- save -- split_train.pickle (296727, 14) ['rate', 'valid_miles', 'transport_type', 'weight', 'origin_kma', 'destination_kma', 'p_date_dfw', 'p_date_hour', 'p_date_month', 'p_date_quarter', 'p_date_dofy', 'p_date_monthall', 'kmaend', 'newwm']
+
+-- save -- split_test.pickle (5000, 14) ['rate', 'valid_miles', 'transport_type', 'weight', 'origin_kma', 'destination_kma', 'p_date_dfw', 'p_date_hour', 'p_date_month', 'p_date_quarter', 'p_date_dofy', 'p_date_monthall', 'kmaend', 'newwm']
+
+-- save -- split_test2.pickle (5000, 13) ['valid_miles', 'transport_type', 'weight', 'origin_kma', 'destination_kma', 'p_date_dfw', 'p_date_hour', 'p_date_month', 'p_date_quarter', 'p_date_dofy', 'p_date_monthall', 'kmaend', 'newwm']
+
+-- OUTLIERS_NUMERICAL
+per target 0: 0 , per target 1: 0
+                   1
+0
+rate_0             0
+valid_miles_0      0
+weight_0           0
+p_date_dfw_0       0
+p_date_hour_0      0
+p_date_month_0     0
+p_date_quarter_0   0
+p_date_dofy_0      0
+p_date_monthall_0  0
+newwm_0            0
+                   1
+0
+rate_1             0
+valid_miles_1      0
+weight_1           0
+p_date_dfw_1       0
+p_date_hour_1      0
+p_date_month_1     0
+p_date_quarter_1   0
+p_date_dofy_1      0
+p_date_monthall_1  0
+newwm_1            0
+
+-- save -- id_train.pickle
+
+filtered:                1
+0
+newwm        356
+weight       348
+rate         317
+valid_miles  206
+total filtered count: 1227
+-- save -- without_outliers.pickle (295500, 14) ['rate', 'valid_miles', 'transport_type', 'weight', 'origin_kma', 'destination_kma', 'p_date_dfw', 'p_date_hour', 'p_date_month', 'p_date_quarter', 'p_date_dofy', 'p_date_monthall', 'kmaend', 'newwm']
+
+2 unique values columns excluded: set()
+NA count in categorical columns:
+origin_kma 0
+kmaend 0
+destination_kma 0
+transport_type 0
+
+fill na with mode in categorical:
+ origin_kma         QGHCU
+kmaend              NCDX
+destination_kma    NTODX
+transport_type     MKPFX
+Name: 0, dtype: object
+
+cast valid_miles
+cast p_date_monthall
+newwm count: 80 fill na with median: 5536237.1565625
+cast newwm
+weight count: 80 fill na with median: 19050.0
+cast weight
+cast rate
+ids check: 295500 295500
+-- save -- fill_na_p1.pickle (295500, 14) ['rate', 'valid_miles', 'transport_type', 'weight', 'origin_kma', 'destination_kma', 'p_date_dfw', 'p_date_hour', 'p_date_month', 'p_date_quarter', 'p_date_dofy', 'p_date_monthall', 'kmaend', 'newwm']
+
+2 unique values columns excluded: set()
+NA count in categorical columns:
+origin_kma 0
+kmaend 0
+destination_kma 0
+transport_type 0
+
+fill na with mode in categorical:
+ origin_kma         VCEUE
+kmaend              NCDX
+destination_kma    NTODX
+transport_type     MKPFX
+Name: 0, dtype: object
+
+cast valid_miles
+cast p_date_monthall
+cast newwm
+cast weight
+cast rate
+ids check: 5000 5000
+-- save -- fill_na_p2.pickle (5000, 14) ['rate', 'valid_miles', 'transport_type', 'weight', 'origin_kma', 'destination_kma', 'p_date_dfw', 'p_date_hour', 'p_date_month', 'p_date_quarter', 'p_date_dofy', 'p_date_monthall', 'kmaend', 'newwm']
+
+2 unique values columns excluded: set()
+NA count in categorical columns:
+origin_kma 0
+kmaend 0
+destination_kma 0
+transport_type 0
+
+fill na with mode in categorical:
+ origin_kma         VCEUE
+kmaend              NCDX
+destination_kma    NTODX
+transport_type     MKPFX
+Name: 0, dtype: object
+
+cast valid_miles
+cast p_date_monthall
+cast newwm
+cast weight
+cast rate
+ids check: 5000 5000
+-- save -- fill_na_p3.pickle (5000, 14) ['rate', 'valid_miles', 'transport_type', 'weight', 'origin_kma', 'destination_kma', 'p_date_dfw', 'p_date_hour', 'p_date_month', 'p_date_quarter', 'p_date_dofy', 'p_date_monthall', 'kmaend', 'newwm']
+
+-- ENCODE_CATEGORICAL_PIPE
+vcp_s transport_type
+MKPFX    0.930156
+GJROY    0.058839
+KFEGT    0.011005
+Name: count, dtype: float64
+vcp_s origin_kma
+QGHCU    0.054071
+VCEUE    0.053689
+FPZNC    0.043777
+HRQLD    0.042460
+MJGXM    0.038433
+           ...
+HLRGX    0.000030
+KJMHB    0.000027
+PKGHG    0.000020
+YNBDR    0.000020
+MZUAW    0.000014
+Name: count, Length: 135, dtype: float64
+vcp_s destination_kma
+NTODX    0.196920
+QUERU    0.091689
+MJGXM    0.027445
+QWBPO    0.021289
+AWWEE    0.020426
+           ...
+FYCWC    0.000105
+XXIZJ    0.000088
+MZUAW    0.000071
+ANCVH    0.000071
+YNBDR    0.000024
+Name: count, Length: 135, dtype: float64
+vcp_s kmaend
+NCDX    0.027746
+CURU    0.021066
+LJRU    0.020291
+UDDX    0.020203
+DUDX    0.014054
+          ...
+XTBI    0.000003
+ZAKI    0.000003
+WTRU    0.000003
+JQZC    0.000003
+LRLD    0.000003
+Name: count, Length: 6034, dtype: float64
+label columns []
+onehot columns ['transport_type', 'origin_kma', 'destination_kma', 'kmaend']
+numerical columns ['rate', 'valid_miles', 'weight', 'p_date_dfw', 'p_date_hour', 'p_date_month', 'p_date_quarter', 'p_date_dofy', 'p_date_monthall', 'newwm']
+
+encode_categorical_onehot:
+encoder.categories_.shape 3
+encoder.categories_.shape 135
+encoder.categories_.shape 135
+encoder.categories_.shape 6034
+One-Hot result columns:
+transport_type ['transport_type_GJROY', 'transport_type_KFEGT', 'transport_type_MKPFX']
+origin_kma ['origin_kma_AWWEE', 'origin_kma_CTJQI', 'origin_kma_DNDBK', 'origin_kma_DUXGP', 'origin_kma_FPZNC', 'origin_kma_GFKMC', 'origin_kma_GRIOF', 'origin_kma_HRQLD', 'origin_kma_JESUD', 'origin_kma_LFUHN', 'origin_kma_MJGXM', 'origin_kma_MJJOV', 'origin_kma_NTODX', 'origin_kma_NUTZC', 'origin_kma_OKPES', 'origin_kma_OMUOI', 'origin_kma_OQOLJ', 'origin_kma_PEXPT', 'origin_kma_PNBXA', 'origin_kma_QGHCU', 'origin_kma_QUERU', 'origin_kma_QWBPO', 'origin_kma_RCDSS', 'origin_kma_UKWZA', 'origin_kma_VCEUE', 'origin_kma_VRVHM', 'origin_kma_XNCMK', 'origin_kma_YXTDU', 'origin_kma_ZSZDM', 'origin_kma_other']
+destination_kma ['destination_kma_AWWEE', 'destination_kma_DNDBK', 'destination_kma_FPZNC', 'destination_kma_HQWLT', 'destination_kma_HRQLD', 'destination_kma_IAZJQ', 'destination_kma_JESUD', 'destination_kma_KMMBI', 'destination_kma_KWGZQ', 'destination_kma_LFUHN', 'destination_kma_MJGXM', 'destination_kma_NPCXM', 'destination_kma_NSBMC', 'destination_kma_NTODX', 'destination_kma_NUTZC', 'destination_kma_OIANS', 'destination_kma_OKWUS', 'destination_kma_OMSVL', 'destination_kma_OQOLJ', 'destination_kma_PEXPT', 'destination_kma_PNBXA', 'destination_kma_QGHCU', 'destination_kma_QUERU', 'destination_kma_QWBPO', 'destination_kma_VCEUE', 'destination_kma_VJBFX', 'destination_kma_other']
+kmaend ['kmaend_CURU', 'kmaend_DUDX', 'kmaend_LDBI', 'kmaend_LJRU', 'kmaend_MCDX', 'kmaend_NCDX', 'kmaend_OFDX', 'kmaend_PODX', 'kmaend_UDDX', 'kmaend_UEVL', 'kmaend_other']
+onehot_encoders {'transport_type': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'origin_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'destination_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'kmaend': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False)}
+Two values with NA columns:
+
+label []
+onehot ['transport_type_GJROY', 'transport_type_KFEGT', 'transport_type_MKPFX', 'origin_kma_AWWEE', 'origin_kma_CTJQI', 'origin_kma_DNDBK', 'origin_kma_DUXGP', 'origin_kma_FPZNC', 'origin_kma_GFKMC', 'origin_kma_GRIOF', 'origin_kma_HRQLD', 'origin_kma_JESUD', 'origin_kma_LFUHN', 'origin_kma_MJGXM', 'origin_kma_MJJOV', 'origin_kma_NTODX', 'origin_kma_NUTZC', 'origin_kma_OKPES', 'origin_kma_OMUOI', 'origin_kma_OQOLJ', 'origin_kma_PEXPT', 'origin_kma_PNBXA', 'origin_kma_QGHCU', 'origin_kma_QUERU', 'origin_kma_QWBPO', 'origin_kma_RCDSS', 'origin_kma_UKWZA', 'origin_kma_VCEUE', 'origin_kma_VRVHM', 'origin_kma_XNCMK', 'origin_kma_YXTDU', 'origin_kma_ZSZDM', 'origin_kma_other', 'destination_kma_AWWEE', 'destination_kma_DNDBK', 'destination_kma_FPZNC', 'destination_kma_HQWLT', 'destination_kma_HRQLD', 'destination_kma_IAZJQ', 'destination_kma_JESUD', 'destination_kma_KMMBI', 'destination_kma_KWGZQ', 'destination_kma_LFUHN', 'destination_kma_MJGXM', 'destination_kma_NPCXM', 'destination_kma_NSBMC', 'destination_kma_NTODX', 'destination_kma_NUTZC', 'destination_kma_OIANS', 'destination_kma_OKWUS', 'destination_kma_OMSVL', 'destination_kma_OQOLJ', 'destination_kma_PEXPT', 'destination_kma_PNBXA', 'destination_kma_QGHCU', 'destination_kma_QUERU', 'destination_kma_QWBPO', 'destination_kma_VCEUE', 'destination_kma_VJBFX', 'destination_kma_other', 'kmaend_CURU', 'kmaend_DUDX', 'kmaend_LDBI', 'kmaend_LJRU', 'kmaend_MCDX', 'kmaend_NCDX', 'kmaend_OFDX', 'kmaend_PODX', 'kmaend_UDDX', 'kmaend_UEVL', 'kmaend_other']
+
+before encoders {'transport_type': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'origin_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'destination_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'kmaend': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False)} {}
+final encoders {'transport_type': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'origin_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'destination_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'kmaend': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False)}
+ids check: 295500 295500
+-- save -- train.pickle (295500, 81) ['rate', 'valid_miles', 'weight', 'p_date_dfw', 'p_date_hour', 'p_date_month', 'p_date_quarter', 'p_date_dofy', 'p_date_monthall', 'newwm', 'transport_type_GJROY', 'transport_type_KFEGT', 'transport_type_MKPFX', 'origin_kma_AWWEE', 'origin_kma_CTJQI', 'origin_kma_DNDBK', 'origin_kma_DUXGP', 'origin_kma_FPZNC', 'origin_kma_GFKMC', 'origin_kma_GRIOF', 'origin_kma_HRQLD', 'origin_kma_JESUD', 'origin_kma_LFUHN', 'origin_kma_MJGXM', 'origin_kma_MJJOV', 'origin_kma_NTODX', 'origin_kma_NUTZC', 'origin_kma_OKPES', 'origin_kma_OMUOI', 'origin_kma_OQOLJ', 'origin_kma_PEXPT', 'origin_kma_PNBXA', 'origin_kma_QGHCU', 'origin_kma_QUERU', 'origin_kma_QWBPO', 'origin_kma_RCDSS', 'origin_kma_UKWZA', 'origin_kma_VCEUE', 'origin_kma_VRVHM', 'origin_kma_XNCMK', 'origin_kma_YXTDU', 'origin_kma_ZSZDM', 'origin_kma_other', 'destination_kma_AWWEE', 'destination_kma_DNDBK', 'destination_kma_FPZNC', 'destination_kma_HQWLT', 'destination_kma_HRQLD', 'destination_kma_IAZJQ', 'destination_kma_JESUD', 'destination_kma_KMMBI', 'destination_kma_KWGZQ', 'destination_kma_LFUHN', 'destination_kma_MJGXM', 'destination_kma_NPCXM', 'destination_kma_NSBMC', 'destination_kma_NTODX', 'destination_kma_NUTZC', 'destination_kma_OIANS', 'destination_kma_OKWUS', 'destination_kma_OMSVL', 'destination_kma_OQOLJ', 'destination_kma_PEXPT', 'destination_kma_PNBXA', 'destination_kma_QGHCU', 'destination_kma_QUERU', 'destination_kma_QWBPO', 'destination_kma_VCEUE', 'destination_kma_VJBFX', 'destination_kma_other', 'kmaend_CURU', 'kmaend_DUDX', 'kmaend_LDBI', 'kmaend_LJRU', 'kmaend_MCDX', 'kmaend_NCDX', 'kmaend_OFDX', 'kmaend_PODX', 'kmaend_UDDX', 'kmaend_UEVL', 'kmaend_other']
+
+-- ENCODE_CATEGORICAL_PIPE
+label columns []
+onehot columns ['transport_type', 'origin_kma', 'destination_kma', 'kmaend']
+numerical columns ['rate', 'valid_miles', 'weight', 'p_date_dfw', 'p_date_hour', 'p_date_month', 'p_date_quarter', 'p_date_dofy', 'p_date_monthall', 'newwm']
+
+encode_categorical_onehot:
+encoder.categories_.shape 3
+encoder.categories_.shape 135
+encoder.categories_.shape 135
+encoder.categories_.shape 6034
+One-Hot result columns:
+transport_type ['transport_type_GJROY', 'transport_type_KFEGT', 'transport_type_MKPFX']
+origin_kma ['origin_kma_AWWEE', 'origin_kma_CTJQI', 'origin_kma_DNDBK', 'origin_kma_DUXGP', 'origin_kma_FPZNC', 'origin_kma_GFKMC', 'origin_kma_GRIOF', 'origin_kma_HRQLD', 'origin_kma_JESUD', 'origin_kma_LFUHN', 'origin_kma_MJGXM', 'origin_kma_MJJOV', 'origin_kma_NTODX', 'origin_kma_NUTZC', 'origin_kma_OKPES', 'origin_kma_OMUOI', 'origin_kma_OQOLJ', 'origin_kma_PEXPT', 'origin_kma_PNBXA', 'origin_kma_QGHCU', 'origin_kma_QUERU', 'origin_kma_QWBPO', 'origin_kma_RCDSS', 'origin_kma_UKWZA', 'origin_kma_VCEUE', 'origin_kma_VRVHM', 'origin_kma_XNCMK', 'origin_kma_YXTDU', 'origin_kma_ZSZDM', 'origin_kma_other']
+destination_kma ['destination_kma_AWWEE', 'destination_kma_DNDBK', 'destination_kma_FPZNC', 'destination_kma_HQWLT', 'destination_kma_HRQLD', 'destination_kma_IAZJQ', 'destination_kma_JESUD', 'destination_kma_KMMBI', 'destination_kma_KWGZQ', 'destination_kma_LFUHN', 'destination_kma_MJGXM', 'destination_kma_NPCXM', 'destination_kma_NSBMC', 'destination_kma_NTODX', 'destination_kma_NUTZC', 'destination_kma_OIANS', 'destination_kma_OKWUS', 'destination_kma_OMSVL', 'destination_kma_OQOLJ', 'destination_kma_PEXPT', 'destination_kma_PNBXA', 'destination_kma_QGHCU', 'destination_kma_QUERU', 'destination_kma_QWBPO', 'destination_kma_VCEUE', 'destination_kma_VJBFX', 'destination_kma_other']
+kmaend ['kmaend_CURU', 'kmaend_DUDX', 'kmaend_LDBI', 'kmaend_LJRU', 'kmaend_MCDX', 'kmaend_NCDX', 'kmaend_OFDX', 'kmaend_PODX', 'kmaend_UDDX', 'kmaend_UEVL', 'kmaend_other']
+onehot_encoders {'transport_type': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'origin_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'destination_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'kmaend': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False)}
+Two values with NA columns:
+
+label []
+onehot ['transport_type_GJROY', 'transport_type_KFEGT', 'transport_type_MKPFX', 'origin_kma_AWWEE', 'origin_kma_CTJQI', 'origin_kma_DNDBK', 'origin_kma_DUXGP', 'origin_kma_FPZNC', 'origin_kma_GFKMC', 'origin_kma_GRIOF', 'origin_kma_HRQLD', 'origin_kma_JESUD', 'origin_kma_LFUHN', 'origin_kma_MJGXM', 'origin_kma_MJJOV', 'origin_kma_NTODX', 'origin_kma_NUTZC', 'origin_kma_OKPES', 'origin_kma_OMUOI', 'origin_kma_OQOLJ', 'origin_kma_PEXPT', 'origin_kma_PNBXA', 'origin_kma_QGHCU', 'origin_kma_QUERU', 'origin_kma_QWBPO', 'origin_kma_RCDSS', 'origin_kma_UKWZA', 'origin_kma_VCEUE', 'origin_kma_VRVHM', 'origin_kma_XNCMK', 'origin_kma_YXTDU', 'origin_kma_ZSZDM', 'origin_kma_other', 'destination_kma_AWWEE', 'destination_kma_DNDBK', 'destination_kma_FPZNC', 'destination_kma_HQWLT', 'destination_kma_HRQLD', 'destination_kma_IAZJQ', 'destination_kma_JESUD', 'destination_kma_KMMBI', 'destination_kma_KWGZQ', 'destination_kma_LFUHN', 'destination_kma_MJGXM', 'destination_kma_NPCXM', 'destination_kma_NSBMC', 'destination_kma_NTODX', 'destination_kma_NUTZC', 'destination_kma_OIANS', 'destination_kma_OKWUS', 'destination_kma_OMSVL', 'destination_kma_OQOLJ', 'destination_kma_PEXPT', 'destination_kma_PNBXA', 'destination_kma_QGHCU', 'destination_kma_QUERU', 'destination_kma_QWBPO', 'destination_kma_VCEUE', 'destination_kma_VJBFX', 'destination_kma_other', 'kmaend_CURU', 'kmaend_DUDX', 'kmaend_LDBI', 'kmaend_LJRU', 'kmaend_MCDX', 'kmaend_NCDX', 'kmaend_OFDX', 'kmaend_PODX', 'kmaend_UDDX', 'kmaend_UEVL', 'kmaend_other']
+
+before encoders {'transport_type': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'origin_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'destination_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'kmaend': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False)} {}
+final encoders {'transport_type': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'origin_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'destination_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'kmaend': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False)}
+ids check: 5000 5000
+-- save -- test.pickle (5000, 81) ['rate', 'valid_miles', 'weight', 'p_date_dfw', 'p_date_hour', 'p_date_month', 'p_date_quarter', 'p_date_dofy', 'p_date_monthall', 'newwm', 'transport_type_GJROY', 'transport_type_KFEGT', 'transport_type_MKPFX', 'origin_kma_AWWEE', 'origin_kma_CTJQI', 'origin_kma_DNDBK', 'origin_kma_DUXGP', 'origin_kma_FPZNC', 'origin_kma_GFKMC', 'origin_kma_GRIOF', 'origin_kma_HRQLD', 'origin_kma_JESUD', 'origin_kma_LFUHN', 'origin_kma_MJGXM', 'origin_kma_MJJOV', 'origin_kma_NTODX', 'origin_kma_NUTZC', 'origin_kma_OKPES', 'origin_kma_OMUOI', 'origin_kma_OQOLJ', 'origin_kma_PEXPT', 'origin_kma_PNBXA', 'origin_kma_QGHCU', 'origin_kma_QUERU', 'origin_kma_QWBPO', 'origin_kma_RCDSS', 'origin_kma_UKWZA', 'origin_kma_VCEUE', 'origin_kma_VRVHM', 'origin_kma_XNCMK', 'origin_kma_YXTDU', 'origin_kma_ZSZDM', 'origin_kma_other', 'destination_kma_AWWEE', 'destination_kma_DNDBK', 'destination_kma_FPZNC', 'destination_kma_HQWLT', 'destination_kma_HRQLD', 'destination_kma_IAZJQ', 'destination_kma_JESUD', 'destination_kma_KMMBI', 'destination_kma_KWGZQ', 'destination_kma_LFUHN', 'destination_kma_MJGXM', 'destination_kma_NPCXM', 'destination_kma_NSBMC', 'destination_kma_NTODX', 'destination_kma_NUTZC', 'destination_kma_OIANS', 'destination_kma_OKWUS', 'destination_kma_OMSVL', 'destination_kma_OQOLJ', 'destination_kma_PEXPT', 'destination_kma_PNBXA', 'destination_kma_QGHCU', 'destination_kma_QUERU', 'destination_kma_QWBPO', 'destination_kma_VCEUE', 'destination_kma_VJBFX', 'destination_kma_other', 'kmaend_CURU', 'kmaend_DUDX', 'kmaend_LDBI', 'kmaend_LJRU', 'kmaend_MCDX', 'kmaend_NCDX', 'kmaend_OFDX', 'kmaend_PODX', 'kmaend_UDDX', 'kmaend_UEVL', 'kmaend_other']
+
+-- ENCODE_CATEGORICAL_PIPE
+label columns []
+onehot columns ['transport_type', 'origin_kma', 'destination_kma', 'kmaend']
+numerical columns ['rate', 'valid_miles', 'weight', 'p_date_dfw', 'p_date_hour', 'p_date_month', 'p_date_quarter', 'p_date_dofy', 'p_date_monthall', 'newwm']
+
+encode_categorical_onehot:
+encoder.categories_.shape 3
+encoder.categories_.shape 135
+encoder.categories_.shape 135
+encoder.categories_.shape 6034
+One-Hot result columns:
+transport_type ['transport_type_GJROY', 'transport_type_KFEGT', 'transport_type_MKPFX']
+origin_kma ['origin_kma_AWWEE', 'origin_kma_CTJQI', 'origin_kma_DNDBK', 'origin_kma_DUXGP', 'origin_kma_FPZNC', 'origin_kma_GFKMC', 'origin_kma_GRIOF', 'origin_kma_HRQLD', 'origin_kma_JESUD', 'origin_kma_LFUHN', 'origin_kma_MJGXM', 'origin_kma_MJJOV', 'origin_kma_NTODX', 'origin_kma_NUTZC', 'origin_kma_OKPES', 'origin_kma_OMUOI', 'origin_kma_OQOLJ', 'origin_kma_PEXPT', 'origin_kma_PNBXA', 'origin_kma_QGHCU', 'origin_kma_QUERU', 'origin_kma_QWBPO', 'origin_kma_RCDSS', 'origin_kma_UKWZA', 'origin_kma_VCEUE', 'origin_kma_VRVHM', 'origin_kma_XNCMK', 'origin_kma_YXTDU', 'origin_kma_ZSZDM', 'origin_kma_other']
+destination_kma ['destination_kma_AWWEE', 'destination_kma_DNDBK', 'destination_kma_FPZNC', 'destination_kma_HQWLT', 'destination_kma_HRQLD', 'destination_kma_IAZJQ', 'destination_kma_JESUD', 'destination_kma_KMMBI', 'destination_kma_KWGZQ', 'destination_kma_LFUHN', 'destination_kma_MJGXM', 'destination_kma_NPCXM', 'destination_kma_NSBMC', 'destination_kma_NTODX', 'destination_kma_NUTZC', 'destination_kma_OIANS', 'destination_kma_OKWUS', 'destination_kma_OMSVL', 'destination_kma_OQOLJ', 'destination_kma_PEXPT', 'destination_kma_PNBXA', 'destination_kma_QGHCU', 'destination_kma_QUERU', 'destination_kma_QWBPO', 'destination_kma_VCEUE', 'destination_kma_VJBFX', 'destination_kma_other']
+kmaend ['kmaend_CURU', 'kmaend_DUDX', 'kmaend_LDBI', 'kmaend_LJRU', 'kmaend_MCDX', 'kmaend_NCDX', 'kmaend_OFDX', 'kmaend_PODX', 'kmaend_UDDX', 'kmaend_UEVL', 'kmaend_other']
+onehot_encoders {'transport_type': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'origin_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'destination_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'kmaend': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False)}
+Two values with NA columns:
+
+label []
+onehot ['transport_type_GJROY', 'transport_type_KFEGT', 'transport_type_MKPFX', 'origin_kma_AWWEE', 'origin_kma_CTJQI', 'origin_kma_DNDBK', 'origin_kma_DUXGP', 'origin_kma_FPZNC', 'origin_kma_GFKMC', 'origin_kma_GRIOF', 'origin_kma_HRQLD', 'origin_kma_JESUD', 'origin_kma_LFUHN', 'origin_kma_MJGXM', 'origin_kma_MJJOV', 'origin_kma_NTODX', 'origin_kma_NUTZC', 'origin_kma_OKPES', 'origin_kma_OMUOI', 'origin_kma_OQOLJ', 'origin_kma_PEXPT', 'origin_kma_PNBXA', 'origin_kma_QGHCU', 'origin_kma_QUERU', 'origin_kma_QWBPO', 'origin_kma_RCDSS', 'origin_kma_UKWZA', 'origin_kma_VCEUE', 'origin_kma_VRVHM', 'origin_kma_XNCMK', 'origin_kma_YXTDU', 'origin_kma_ZSZDM', 'origin_kma_other', 'destination_kma_AWWEE', 'destination_kma_DNDBK', 'destination_kma_FPZNC', 'destination_kma_HQWLT', 'destination_kma_HRQLD', 'destination_kma_IAZJQ', 'destination_kma_JESUD', 'destination_kma_KMMBI', 'destination_kma_KWGZQ', 'destination_kma_LFUHN', 'destination_kma_MJGXM', 'destination_kma_NPCXM', 'destination_kma_NSBMC', 'destination_kma_NTODX', 'destination_kma_NUTZC', 'destination_kma_OIANS', 'destination_kma_OKWUS', 'destination_kma_OMSVL', 'destination_kma_OQOLJ', 'destination_kma_PEXPT', 'destination_kma_PNBXA', 'destination_kma_QGHCU', 'destination_kma_QUERU', 'destination_kma_QWBPO', 'destination_kma_VCEUE', 'destination_kma_VJBFX', 'destination_kma_other', 'kmaend_CURU', 'kmaend_DUDX', 'kmaend_LDBI', 'kmaend_LJRU', 'kmaend_MCDX', 'kmaend_NCDX', 'kmaend_OFDX', 'kmaend_PODX', 'kmaend_UDDX', 'kmaend_UEVL', 'kmaend_other']
+
+before encoders {'transport_type': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'origin_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'destination_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'kmaend': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False)} {}
+final encoders {'transport_type': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'origin_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'destination_kma': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False), 'kmaend': OneHotEncoder(handle_unknown='infrequent_if_exist', min_frequency=0.009,
+              sparse_output=False)}
+ids check: 5000 5000
+-- save -- test2.pickle (5000, 81) ['rate', 'valid_miles', 'weight', 'p_date_dfw', 'p_date_hour', 'p_date_month', 'p_date_quarter', 'p_date_dofy', 'p_date_monthall', 'newwm', 'transport_type_GJROY', 'transport_type_KFEGT', 'transport_type_MKPFX', 'origin_kma_AWWEE', 'origin_kma_CTJQI', 'origin_kma_DNDBK', 'origin_kma_DUXGP', 'origin_kma_FPZNC', 'origin_kma_GFKMC', 'origin_kma_GRIOF', 'origin_kma_HRQLD', 'origin_kma_JESUD', 'origin_kma_LFUHN', 'origin_kma_MJGXM', 'origin_kma_MJJOV', 'origin_kma_NTODX', 'origin_kma_NUTZC', 'origin_kma_OKPES', 'origin_kma_OMUOI', 'origin_kma_OQOLJ', 'origin_kma_PEXPT', 'origin_kma_PNBXA', 'origin_kma_QGHCU', 'origin_kma_QUERU', 'origin_kma_QWBPO', 'origin_kma_RCDSS', 'origin_kma_UKWZA', 'origin_kma_VCEUE', 'origin_kma_VRVHM', 'origin_kma_XNCMK', 'origin_kma_YXTDU', 'origin_kma_ZSZDM', 'origin_kma_other', 'destination_kma_AWWEE', 'destination_kma_DNDBK', 'destination_kma_FPZNC', 'destination_kma_HQWLT', 'destination_kma_HRQLD', 'destination_kma_IAZJQ', 'destination_kma_JESUD', 'destination_kma_KMMBI', 'destination_kma_KWGZQ', 'destination_kma_LFUHN', 'destination_kma_MJGXM', 'destination_kma_NPCXM', 'destination_kma_NSBMC', 'destination_kma_NTODX', 'destination_kma_NUTZC', 'destination_kma_OIANS', 'destination_kma_OKWUS', 'destination_kma_OMSVL', 'destination_kma_OQOLJ', 'destination_kma_PEXPT', 'destination_kma_PNBXA', 'destination_kma_QGHCU', 'destination_kma_QUERU', 'destination_kma_QWBPO', 'destination_kma_VCEUE', 'destination_kma_VJBFX', 'destination_kma_other', 'kmaend_CURU', 'kmaend_DUDX', 'kmaend_LDBI', 'kmaend_LJRU', 'kmaend_MCDX', 'kmaend_NCDX', 'kmaend_OFDX', 'kmaend_PODX', 'kmaend_UDDX', 'kmaend_UEVL', 'kmaend_other']
+
+ -------- final explore -----
+(295500, 81)
+(5000, 81)
+(5000, 81)
+#+end_example
+** dimensionality reduction
+manifold
+- https://scikit-learn.org/stable/auto_examples/manifold/plot_compare_methods.html
+- https://scikit-learn.org/stable/modules/generated/sklearn.manifold.MDS.html#sklearn.manifold.MDS
+- https://scikit-learn.org/stable/modules/manifold.html#multidimensional-scaling
+#+begin_src python :results output :exports both :session s1 :timeout 60
+from myown_pack.common import load
+from sklearn import manifold
+from sklearn.decomposition import PCA
+
+p1 = 'train.pickle'
+p2 = 'test.pickle'
+# # print("p2", p2)
+# p2 = 'test.pickle'
+df_train = load(p1)
+# df_test = load(p2)
+print(" -------- final explore -----")
+# print(df_train[TARGET])
+print(df_train.shape)
+# print(df_test.shape)
+
+# print("------- manifold -------")
+# md_scaling = manifold.MDS(
+#     n_components=10,
+#     max_iter=1,
+#     n_init=2,
+#     n_jobs=2,
+#     random_state=42,
+#     normalized_stress=False,
+# )
+# S_scaling = md_scaling.fit_transform(df_train.iloc[0:10000])
+# # md_scaling = md_scaling.fit(df_train.iloc[0:1000])
+# # S_scaling = md_scaling.transform(df_train.iloc[1000:2000])
+# print(S_scaling.shape)
+print("------- PCA -------")
+pca_scaling = PCA(n_components=10, svd_solver='full')
+S_scaling = pca_scaling.fit_transform(df_train)
+# md_scaling = md_scaling.fit(df_train.iloc[0:1000])
+# S_scaling = md_scaling.transform(df_train.iloc[1000:2000])
+print(S_scaling.shape)
+
+#+end_src
+
+#+RESULTS:
+:  -------- final explore -----
+: (295856, 117)
+: ------- PCA -------
+: (295856, 10)
+
+** select algorithm
+1) Decision Trees - for categorical and numerical data, high-dimensional.
+2) Logistic Regression - for linear relationship, to model the
+ probability of a binary or categorical outcome
+3) Naive Bayes - fast and simple model for classification tasks, for
+ high-dimensional data or data with many categorical features. Support
+ Out-of-core learning.
+4) K-Nearest Neighbors (KNN) - non-parametric model that can handle
+ both classification and regression tasks, non-linear relationship.
+5) Support Vector Machines (SVM) - for many features, but few samples, memory efficient
+6) Random Forests - for high-dimensional data or data with missing values.
+7) Gradient Boosting Machines (GBM)
+8) Neural Networks (Deep Learning) - data that has many layers of
+ abstraction or complex interactions between features.
+
+Decision Trees is performing best here.
+
+Dimensionaly reduction with PCA and manifold didn't show accuracy gain.
+
+Standard scaler add insignificant gain as expected with Decision
+ Trees.
+#+begin_src python :results output :exports both :session s1 :timeout 860
+from sklearn.model_selection import cross_val_score, cross_validate
+from sklearn.model_selection import TimeSeriesSplit
+from sklearn import preprocessing
+from sklearn.pipeline import make_pipeline
+
+from sklearn.linear_model import Ridge
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.linear_model import ARDRegression, BayesianRidge, LinearRegression
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.svm import SVR, NuSVR
+from sklearn.neural_network import MLPRegressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
+from sklearn.decomposition import PCA
+import numpy as np
+# own
+from myown_pack.common import load
+
+def _check_model_regression(est, X, Y, kfold,
+                            scores = ['neg_mean_absolute_percentage_error',
+                                      'neg_mean_squared_error']):
+    pipe = make_pipeline(preprocessing.StandardScaler(), est) # , PCA(n_components=, svd_solver='full')
+    results = cross_validate(pipe, X, Y, cv=kfold, scoring=scores)
+    print(est.__class__.__name__)
+    print(results.keys())
+    print("MAPE: %f" % results['test_neg_mean_absolute_percentage_error'].mean())
+    print("MSE: %f" % results['test_neg_mean_squared_error'].mean())
+    print("fit_time+score_time: %f" % (results['fit_time'].sum() + results['score_time'].sum()))
+    print()
+
+# ------- load
+p1 = 'train.pickle'
+p2 = 'test.pickle'
+df = load(p1)#.sample(100000)
+y = np.log(df['rate'])
+# y = df['rate']
+X = df.drop(columns=['rate'])
+# -------- estimate
+kfold = TimeSeriesSplit(n_splits=5)
+estimators = [
+    # Ridge(alpha=.5, random_state=42),
+    # KNeighborsRegressor(n_neighbors=2, leaf_size=10),
+    # LinearRegression(),
+    # ARDRegression(max_iter=10),
+    # BayesianRidge(max_iter=10),
+    DecisionTreeRegressor(random_state=42, criterion="poisson"),
+    # SVR(max_iter=30),
+    # MLPRegressor(hidden_layer_sizes=20, max_iter=5, learning_rate_init=0.01, n_iter_no_change=1, random_state=42),
+    # GradientBoostingRegressor(random_state=42, n_estimators=20, min_samples_split=3, max_depth=4),
+    # RandomForestRegressor(random_state=42, n_estimators=20, min_samples_split=3, max_depth=4),
+]
+
+
+from multiprocessing import Pool
+
+with Pool(2) as p:
+    b  = []
+    for est in estimators:
+        # print(cross_val_score(est, X, y, cv=5))
+        # print(cross_validate(est, X, y, cv=5, scoring=['neg_mean_absolute_percentage_error', 'neg_mean_squared_error']))
+        # pipe = make_pipeline(preprocessing.StandardScaler(), est)
+        # print(cross_validate(est, X, Y))
+        r = p.apply_async(_check_model_regression, (est, X, y, kfold))
+        b.append(r)
+        # _check_model_regression(pipe, X, y, kfold)
+    [print(x.wait()) for x in b]
+#+end_src
+
+#+RESULTS:
+: DecisionTreeRegressor
+: dict_keys(['fit_time', 'score_time', 'test_neg_mean_absolute_percentage_error', 'test_neg_mean_squared_error'])
+: MAPE: -0.132806
+: MSE: -0.065676
+: fit_time+score_time: 40.104755
+:
+: None
+** search parameters for decision tree
+https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html
+https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html
+
+#+begin_src python :results output :exports both :session s1 :timeout 300
+import warnings
+warnings.filterwarnings("ignore", category=Warning)
+from sklearn.model_selection import cross_val_score, cross_validate
+from sklearn.model_selection import TimeSeriesSplit
+from sklearn import preprocessing
+from sklearn.pipeline import make_pipeline
+
+from sklearn.linear_model import Ridge
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.linear_model import ARDRegression, BayesianRidge, LinearRegression
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.svm import SVR, NuSVR
+from sklearn.neural_network import MLPRegressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
+from sklearn.decomposition import PCA
+from sklearn.model_selection import GridSearchCV
+from sklearn.experimental import enable_halving_search_cv
+from sklearn.model_selection import HalvingGridSearchCV
+import numpy as np
+# own
+from myown_pack.common import load
+
+# ------- load
+p1 = 'train.pickle'
+p2 = 'test.pickle'
+df = load(p1).sample(2000)
+y = np.log(df['rate'])
+# y = df['rate']
+X = df.drop(columns=['rate'])
+# -------- estimate
+kfold = TimeSeriesSplit(n_splits=5)
+
+scores = ['neg_mean_absolute_percentage_error',
+                                      'neg_mean_squared_error']
+
+est = DecisionTreeRegressor(random_state=42, criterion="absolute_error",
+                            min_samples_split=6)
+
+params = {
+#         'criterion': [
+# # "squared_error",
+# # "friedman_mse",
+# "absolute_error",
+# # "poisson"
+# ],
+       # 'splitter':["best", "random"],
+ # "min_samples_split": [6],
+           # 'min_samples_leaf': [1, 2, 3],
+           'ccp_alpha': [0, 0.001]
+           # 'max_features': ["sqrt", "log2", None] # "max_depth":
+# 'min_samples_split': [5], #'n_estimators': [5, 10, 15],
+#               'max_leaf_nodes': list(range(20, 25)), 'max_depth': list(range(13, 17))
+}
+
+# clf = GridSearchCV(est, params, cv=kfold)
+# # print
+# clf.fit(X, y)
+# print(clf.best_estimator_)
+# est = clf.best_estimator_
+# pipe = make_pipeline(preprocessing.StandardScaler(), est) # , PCA(n_components=, svd_solver='full')
+# results = cross_validate(pipe, X, y, cv=kfold, scoring=scores)
+# print(est.__class__.__name__)
+# print(results.keys())
+# print("MAPE: %f" % results['test_neg_mean_absolute_percentage_error'].mean())
+# print("MSE: %f" % results['test_neg_mean_squared_error'].mean())
+# print("fit_time+score_time: %f" % (results['fit_time'].sum() + results['score_time'].sum()))
+# print()
+
+clf = HalvingGridSearchCV(est, params, cv=kfold,
+                          factor=3,
+                          # resource='n_estimators',
+                          # max_resources=30,
+                          random_state=42)
+clf.fit(X, y)
+print(clf.best_estimator_)
+est = clf.best_estimator_
+pipe = make_pipeline(preprocessing.StandardScaler(), est)
+results = cross_validate(pipe, X, y, cv=kfold, scoring=scores)
+print(est.__class__.__name__)
+print(results.keys())
+print("MAPE: %f" % results['test_neg_mean_absolute_percentage_error'].mean())
+print("MSE: %f" % results['test_neg_mean_squared_error'].mean())
+print("fit_time+score_time: %f" % (results['fit_time'].sum() + results['score_time'].sum()))
+print()
+
+#+end_src
+
+#+RESULTS:
+: DecisionTreeRegressor(ccp_alpha=0.001, criterion='absolute_error',
+:                       min_samples_split=6, random_state=42)
+: DecisionTreeRegressor
+: dict_keys(['fit_time', 'score_time', 'test_neg_mean_absolute_percentage_error', 'test_neg_mean_squared_error'])
+: MAPE: -0.205441
+: MSE: -0.175910
+: fit_time+score_time: 6.399664
+
+#+RESULTS: save
+: DecisionTreeRegressor(ccp_alpha=0.001, criterion='absolute_error',
+:                       min_samples_split=6, random_state=42)
+: DecisionTreeRegressor
+: dict_keys(['fit_time', 'score_time', 'test_neg_mean_absolute_percentage_error', 'test_neg_mean_squared_error'])
+: MAPE: -0.128449
+: MSE: -0.055913
+: fit_time+score_time: 47.004931
+
+#+end_src
+
+** search parameters for random forest
+https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html
+https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html
+
+#+begin_src python :results output :exports both :session s1 :timeout 300
+import warnings
+warnings.filterwarnings("ignore", category=Warning)
+from sklearn.model_selection import cross_val_score, cross_validate
+from sklearn.model_selection import TimeSeriesSplit
+from sklearn import preprocessing
+from sklearn.pipeline import make_pipeline
+
+from sklearn.linear_model import Ridge
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.linear_model import ARDRegression, BayesianRidge, LinearRegression
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.svm import SVR, NuSVR
+from sklearn.neural_network import MLPRegressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
+from sklearn.decomposition import PCA
+from sklearn.model_selection import GridSearchCV
+from sklearn.experimental import enable_halving_search_cv
+from sklearn.model_selection import HalvingGridSearchCV
+from sklearn.ensemble import RandomForestRegressor
+import numpy as np
+from sklearn import manifold
+# own
+from myown_pack.common import load
+
+# ------- load
+p1 = 'train.pickle'
+p2 = 'test.pickle'
+# df = load(p1).sample(90000)
+df = load(p1)
+y = np.log(df['rate'])
+# y = df['rate']
+X = df.drop(columns=['rate'])
+# -------- estimate
+kfold = TimeSeriesSplit(n_splits=5)
+
+scores = ['neg_mean_absolute_percentage_error',
+                                      'neg_mean_squared_error']
+# est = DecisionTreeRegressor(max_depth=6, ccp_alpha=0.001, criterion='absolute_error',
+#                             min_samples_split=6, random_state=42)
+est = RandomForestRegressor(max_depth=5, n_estimators=40, ccp_alpha=0.001,
+                             min_samples_split=6, random_state=42)
+
+# md_scaling = manifold.MDS(
+#     n_components=40,
+#     max_iter=30,
+#     n_init=2,
+#     n_jobs=2,
+#     random_state=42,
+#     normalized_stress=False,
+# )
+# X = preprocessing.StandardScaler().fit_transform(X)
+# pipe = make_pipeline(preprocessing.StandardScaler(), est)
+# pipe = make_pipeline(md_scaling, est)
+# X = md_scaling.fit_transform(X)
+results = cross_validate(est, X, y, cv=kfold, scoring=scores)
+print(est.__class__.__name__)
+print(results.keys())
+print("MAPE: %f" % results['test_neg_mean_absolute_percentage_error'].mean())
+print("MSE: %f" % results['test_neg_mean_squared_error'].mean())
+print("fit_time+score_time: %f" % (results['fit_time'].sum() + results['score_time'].sum()))
+print()
+
+#+end_src
+
+#+RESULTS:
+: RandomForestRegressor
+: dict_keys(['fit_time', 'score_time', 'test_neg_mean_absolute_percentage_error', 'test_neg_mean_squared_error'])
+: MAPE: -0.158373
+: MSE: -0.066390
+: fit_time+score_time: 155.512012
+
+#+RESULTS: cc
+: RandomForestRegressor
+: dict_keys(['fit_time', 'score_time', 'test_neg_mean_absolute_percentage_error', 'test_neg_mean_squared_error'])
+: MAPE: -0.142607
+: MSE: -0.065436
+: fit_time+score_time: 23.740795
+
+#+RESULTS: vv
+: RandomForestRegressor
+: dict_keys(['fit_time', 'score_time', 'test_neg_mean_absolute_percentage_error', 'test_neg_mean_squared_error'])
+: MAPE: -0.142599
+: MSE: -0.065430
+: fit_time+score_time: 25.216273
+
+#+RESULTS: ss
+: RandomForestRegressor
+: dict_keys(['fit_time', 'score_time', 'test_neg_mean_absolute_percentage_error', 'test_neg_mean_squared_error'])
+: MAPE: -0.147509
+: MSE: -0.064585
+: fit_time+score_time: 27.480361
+
+#+RESULTS: save
+: DecisionTreeRegressor(ccp_alpha=0.001, criterion='absolute_error',
+:                       min_samples_split=6, random_state=42)
+: DecisionTreeRegressor
+: dict_keys(['fit_time', 'score_time', 'test_neg_mean_absolute_percentage_error', 'test_neg_mean_squared_error'])
+: MAPE: -0.128449
+: MSE: -0.055913
+: fit_time+score_time: 47.004931
+
+#+end_src
+* final solution
+We use data prepared in [[prepare]] step.
+#+begin_src python :results output :exports both :session s1 :timeout 900
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestRegressor
+
+# path_train = '/home/u/DataSets/greenscreens/train.csv'
+# path_validation = '/home/u/DataSets/greenscreens/validation.csv'
+# path_test = '/home/u/DataSets/greenscreens/test.csv'
+p1 = 'train.pickle'
+p2 = 'test.pickle'
+p3 = 'test2.pickle'
+
+class Model:
+    def __init__(self):
+        self.mean_rate = None
+        self.est = RandomForestRegressor(max_depth=5, n_estimators=40,
+                                         ccp_alpha=0.001, min_samples_split=6,
+                                         random_state=42)
+
+    def fit(self, x, y):
+        self.mean_rate = y.mean()
+        self.est.fit(x, y)
+        return self
+
+    def predict(self, x):
+        return self.est.predict(x)
+
+
+def loss(real_rates, predicted_rates):
+    "MAPE"
+    print(predicted_rates[:3] / real_rates[:3] )
+
+    return np.average(abs(predicted_rates / real_rates - 1.0)) * 100.0
+
+
+def train_and_validate():
+    "train for Train, validation for test"
+
+    df_train = pd.read_pickle(p1)
+    df_validate = pd.read_pickle(p2)
+
+    model = Model()
+    # -- mistake fix:
+    X_train = df_train.drop(columns=['rate'])
+    model.fit(X_train, np.log(df_train.rate))
+
+    # df = pd.read_csv(path_validation)
+    X_validate = df_validate.drop(columns=['rate'])
+    predicted_rates = np.exp(model.predict(X_validate))
+    mape = loss(df_validate.rate, predicted_rates)
+    mape = np.round(mape, 2)
+    return mape
+
+
+def generate_final_solution():
+    "train+validation for Train, test for test"
+    # combine train and validation to improve final predictions
+    # df = pd.read_csv(path_train)
+    df = pd.read_pickle(p1)
+    # df_val = pd.read_csv(path_validation)
+    df_val = pd.read_pickle(p2)
+    # df = df.append(df_val).reset_index(drop=True)
+    df = pd.concat([df, df_val], ignore_index=True).reset_index(drop=True)
+
+    model = Model()
+    model.fit(df, np.log(df.rate))
+
+    # generate and save test predictions
+    # df_test = pd.read_csv(path_test)
+    df_test = pd.read_pickle(p3)
+    df_test['predicted_rate'] = np.exp(model.predict(df_test))
+    df_test.to_csv('predicted.csv', index=False) # save to Company!
+
+
+if __name__ == "__main__":
+    mape = train_and_validate()
+    print(f'Accuracy of validation is {mape}%')
+
+    if mape < 9:  # try to reach 9% or less for validation
+        generate_final_solution()
+        print("'predicted.csv' is generated, please send it to us")
+#+end_src
+
+#+RESULTS: after mistake was fixed
+: 0    0.958235
+: 1    0.541754
+: 2    0.916459
+: Name: rate, dtype: float64
+: Accuracy of validation is 22.61%
+
+#+RESULTS: before
+: 0    0.985910
+: 1    1.031758
+: 2    0.987974
+: Name: rate, dtype: float64
+: Accuracy of validation is 6.28%
+: 'predicted.csv' is generated, please send it to us
+
+* (mistake fixing) why sklearn MAPE different from ours?
+lets calc sklearn MAPE without cross validation and TimeSeriesSplit.
+#+begin_src python :results output :exports both :session s1 :timeout 300
+import warnings
+warnings.filterwarnings("ignore", category=Warning)
+from sklearn.model_selection import cross_val_score, cross_validate
+from sklearn.model_selection import TimeSeriesSplit
+from sklearn import preprocessing
+from sklearn.pipeline import make_pipeline
+
+from sklearn.linear_model import Ridge
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.linear_model import ARDRegression, BayesianRidge, LinearRegression
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.svm import SVR, NuSVR
+from sklearn.neural_network import MLPRegressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
+from sklearn.decomposition import PCA
+from sklearn.model_selection import GridSearchCV
+from sklearn.experimental import enable_halving_search_cv
+from sklearn.model_selection import HalvingGridSearchCV
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_percentage_error
+import numpy as np
+# own
+from myown_pack.common import load
+
+# ------- load
+p1 = 'train.pickle'
+p2 = 'test.pickle'
+# df = load(p1).sample(90000)
+df = load(p1) #[0:30000]
+df_test = load(p2)
+y = df['rate']
+X = df.drop(columns=['rate'])
+y_test = df_test['rate']
+X_test = df_test.drop(columns=['rate'])
+# -------- estimate
+est = RandomForestRegressor(max_depth=5, n_estimators=40, ccp_alpha=0.001,
+                             min_samples_split=6, random_state=42)
+
+# est = est.fit(X, np.log(y)) # log transformation
+# y_pred = est.predict(X_test)
+# mape = mean_absolute_percentage_error(y_test, np.exp(y_pred)) # exponentiation
+# print("MAPE:", np.round(mape, 2))
+
+est = est.fit(X, np.log(y)) # log transformation
+y_pred = est.predict(X_test)
+mape = mean_absolute_percentage_error(y_test, np.exp(y_pred)) # exponentiation
+print("MAPE:", np.round(mape, 2))
+print("MAKE of task:", np.average(abs(np.exp(y_pred) / y_test - 1.0)) * 100.0)
+#+end_src
+
+#+RESULTS:
+: MAPE: 0.23
+: MAKE of task: 22.607222558825907
+
+* conclusion
+The task was not solved with target loss less than 9%, we have got 22%
+ MAPE loss. Because of, we didn't use external information: about
+ unknown KMA area codes, freight busness specifics, historical and
+ geographical data.
+
+We found mistake in original code that may lead to incorrect MAPE
+ result. At first, we got 6.28%, but then mistake was found and we got
+ 22%.
+
+Sklearn "neg_mean_absolute_percentage_error" metric gives us -0.142074
+ on split of 5 "folds", addiritonal research required to explain this
+ difference.
+
+We found out, that non-linear Random Forest is performing best here,
+ because of feature-rich data.
+
+Dimensionaly reduction with PCA and manifold didn't show accuracy gain.
+
+Standard scaler add insignificant gain as expected with Decision Trees
+ and RandomForests due to creation of "splits" without comparision
+ of features to each other directly.
+
+Log transformation for target feature have been sucessfully used to
+ decrease loss by fixing skewness of target.
+
+For final run we used prepared dataset without leaking of information.
+
+There is room for improvement here with external information or
+ pretrained NeuralNetowrk that can interpret KMA codes, but without
+ external information It may be impossible to interpret codes to
+ locations because of lack of information in dataset.
