@@ -1,4 +1,5 @@
 Without payment:
+- 2024-06-06 - Demo about AI NLP Hackathon [[file:task_for_hackathon_demo/README.pdf]]
 - 2024-05-01 - Research: Battery degradation modeling [[file:task_for_battery_life/README.org]]
 - 2024-04-19 - SQLite + Telegram Bot [[file:task_for_stepbystep/README.org]]
 - 2024-03-25 - SQL small task. [[file:skorburo-sql-task/skorburo-sql-task.org]]
