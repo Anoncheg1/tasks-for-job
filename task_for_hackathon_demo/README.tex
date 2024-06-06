@@ -1,4 +1,4 @@
-% Created 2024-06-06 Thu 15:49
+% Created 2024-06-06 Thu 16:11
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation]{beamer}
 \usepackage[utf8]{inputenc}
@@ -13,36 +13,27 @@
 \usepackage{capt-of}
 \usepackage{hyperref}
 \usetheme{Madrid}
-\date{\textit{<2024-06-05 Wed>}}
-\title{README}
+\usecolortheme{}
+\usefonttheme{}
+\useinnertheme{}
+\useoutertheme{}
+\date{\today}
+\title{Отчет об X5 TECH AI HACK}
 \usepackage[T1,T2A]{fontenc}
+
 \hypersetup{
  pdfauthor={},
- pdftitle={README},
+ pdftitle={Отчет об X5 TECH AI HACK},
  pdfkeywords={},
  pdfsubject={},
  pdfcreator={Emacs 29.3 (Org mode 9.6.28)}, 
- pdflang={Russian}}
+ pdflang={English}}
 \begin{document}
 
 \maketitle
-\begin{frame}{Outline}
-\tableofcontents
-\end{frame}
-
-;-\alert{- mode: Org; fill-column:120; org-src-fontify-natively:t; -}-
-\begin{verbatim}
-#+BEAMER_HEADER: \usepackage[orientation=landscape,size=custom,width=30,height=30,scale=0.7,debug]{beamerposter}
-#+BEAMER_HEADER: \usepackage[size=custom,width=30,height=30,scale=0.7,debug]{beamerposter}
-\end{verbatim}
 
 
-\begin{verbatim}
-#+BEAMER_HEADER: \documentclass[aspectratio=169]{beamer}
-\end{verbatim}
-
-
-\begin{frame}[label={sec:org1538e68}]{Чем интересен хакатон X5 TECH AI HACK}
+\begin{frame}[label={sec:orgf129232}]{Чем интересен хакатон X5 TECH AI HACK}
 \begin{itemize}
 \item Можно видеть, что нейронные сети и языковые модели заменяют собой
 классические инструменты программирования, такие как регулярные
@@ -56,7 +47,7 @@
  управление языковыми моделями - это самые частые современные задачи в
  IT.
 \end{frame}
-\begin{frame}[label={sec:org8522c7d}]{Маскирование: постановка}
+\begin{frame}[label={sec:orgcc8a931}]{Маскирование: постановка}
 Вход: текст
 
 Выход: этот текст с заменененными сущностями (телефоны, фамилии,
@@ -64,14 +55,14 @@
 
 Дополнително: иметь возможность обратной замены, устойчивой к взлому.
 \end{frame}
-\begin{frame}[label={sec:org48abe90}]{проблемы}
+\begin{frame}[label={sec:org311c170}]{проблемы}
 \begin{itemize}
 \item Маленький датасет с ошибками
 \item нет доступа к Интернету
 \item 8GB RAM, только CPU
 \end{itemize}
 \end{frame}
-\begin{frame}[label={sec:orga7b1a1a}]{Маскирование: Baseline}
+\begin{frame}[label={sec:orgfa67bd8}]{Маскирование: Baseline}
 BERT English 110M параметров - чествительная к регистру
 \begin{enumerate}
 \item без токенайзера
@@ -81,7 +72,7 @@ BERT English 110M параметров - чествительная к реги�
 
 текст разбивается на токены в 1 символ и помечается в BIO
 \end{frame}
-\begin{frame}[label={sec:org272171a}]{BERT - что это?}
+\begin{frame}[label={sec:org69d0713}]{BERT - что это?}
 BERT - языковая модель на основе Transformer на одном кодировщикe.
 \begin{itemize}
 \item Вход - фиксированная строка, выход - фиксированная строка.
@@ -110,7 +101,7 @@ This technique allows certain out-of-vocabulary words to be
  [UNK] token.  "clockwork", - clock + work
 \end{frame}
 
-\begin{frame}[label={sec:org75787aa}]{Маскирование: простые решения}
+\begin{frame}[label={sec:orgc967c1f}]{Маскирование: простые решения}
 \begin{enumerate}
 \item Использование слов, а не символов -  предобученного токенизатора
 \item Обучение Tokenizer на словах
@@ -120,7 +111,7 @@ This technique allows certain out-of-vocabulary words to be
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgc94f273}]{Маскирование: победившие решения}
+\begin{frame}[label={sec:orgada8b22}]{Маскирование: победившие решения}
 \begin{itemize}
 \item использование bert-base-multilingual-cased
 \item регулярные выражения + LLM NER + поиск по словарю
@@ -131,7 +122,7 @@ This technique allows certain out-of-vocabulary words to be
 \item удаление лишних пробелов знако пунктуцаии улучшает NER.
 \end{itemize}
 \end{frame}
-\begin{frame}[label={sec:orgcac6b83},fragile]{Маскирование: наше решение}
+\begin{frame}[label={sec:orgd2621d0},fragile]{Маскирование: наше решение}
  \begin{itemize}
 \item без дообучения DeepPavlov/ner\_rus\_bert + regex выражения
 \end{itemize}
@@ -148,14 +139,14 @@ acr_pattern = r'\b[A-Z]{3}\b'
 \end{verbatim}
 \end{frame}
 
-\begin{frame}[label={sec:orge2df45b}]{Галлюцинации: постановка}
+\begin{frame}[label={sec:org148fa35}]{Галлюцинации: постановка}
 Вход: контектс, вопрос, ответ.
 
 Выход: метка 0/1 ответ правильный или нет.
 
 Дополнительно: сделать из решения качественный программный продукт.
 \end{frame}
-\begin{frame}[label={sec:org611ffe9}]{Галлюцинации: Baseline}
+\begin{frame}[label={sec:orgb94bbb6}]{Галлюцинации: Baseline}
 BERT English 110M параметров - нечувствительная к регистру
 \begin{enumerate}
 \item токенайзер - huggingface.TFBertTokenizer
@@ -167,7 +158,7 @@ BERT English 110M параметров - нечувствительная к р�
 \end{itemize}
 \end{enumerate}
 \end{frame}
-\begin{frame}[label={sec:org4220894}]{Галлюцинации: победившие решения}
+\begin{frame}[label={sec:org25ad017}]{Галлюцинации: победившие решения}
 \begin{itemize}
 \item\relax [CLS] + summary + [SEP] + question + [SEP] + answer + [SEP].
 \item token\_type\_ids mask = 1 для ответа
@@ -188,7 +179,7 @@ BERT English 110M параметров - нечувствительная к р�
 
 \url{https://huggingface.co/docs/transformers/glossary\#token-type-ids}
 \end{frame}
-\begin{frame}[label={sec:org16e9c95}]{Галлюцинации: наши решения}
+\begin{frame}[label={sec:org86845b4}]{Галлюцинации: наши решения}
 \begin{enumerate}
 \item Saiga Llama3 8B + IPEX квантование - простой prompt engineering
 \item Knewledge Distilation 0.902 - Малая модель учится повторять большую
@@ -212,7 +203,7 @@ BERT English 110M параметров - нечувствительная к р�
 a small model is trained to mimic a pre-trained, larger model (or ensemble of models)
 \end{frame}
 
-\begin{frame}[label={sec:orgec393e9}]{Недостатки хакатонов}
+\begin{frame}[label={sec:orgf9ddb59}]{Недостатки хакатонов}
 \begin{itemize}
 \item датасеты с ошибками, нужно повторить ошибки чтобы победить
 \item организаторы дают свой подход и если не следовать ему это почти 100\% самоубийство, так как временя ограничено
@@ -225,7 +216,7 @@ a small model is trained to mimic a pre-trained, larger model (or ensemble of mo
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org0b3e012}]{Достоинства и возможности хакатонов}
+\begin{frame}[label={sec:orgb7c06ca}]{Достоинства и возможности хакатонов}
 \begin{itemize}
 \item найти команду и партнеров
 \item отбросить медленные неэффективные подходы
@@ -235,7 +226,7 @@ a small model is trained to mimic a pre-trained, larger model (or ensemble of mo
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org4e5f260}]{командная работа}
+\begin{frame}[label={sec:orgae57e00}]{командная работа}
 \begin{itemize}
 \item Общий чат без созвонов - один из лучших форматов.
 \item Любые напоминания о необходимости работать убивают желание работать.
@@ -247,7 +238,7 @@ a small model is trained to mimic a pre-trained, larger model (or ensemble of mo
 \item Человек с пустым гитхаб аккаунтом не программист, а аналитик или ученый.
 \end{itemize}
 \end{frame}
-\begin{frame}[label={sec:org095f3ad}]{Допущенные ошибки}
+\begin{frame}[label={sec:orge5503ca}]{Допущенные ошибки}
 \begin{itemize}
 \item Маленькая команда из недосаточно свободных людей
 \item Использование масштабных подходов с полой заменой Baseline
@@ -256,7 +247,7 @@ a small model is trained to mimic a pre-trained, larger model (or ensemble of mo
 хакатонов, кооторыми нужно владеть в совершенстве
 \end{itemize}
 \end{frame}
-\begin{frame}[label={sec:orgb5f34da}]{Вынесенные уроки}
+\begin{frame}[label={sec:org190f333}]{Вынесенные уроки}
 \begin{itemize}
 \item предобработка текста для LLM улучшает качество
 \item можно использовать ансамбли из малых языковых моделей

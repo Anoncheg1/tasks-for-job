@@ -1,30 +1,19 @@
-;-*- mode: Org; fill-column:120; org-src-fontify-natively:t; -*-
-#+options: ':nil *:t -:t ::t <:t H:1 \n:nil ^:nil arch:headline
-#+options: author:t broken-links:nil c:nil creator:nil
-#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
-#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
-#+options: timestamp:t title:t toc:t todo:t |:t
-#+title: README
-#+date: <2024-06-05 Wed>
-#+author:
-#+email: none
-#+language: ru
-#+select_tags: export
-#+exclude_tags: noexport
-#+creator: Emacs 29.3 (Org mode 9.6.28)
-#+cite_export:
-
 #+LaTeX_CLASS: beamer
 #+LaTeX_CLASS_OPTIONS: [presentation]
 #+BEAMER_HEADER: \usepackage[T1,T2A]{fontenc}
 #+BEAMER_THEME: Madrid
 
-: #+BEAMER_HEADER: \usepackage[orientation=landscape,size=custom,width=30,height=30,scale=0.7,debug]{beamerposter}
-: #+BEAMER_HEADER: \usepackage[size=custom,width=30,height=30,scale=0.7,debug]{beamerposter}
+#+options: H:1 toc:nil
+#+latex_class: beamer
+#+columns: %45ITEM %10BEAMER_env(Env) %10BEAMER_act(Act) %4BEAMER_col(Col) %8BEAMER_opt(Opt)
+#+beamer_theme: default
+#+beamer_color_theme:
+#+beamer_font_theme:
+#+beamer_inner_theme:
+#+beamer_outer_theme:
+#+beamer_header:
 
-#+startup: beamer
-
-: #+BEAMER_HEADER: \documentclass[aspectratio=169]{beamer}
+#+title: Отчет об X5 TECH AI HACK
 
 
 * Чем интересен хакатон X5 TECH AI HACK
