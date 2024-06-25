@@ -4,7 +4,7 @@
  этично и я это могу; заработная плата указана, чтобы показать, как я
  пытаюсь себя оценивать по рынку и насколько сильно нуждаюсь в работе.
 
-
+ENG
 1. How many years have you been programming in Python?
    - 5
 2. Please describe your experience working with Rest API and
@@ -60,60 +60,72 @@
     - Do you have experience communicating verbally with English speaking clients?
       - With clients - no.
 13. What are your salary expectations?
-    - 14$ per hour.
+    - lowest, concat with me.
 14. Do you not work since april 2023?
-Yes, but I wrote a number of open source programs, visited
- conferences, completed assignments from employers, wrote several
- articles on my blog. All works are available for your review.
+    - Yes, but I wrote a number of open source programs, visited
+     conferences, completed assignments from employers, wrote several
+     articles on my blog. All works are available for your review.
 15. What is important to you in a new workplace?
-Ability to work remotely several days in a week and absence of excessive control and bureaucracy.
+    - Ability to work remotely several days in a week and absence of excessive control and bureaucracy.
 16. What do I do now?
-Please, look at my report: https://emacs.ch/@Anoncheg
-- I am listening offline conference.
-- I create my open-source applications.
-- I solve test tasks: https://codeberg.org/Anoncheg/tasks-for-job
-- I am a student of mlops-zoomcamp course https://github.com/DataTalksClub/mlops-zoomcamp
+    - Please, look at my report: https://emacs.ch/@Anoncheg
+    - I am listening offline conference.
+    - I create my open-source applications.
+    - I solve test tasks: https://codeberg.org/Anoncheg/tasks-for-job
+    - I am a student of mlops-zoomcamp course https://github.com/DataTalksClub/mlops-zoomcamp
 
-1. Сколько лет опыта в качестве ML-инженера в продукте?
-4 года я работал в банке РУСНАРБАНК, я занимался задачами машинного обучения, data science и Apache Airflow. У меня не было должности ML-инженер.
-Но большую часть времени я занимался именно машинным обучением.
-Последние два месяца я работал именно ML-инженером, и отлично справлялся.
-   2. Какими инструментами и технологиями вы пользуетесь для разработки и развертывания моделей
-   машинного обучения?
-PyTorch, Tensorflow, scikit-learn, huggingface, SHAP, Kubernetes, Kubeflow, XGBoost, Apache Airflow.
-   3. Какими методами вы проверяете и оцениваете качество моделей машинного обучения? Какие метрики
+Rus
+1) Сколько лет опыта в качестве ML-инженера в продукте?
+   - 4 года я работал в банке РУСНАРБАНК, я занимался задачами
+     машинного обучения, data science и Apache Airflow. У меня не было
+   должности ML-инженер. Но большую часть времени я занимался именно
+   машинным обучением. Последние два месяца я работал именно
+   ML-инженером, и отлично справлялся.
+
+2) Какими инструментами и технологиями вы пользуетесь для разработки и развертывания моделей
+  машинного обучения?
+   - PyTorch, Tensorflow, scikit-learn, pandas, huggingface, SHAP,
+ Kubernetes, Kubeflow, XGBoost, Apache Airflow, MLFlow и Mage, Grafana
+3) Какими методами вы проверяете и оцениваете качество моделей машинного обучения? Какие метрики
    использовали?
-Разбиение на выборки, Кросс-валидация, функцией потерь. Метрики: accuracy, precision, recall, F1, ROC, PR AUC, Gini.
-   4. Какие методы использовали в оптимизации и ускорении работы моделей машинного обучения?
-Исползовал Early stopping, оптимизационные алгоритмы с накапливающимся моментом и адаптивной регуляризацией. Делал профилирование кода, переписывал код с pandas на numpy, распаралеливал.
-   5. Какими библиотеками пользуетесь?
-Technical stack: Python, Tensorflow, Keras, PyTorch, OpenCV, matplotlib, pandas, numpy, featuretools, XGBoost, scipy,
- sklearn, Docker, Kubernetes, Apache Airflow, Java, Julia, Linux, POSIX Shell, SQL.  Emacs, Gentoo, open source.
-   6. В каких областях ML вы хотели бы развиваться (CV, NLP, другое)? Расскажите подробнее.
-MLOps, потому что универсальная, а будущее за мультимодальными моделями, потому, больше заработные плата. Еще заработная плата зависит от того, насколько технологи недоступны, здесь MLOps тоже выигрывают, так как на персональном компьютере такие системы невозможно развернуть. Работа с большими данными меня тоже интересует, по тем же причинам.
-   8. Гражданство ?
-РФ.
-   9. Локация на данный момент ?
-РФ, Москва.
-   10. Желаемый формат работы ?
-Удаленный формат работы, но я рассмотрю любые варианты.
-   11. Телеграм (никнейм) ?
-свяжитесь со мной
-   12. Если мы сойдёмся, через какое время можем перейти к сотрудничеству ?
-Через неделю готов приступить, если необходимо, можно сразу же.
-   13. Желаемая сумма компенсации (ЗП NET на руки) ?
-240 тысяч рублей в месяц, после вычета налогов.
-14. C апреля 2023 не работаете?
-Я написал некоторое количество опенсорсных программ, посещал
- конференции, выполнял задания от работодателей, написал несколько
- статей в моем блоге. Все работы доступны для вашего ознакомления.
-15. Что для вас важно на новом месте работы?
-Наличие дней в недели удаленной работы и отсуствие чрезмерного контроля.
-16. Чем занимались после увольнения с последнего места работы?
-У меня есть отчет: https://emacs.ch/@Anoncheg
-Я занимаюсь:
-- посещаю концеренции по Python и Data Science.
-- участвовал в хакатоне по теме NLP как капитан.
-- пишу open-source программы, ссылки на которые есть в резюме
-- выполняю тестовые задания для работодателей https://codeberg.org/Anoncheg/tasks-for-job
-- прохожу курс mlops-zoomcamp https://github.com/DataTalksClub/mlops-zoomcamp
+   - Разбиение на выборки, Кросс-валидация. Метрики: accuracy, precision, recall, F1, ROC, PR AUC, Gini.
+4) Какие методы использовали в оптимизации и ускорении работы моделей машинного обучения?
+   - Исползовал Early stopping, оптимизационные алгоритмы с
+ накапливающимся моментом и адаптивной регуляризацией. Делал
+ профилирование кода, переписывал код с pandas на numpy,
+ распаралеливал.
+6) В каких областях ML вы хотели бы развиваться (CV, NLP, другое)? Расскажите подробнее.
+   - MLOps, потому что универсальная, а будущее за мультимодальными
+ моделями, потому, больше заработные плата. Еще заработная плата
+ зависит от того, насколько технологи недоступны, здесь MLOps тоже
+ выигрывают, так как на персональном компьютере такие системы
+ невозможно развернуть. Работа с большими данными меня тоже
+ интересует, по тем же причинам.
+7) Гражданство ?
+   - РФ.
+8) Локация на данный момент ?
+   - РФ, Москва.
+9) Желаемый формат работы ?
+   - Удаленный формат работы, но я рассмотрю любые варианты.
+10) Телеграм (никнейм) ?
+    - свяжитесь со мной
+11) Если мы сойдёмся, через какое время можем перейти к сотрудничеству ?
+    - Через неделю готов приступить, если необходимо, можно сразу же.
+12) Желаемая сумма компенсации (ЗП NET на руки) ?
+    - указана в резюме.
+13) Что для вас важно на новом месте работы?
+    - Наличие дней в недели удаленной работы и отсуствие чрезмерного контроля.
+14) Чем занимались после увольнения с последнего места работы?
+    - У меня есть отчет: https://emacs.ch/@Anoncheg Я занимаюсь:
+      - посещаю концеренции по Python и Data Science.
+      - участвовал в хакатоне по теме NLP как капитан.
+      - пишу open-source программы, ссылки на которые есть в резюме
+      - выполняю тестовые задания для работодателей https://codeberg.org/Anoncheg/tasks-for-job
+      - прохожу курс mlops-zoomcamp https://github.com/DataTalksClub/mlops-zoomcamp
+
+15) Работали ранее с готовыми AI? Какими?
+    - Я пользуюсь языковыми моделями, YandexGPT API, читаю о практиках
+    применения слабого AI в европе и США в компаниях, стараюсь читаю
+    последние статьи об архитектурах нейронных сетей и их применении. Я
+    могу оказать квалифицированную информационную поддержку менеджменту в
+    вопросах применения AI.
