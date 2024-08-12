@@ -37,11 +37,11 @@ We will not check other people's tests because the context is not clear.
 
 Вопрос 2. Какие подходы и инструменты использовать?
 
-Ответ 2. Statistical Analysis, Machine Learning Models, Behavioral Analysis.
-Выбор подхода и инструментов завичит от многих факторов, как
- правило это российские ГОСТ Р ИСО/МЭК и международные ISO/IEC
- стандарты, лучшие практики такие как CRISP-DM, CRISP-ML,
- ASUM-DM. Лучше импользовать наиболее знакомые инстументы.
+Ответ 2. Statistical Analysis, Machine Learning Models, Behavioral
+ Analysis, Time Series Analysis.  Выбор подхода и инструментов завичит
+ от многих факторов, как правило это российские ГОСТ Р ИСО/МЭК и
+ международные ISO/IEC стандарты, лучшие практики такие как CRISP-DM,
+ CRISP-ML, ASUM-DM. Лучше импользовать наиболее знакомые инстументы.
 
 Вопрос 3. На какие метрики ориентироваться?
 
@@ -75,10 +75,10 @@ Answer 1. The data volume can be very small, the data can be shifted,
 Question 2. What approaches and tools to use?
 
 Answer 2. Statistical Analysis, Machine Learning Models, Behavioral
- Analysis.  The choice of approach and tools depends on many factors,
- usually these are Russian GOST R ISO/IEC and international ISO/IEC
- standards, best practices such as CRISP-DM, CRISP-ML, ASUM-DM. It's
- better to use the most familiar tools.
+ Analysis, Time Series Analysis.  The choice of approach and tools
+ depends on many factors, usually these are Russian GOST R ISO/IEC and
+ international ISO/IEC standards, best practices such as CRISP-DM,
+ CRISP-ML, ASUM-DM. It's better to use the most familiar tools.
 
 Question 3. What metrics should we focus on?
 
