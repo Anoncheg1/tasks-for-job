@@ -4,6 +4,9 @@ Machine Learning Engineer - Middle - No experince of work in group. No
 Python developer - "Middle". No much experience with big projects
  that require OOP, Web Frameworks and ORM, event driving programming.
 
+Backend developer - “Junior”. No experience of working at big ORM
+ projects and in team.
+
 System administrator - Junior - have experience with tools, but no
  experice of work in role: writing reports, monitoring, planning. https://www.redhat.com/sysadmin/job-levels
 
@@ -18,7 +21,7 @@ NLP Engineer - "Junior" - have projects with ASR, OCR, fuzzy search, LLM researc
 
 CV Engineer - "Middle-" - no experience with video and perspective.
 
-Data Scientist - "Junior" - no experience with inference optimization,
+Data Scientist - "Middle-" - no experience with inference optimization,
  stats of ML Models and research-experimentation.
 
-MLOps - "junior-". Much of DevOps experience and MLOps knowledge with learning course experience.
+MLOps - "junior". Much of DevOps experience and MLOps knowledge with learning course experience.
