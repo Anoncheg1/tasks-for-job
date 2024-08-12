@@ -1,0 +1,99 @@
+* Task
+RUS:
+#+begin_src text
+Вот сама задачка:
+
+Имеется набор сыгранных за определенный период времени шахматных партий для некоторого числа пользователей. Для каждой партии рассчитан набор метрик, которые её характеризуют, например: общая точность ходов, среднее время на ход, средний перепад оценки хода и тд. Предположим, что изначально все пользователи играли честно, но спустя некоторое время часть пользователей начала читерить. Предложите метод выявления нечестных пользователей.
+
+Ваши рассуждения могут быть как краткими, так и подробными, желательно ответить на следующие вопросы:
+ 1. Какими особенностями могут обладать исходные данные?
+ 2. Какие подходы и инструменты использовать?
+ 3. На какие метрики ориентироваться?
+ 4. Какие ограничения вы видите в вашем итоговом методе?
+ 5. Какие дополнительные данные по вашему мнению могут улучшить решение? Как их получить? 08:33
+Решайте сами - выполнять или нет.
+Чужие тестовые проверять не будем, т.к.не понятен контекст
+#+end_src
+ENG:
+#+begin_src text
+Here is the problem: There is a set of chess games played over a certain period for a number of users. For each game, a set of metrics is calculated to characterize it, such as overall move accuracy, average time per move, average move rating deviation, etc. Assume that initially all users played honestly, but after some time, some users started cheating. Propose a method to identify dishonest users. Your reasoning can be brief or detailed, and it is desirable to answer the following questions:
+    What features might the original data possess?
+    Which approaches and tools should be used?
+    Which metrics should be focused on?
+    What limitations do you see in your final method?
+    What additional data do you think could improve the solution? How can they be obtained?
+Solve it yourself - whether to do it or not.
+We will not check other people's tests because the context is not clear.
+#+end_src
+
+
+* Answers
+** RUS
+Вопрос 1. Какими особенностями могут обладать исходные данные?
+
+Ответ 1. Объем данных может быть очень маленьким, донные могут быть
+ сдвинуты, то есть иметь распределение не соответствующее обобщению
+ задачи и т.д. и т.п.
+
+Вопрос 2. Какие подходы и инструменты использовать?
+
+Ответ 2. Statistical Analysis, Machine Learning Models, Behavioral Analysis.
+Выбор подхода и инструментов завичит от многих факторов, как
+ правило это российские ГОСТ Р ИСО/МЭК и международные ISO/IEC
+ стандарты, лучшие практики такие как CRISP-DM, CRISP-ML,
+ ASUM-DM. Лучше импользовать наиболее знакомые инстументы.
+
+Вопрос 3. На какие метрики ориентироваться?
+
+Ответ 3. Нужно выбрать метрики для задачи бинарной классификации
+ изходя из условий экплуатации модели, бизнес требований и
+ особеннойтей датасета, таки как Precision, Recall, F1, ROC-AUC.
+
+Вопрос 4. Какие ограничения вы видите в вашем итоговом методе?
+
+Ответ 4. Конкретный метод я не предложил. Это могут быть Data
+ Quality, обобщающая способность метода для реальных данных, удобство
+ разворачивания в продакшене, лицензионные, финансовые и ограничения
+ безопасности и т.д.
+
+Вопрос 5. Какие дополнительные данные по вашему мнению могут улучшить
+ решение? Как их получить?
+
+Ответ 5. Данные которые коррелируют с целевой переменной. Собрать из
+ источника.
+
+
+** ENG
+Question 1. What features can the input data have?
+
+Answer 1. The data volume can be very small, the data can be shifted,
+ i.e., have a distribution that does not correspond to the
+ generalization of the task, etc.
+
+Question 2. What approaches and tools to use?
+
+Answer 2. Statistical Analysis, Machine Learning Models, Behavioral
+ Analysis.  The choice of approach and tools depends on many factors,
+ usually these are Russian GOST R ISO/IEC and international ISO/IEC
+ standards, best practices such as CRISP-DM, CRISP-ML, ASUM-DM. It's
+ better to use the most familiar tools.
+
+Question 3. What metrics should we focus on?
+
+Answer 3. It is necessary to choose metrics for the binary
+ classification task based on the operating conditions of the model,
+ business requirements and dataset features, such as Precision,
+ Recall, F1, ROC-AUC.
+
+Question 4. What limitations do you see in your final method?
+
+Answer 4. I did not propose a specific method. These can be Data
+ Quality, the generalization ability of the method for real data, the
+ ease of deployment in production, licensing, financial and security
+ constraints, etc.
+
+Question 5. What additional data do you think could improve the
+ solution? How to obtain them?
+
+Answer 5. Data that correlates with the target variable. Collect it
+ from the source.
