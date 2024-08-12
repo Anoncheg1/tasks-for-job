@@ -3042,7 +3042,6 @@ plt.savefig('./autoimgs/confusion_matrix.png')
 #+RESULTS:
 [[file:./autoimgs/confusion_matrix.png]]
 
-
 * Conclusion
 We can see that after training and calibration model show
   accuracy 0.97 and roc_auc 0.97.

@@ -74,12 +74,8 @@ ENG
     - I solve test tasks regularly: https://codeberg.org/Anoncheg/tasks-for-job
     - I am a student of mlops-zoomcamp course https://github.com/DataTalksClub/mlops-zoomcamp
 17. What is your strengths and weaknesses?
-    - My strangths:
-      + I am open minded and creative
-      + I am very motivated for hard working
-      + I do personal knewledge management
-      + I am open source advocate
-    - I don't have weaknesses.
+    - My strangths: in my resume.
+    - My weaknesses: all what is not in my resume.
 
 RUS
 1) Сколько лет опыта в качестве ML-инженера в продукте?
@@ -135,9 +131,5 @@ RUS
     могу оказать квалифицированную информационную поддержку менеджменту в
     вопросах применения AI.
 15) Какие ваши сильные и слабые стороны?
-    - Сильные стороны:
-      - Я открыт к общению и обучению, и считаю себя креативным
-      - Я мотивирован работать
-      - Я управляю своими знаниями на достойном уровне
-      - Я сторонник открытого исходного кода и открытого доступа к информации
-    - У меня нет слабых сторон.
+    - Сильные стороны: все что в резюме.
+    - Слабые стороны: все что не в резюме.

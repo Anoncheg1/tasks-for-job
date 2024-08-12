@@ -1,0 +1,1300 @@
+-*- mode: Org; fill-column: 80; coding: utf-8; -*-
+
+[[./AlarStudios-Backend.pdf]]
+
+Asynchronous Data Retrieval (or distributed database)
+
+3 days
+
+#+begin_src sql
+CREATE TABLE data_1 (
+       id INT PRIMARY KEY,
+       name VARCHAR(255)
+       );
+
+INSERT INTO data_1 (id, name) VALUES (1, 'Test 1'), (2, 'Test 2');
+
+SELECT * from data_1
+#+end_src
+
+Task: RESTful access point to 3 databases with distributed table by ID field. AP
+ should get records from all tables and return sorted result.
+- ID distributed: 1) 1-10, 31-40 2) 11-20, 41-50 3) 21-30, 51-60
+- error from any of source should be ignored and interpreted as missing data.
+  - timeout is error (2 seconds)
+- test all logic, use mocks for db connection
+- select all sources and return the data sorted by ID
+
+Suggestion:
+- Reactive paradigm - declarative : a=b+c - a will be updated when b or c
+  changed. Based on streams. employs reactive pipelines, where data flows
+  through a series of transformations and operators.
+
+* Steps:
+- implement
+- with SQLAlchemy,
+- with asyncio,
+- cover as much as possible with tests.
+
+We will not write tests before implementation, because we implement this task
+ for the first time.
+
+* Research
+We will use Redis, just because, and because it is open-source.
+
+We will try to use available mechanics for Redis.
+
+Redis have “Distributed Lock Manager” for locks and built-in sharding by “hash
+ slot” assingned to cluster nodes. It is impossible to check wich key goes to
+ which node.
+
+But it possible to assign rows to same node with *HashTag*.
+- user-profile:{1234} - CRC16(‘1234’) mod 16384 -> slot 0
+- user-session:{1234} - CRC16(‘1234’) mod 16384 -> slot 0
+
+We will use https://github.com/joanvila/aioredlock that implement locking, all
+ we need is to add our patch to treat “error from source as missing data”.
+- this is not-official implementation of Redlock officially proposed agorithm
+  for Distributed Lock
+  Manager. https://redis.io/docs/latest/develop/use/patterns/distributed-locks/
+** Python Database API Specification v2.0 (PEP 249).
+https://peps.python.org/pep-0249/
+** The Redlock Algorithm
+1. It gets the current time in milliseconds.
+2. It tries to acquire the lock in all the N instances sequentially, using the same key name and random value in all the instances. During step 2, when setting the lock in each instance, the client uses a timeout which is small compared to the total lock auto-release time in order to acquire it. For example if the auto-release time is 10 seconds, the timeout could be in the ~ 5-50 milliseconds range. This prevents the client from remaining blocked for a long time trying to talk with a Redis node which is down: if an instance is not available, we should try to talk with the next instance ASAP.
+3. The client computes how much time elapsed in order to acquire the lock, by subtracting from the current time the timestamp obtained in step 1. If and only if the client was able to acquire the lock in the majority of the instances (at least 3), and the total time elapsed to acquire the lock is less than lock validity time, the lock is considered to be acquired.
+4. If the lock was acquired, its validity time is considered to be the initial validity time minus the time elapsed, as computed in step 3.
+5. If the client failed to acquire the lock for some reason (either it was not able to lock N/2+1 instances or the validity time is negative), it will try to unlock all the instances (even the instances it believed it was not able to lock).
+** Shard lookup by key
+#+begin_src text
+I have SHARDS dictionary with ranges. Help me to write function in Python that look for key in fastest way. Firstly list available containers and storage types that the best suited for range lookup.
+SHARDS={1:((1, 10), (31, 40)),
+2:((11, 20), (41, 50)),
+3:((21, 30), (51, 60))}
+#+end_src
+
+#+begin_src text
+Data Structures:
+- Sorted List: For efficient range lookups, a sorted list can be used to store the ranges. This allows for binary search, which reduces the lookup time from O(n)O(n) to O(log⁡n)O(logn).
+- Bisect Module: Python's bisect module provides functions to perform binary search on sorted lists, which is ideal for range lookups.
+
+Algorithm:
+- Binary Search: Use binary search to find the appropriate range in the sorted list.
+...
+#+end_src
+
+#+begin_src text
+I have SHARDS dictionary with ranges. Help me to write function in Python that look for key in fastest way. Firstly list available containers and storage types that the best suited for range lookup.
+SHARDS={1:((1, 10), (31, 40)),
+2:((11, 20), (41, 50)),
+3:((21, 30), (51, 60))}
+I asked another LLM, it give me wrong answer to use bisect.bisect_right for that, there was error that this function can compare only same type to each and connot compare int and typle.
+#+end_src
+
+: Here is a Python function that uses a sorted list to look up keys in the SHARDS dictionary:
+
+
+#+begin_src python :results output :exports both :session s1
+def find_shard_id(SHARDS, value):
+    # Flatten the ranges into a list of tuples (start, end, shard_id)
+    ranges = [(start, end, shard_id) for shard_id, ranges_list in SHARDS.items() for start, end in ranges_list]
+
+    # Sort the ranges by their start values
+    ranges.sort(key=lambda x: x[0])
+
+    # Perform a binary search on the sorted list
+    left, right = 0, len(ranges) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if ranges[mid][0] <= value <= ranges[mid][1]:
+            return ranges[mid][2]
+        elif value < ranges[mid][0]:
+            right = mid - 1
+        else:
+            left = mid + 1
+
+    # If no matching range is found, return None
+    return None
+
+SHARDS = {
+    1: ((1, 10), (31, 40)),
+    2: ((11, 20), (41, 50)),
+    3: ((21, 30), (51, 60))
+}
+
+print(find_shard_id(SHARDS, 25))  # Output: 3
+print(find_shard_id(SHARDS, 7))  # Output: 1
+print(find_shard_id(SHARDS, 61))  # Output: None
+#+end_src
+
+#+RESULTS:
+: 3
+: 1
+
+** Timout for RedisCluster class
+execution path:
+- self.execute_command("KEYS", pattern, **kwargs) - commands/core.py
+- self._execute_command(node, *args, **kwargs) - redis/cluster.py
+- get_connection(redis_node, *args, **kwargs)
+- redis_node.connection_pool.get_connection(
+- connection.connect() - redis/connection.py, line 282, line 1109
+- redis/connection.py", line 282
+
+By default retry_on_timeout and socket_timeout is None in Connection class
+
+RedisCluster(startup_nodes) use ClusterNode in constructor, which use default
+ options for Redis class which should have one Connection object, but have
+ redis_connection argument that can accept custom Connection class. ClusterNodes
+ are kept in NodesManager and fetched with get_node_from_slot.
+- file:/usr/lib/python3.12/site-packages/redis/cluster.py::1257
+
+Help for Connector class:
+#+begin_src text
+To specify a retry policy for specific errors, first set
+        `retry_on_error` to a list of the error/s to retry on, then set
+        `retry` to a valid `Retry` object.
+        To retry on TimeoutError, `retry_on_timeout` can also be set to `True`.
+#+end_src
+
+
+ConnectionPool
+- self._available_connections - already connected
+- self.connection_kwargs - Connection parameters.
+
+
+Why RedisCluster->Redis.ConnectionPool lost arguments?
+
+Let's explore construction:
+1) Redis - at construction create ConnectionPool(**kwargs)
+   - .connection_pool.connection_kwargs - kept
+2) ClusterNode with self.redis_connection
+   - .redis_connection.connection_pool.connection_kwargs - kept
+3) RedisCluster.nodes_manager = NodesManager(startup_nodes=startup_nodes)
+   1) file:/usr/lib/python3.12/site-packages/redis/cluster.py::1304
+4) NodesManager.self.startup_nodes[startup_nodes.name] = startup_nodes,
+   - self.connection_kwargs=kwargs used as new connection parameters.
+   - self.initialize(), - here is self.startup_nodes is recreated
+
+So Nodes keept in NodesManager and main step is *initialize*
+1) in every self.startup_nodes checked redis_connection and execute command "CLUSTER SLOTS".
+
+Solution: The reason was in dynamic_startup_nodes=True default paramter of RedisCluster.
+
+*** Error: connecting to 127.0.0.1:0
+: redis.exceptions.ConnectionError: Error 111 connecting to 127.0.0.1:0. Connection refused.
+
+The problem is that self._retries in Retries set to 0 by default, because
+ Connection is not constructed with Redis parameters.
+
+Path: Redis -> ClusterNode -> RedisCluster -> ConnectionPool -> Connection
+- RedisCluster.nodes_manager(NodeManager).startup_node(ClusterNode).redis_connection(Redis).self.connection_pool
+
+RedisCluster.execute_command try 3 times to self.nodes_manager.nodes_cache.values()
+
+and loop over all RedisCluster.node_manager.cached_nodes. When attemts
+ self.cluster_error_retry_attempts are running out Exception no longer suppresed.
+
+
+First RedisCluster connect to first node and retrive other ports.
+
+We can use
+: redis-cli --cluster call localhost:30001 KEYS "*"
+why we have exception in
+: print(rc.keys(target_nodes=RedisCluster.ALL_NODES))
+
+Two questions, where port changes to 0 and how to mitigate it and recheck.
+
+
+0 is last node of self.nodes_manager.nodes_cache.values().
+
+CLUSTER SLOTS (deprecated) return host as ‘’ and port as ‘0’ for disconnected
+ node. This node then added to “nodes_cache”
+
+during KEYS attempts we change request node if attempt fails.
+
+To fix this we can add patch to NodeManager.initialize or
+ NodeManager.get_random_node() and NodeManager.get_nodes().
+
+We will fix get_random_node and get_nodes with monkey patch:
+#+begin_src python :results none :exports code :eval no
+import random
+
+def my_get_nodes(self):
+    # with filter if port = 0, for CLUSTER SLOTS with disconnected node
+    return list([v for v in self.nodes_manager.nodes_cache.values() if v.port != 0 ])
+
+def my_get_random_node(self):
+    # with filter if port = 0, for CLUSTER SLOTS with disconnected node
+    l = list([v for v in self.nodes_manager.nodes_cache.values() if v.port != 0 ])
+    return random.choice(l)
+
+RedisCluster.get_nodes = my_get_nodes
+
+RedisCluster.get_random_node = my_get_random_node
+
+#+end_src
+
+*** Problem "Immediate connection error"
+*Immediate: ConnectionRefusedError: [Errno 111] Connection refused*
+
+Connection path:
+- self.execute_command("SET", *pieces, **options) RedisClusterCommands
+- self._execute_command(node, *args, **kwargs) RedisCluster
+  - self.nodes_manager.get_node_from_slot(
+- get_connection(redis_node, *args, **kwargs) RedisCluster
+- redis_node.connection_pool.get_connection() RedisCluster
+- Connection.connect() Connection
+- self.retry.call_with_retry() Retry
+- self._connect() Connection
+
+Connection path “Redis init”:
+- Redis(
+- self.connection_pool.get_connection("_") - Redis
+- connection.connect() - AbstractConnection
+
+
+“localhost” minor error during “Redis init”:
+: redis.exceptions.ConnectionError: Error 97 connecting to localhost:30004. Address family not supported by protocol.
+
+class NoBackoff uses 0 as a timeout when one of self._supported_errors was
+ raised. To have timeout we should use ConstantBackoff(2) for 2 seconds.
+
+redis.backoff.EqualJitterBackoff
+
+Connections and Redis objects did not changed.
+
+ConnectionPool.make_connection - show up self.connection_kwargs that is changed. at first reation.
+but after that ConnectionPool.connection_kwargs is the same.
+
+RedisCluster._execute_command accept ClusterNode, that have wrong connection_kwargs
+
+RedisCluster.execute_command calls RedisCluster._determine_nodes to get this ClusterNode
+
+ClusterNoders created in _get_or_create_cluster_node
+
+
+NodesManager._get_or_create_cluster_node called from NodesManager.initialize and
+ uses tmp_nodes_cache variable
+
+NodesManager recreate ClusterNode from result of command “CLUSTER SLOTS” on
+ startup_nodes to be able to assing new ClusterNode.server_type.
+
+To fix this we should reuse redis_connection from NodesManager.startup_nodes.
+
+#+begin_src python :results output :exports both :session s1
+from redis.cluster import get_node_name
+
+def my_get_or_create_cluster_node(self, host, port, role, tmp_nodes_cache):
+    node_name = get_node_name(host, port)
+    # check if startup node exist to get redis_connection from it
+    startup_node = self.startup_nodes.get(get_node_name(host, port))
+    # check if we already have this node in the tmp_nodes_cache
+    target_node = tmp_nodes_cache.get(node_name)
+    if target_node is None:
+        # before creating a new cluster node, check if the cluster node already
+        # exists in the current nodes cache and has a valid connection so we can
+        # reuse it
+        target_node = self.nodes_cache.get(node_name)
+        if target_node is None or target_node.redis_connection is None:
+            # create new cluster node for this cluster
+            target_node = ClusterNode(host, port, role,
+                                      redis_connection=startup_node)
+        if target_node.server_type != role:
+            target_node.server_type = role
+
+RedisCluster._get_or_create_cluster_node = my_get_or_create_cluster_node
+#+end_src
+
+So we configure Connection timeout in:
+- Redis arguments
+- RedisCluster kwards is used for ClusterNodes that was known as
+  disconnected. this keys should be added to REDIS_ALLOWED_KEYS to be able to
+  propogate them through NodesManager to Connection.
+
+RedisCluster argumets filtered at constructor in cleanup_kwargs, here fix:
+
+#+begin_src python :results output :exports both :session s1
+redis.cluster.REDIS_ALLOWED_KEYS += (
+    "socket_connect_timeout",
+    "socket_timeout",
+    "retry_on_timeout",
+    "retry",
+    "retry_on_error",
+    "single_connection_client")
+#+end_src
+
+
+*** Problem command fails if one of master node don't reply.
+RedisCluster.execute_command query all nodes in cached_nods, we will suppress
+ Exception and return empy result “[]” if ConnectionError occured.
+#+begin_src python :results none :exports code :eval no
+from redis.exceptions import ConnectionError
+orig_ec = RedisCluster._execute_command
+
+def my_execute_command(self, target_node, *args, **kwargs):
+    try:
+        return orig_ec(self, target_node, *args, **kwargs)
+    except redis.exceptions.ConnectionError as e:
+        return []
+
+RedisCluster._execute_command = my_execute_command
+#+end_src
+* implementation attempts
+** python Redis basic
+#+begin_src python :results output :exports both :session s1
+r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+#+end_src
+** cluster - first try with CLI
+#+begin_src bash :results output
+. ~/create-cluster.sh start
+. ~/create-cluster.sh create
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Starting 30001
+Starting 30002
+Starting 30003
+
+>>> Performing hash slots allocation on 3 nodes...
+Master[0] -> Slots 0 - 5460
+Master[1] -> Slots 5461 - 10922
+Master[2] -> Slots 10923 - 16383
+M: 441807576d7e6038ac3bc25deeedc2f88b15966b 127.0.0.1:30001
+   slots:[0-5460] (5461 slots) master
+M: e5a02ba80896509a8a5f5352d5e9a367945837a5 127.0.0.1:30002
+   slots:[5461-10922] (5462 slots) master
+M: 9b8c371ea0a50b3bf7460b9d8dbbc91dde8d0418 127.0.0.1:30003
+   slots:[10923-16383] (5461 slots) master
+Can I set the above configuration? (type 'yes' to accept): Usage: bash [start|create|stop|restart|watch|tail|tailall|clean|clean-logs|call]
+
+>>> Performing Cluster Check (using node 127.0.0.1:30001)
+M: 441807576d7e6038ac3bc25deeedc2f88b15966b 127.0.0.1:30001
+   slots:[0-5460] (5461 slots) master
+M: 9b8c371ea0a50b3bf7460b9d8dbbc91dde8d0418 127.0.0.1:30003
+   slots:[10923-16383] (5461 slots) master
+M: e5a02ba80896509a8a5f5352d5e9a367945837a5 127.0.0.1:30002
+   slots:[5461-10922] (5462 slots) master
+#+end_example
+
+
+#+begin_src bash :results output
+ps aux | grep redis
+#+end_src
+
+#+RESULTS:
+: u         4726  0.1  0.0  65840  7012 ?        Ssl  21:28   0:00 /usr/sbin/redis-server *:30001 [cluster]
+: u         4735  0.0  0.0  65840  7140 ?        Ssl  21:28   0:00 /usr/sbin/redis-server *:30002 [cluster]
+: u         4741  0.1  0.0  65840  7088 ?        Ssl  21:28   0:00 /usr/sbin/redis-server *:30003 [cluster]
+: u         5818  0.0  0.0   3724  2176 ?        S    21:28   0:00 grep redis
+#+begin_src bash :results output
+redis-cli -p 30001 set test1 value
+#+end_src
+
+#+RESULTS:
+: OK
+
+#+begin_src bash :results output
+kill -s 9 4735
+#+end_src
+
+#+RESULTS:
+
+#+begin_src bash :results output
+redis-cli -p 30001 set test1 value
+#+end_src
+
+#+RESULTS:
+: CLUSTERDOWN The cluster is down
+:
+
+
+#+begin_src bash :results output
+ps aux | grep redis
+#+end_src
+
+#+RESULTS:
+: u         4726  0.1  0.0  77680  7012 ?        Ssl  21:28   0:00 /usr/sbin/redis-server *:30001 [cluster]
+: u         4741  0.1  0.0  65840  6924 ?        Ssl  21:28   0:00 /usr/sbin/redis-server *:30003 [cluster]
+
+#+begin_src bash :results output
+/usr/bin/redis-cli -p 30001 cluster nodes 2>&1 | head -30
+echo
+/usr/bin/redis-cli -p 30002 cluster nodes 2>&1 | head -30
+echo
+/usr/bin/redis-cli -p 30003 cluster nodes 2>&1 | head -30
+#+end_src
+
+#+RESULTS:
+: 9b8c371ea0a50b3bf7460b9d8dbbc91dde8d0418 127.0.0.1:30003@40003 master - 0 1722806979324 3 connected 10923-16383
+: e5a02ba80896509a8a5f5352d5e9a367945837a5 127.0.0.1:30002@40002 master,fail - 1722806950187 1722806949182 2 disconnected 5461-10922
+: 441807576d7e6038ac3bc25deeedc2f88b15966b 127.0.0.1:30001@40001 myself,master - 0 1722806978000 1 connected 0-5460
+:
+: Could not connect to Redis at 127.0.0.1:30002: Connection refused
+:
+: e5a02ba80896509a8a5f5352d5e9a367945837a5 127.0.0.1:30002@40002 master,fail - 1722806950205 1722806949202 2 disconnected 5461-10922
+: 441807576d7e6038ac3bc25deeedc2f88b15966b 127.0.0.1:30001@40001 master - 0 1722806979337 1 connected 0-5460
+: 9b8c371ea0a50b3bf7460b9d8dbbc91dde8d0418 127.0.0.1:30003@40003 myself,master - 0 1722806977000 3 connected 10923-16383
+
+Add master node:
+#+begin_src bash :results output
+redis-cli --cluster add-node 127.0.0.1:30001 127.0.0.1:30004
+#+end_src
+
+#+RESULTS:
+: >>> Adding node 127.0.0.1:30001 to cluster 127.0.0.1:30004
+: >>> Performing Cluster Check (using node 127.0.0.1:30004)
+: M: 07962e88b5a533fd422b29c7c6748aeb00db2f77 127.0.0.1:30004
+:    slots: (0 slots) master
+: [OK] All nodes agree about slots configuration.
+: >>> Check for open slots...
+: >>> Check slots coverage...
+: [ERR] Not all 16384 slots are covered by nodes.
+:
+
+Can not add master without resharding.
+
+We need at least 3 master nodes running.
+
+** cluster - working cluster with CLI
+*** create cluster
+We have set NODES=5 to always have at least 3 master nodes.
+#+begin_src bash :results output
+. ~/create-cluster.sh stop
+. ~/create-cluster.sh clean
+. ~/create-cluster.sh clean-logs
+. ~/create-cluster.sh start
+. ~/create-cluster.sh create -f
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Stopping 30001
+Stopping 30002
+Stopping 30003
+Stopping 30004
+Stopping 30005
+Stopping 30006
+-------------------------------
+Cleaning *.log
+Cleaning appendonlydir-*
+Cleaning dump-*.rdb
+Cleaning nodes-*.conf
+-------------------------------
+Cleaning *.log
+-------------------------------
+Starting 30001
+Starting 30002
+Starting 30003
+Starting 30004
+Starting 30005
+Starting 30006
+-------------------------------
+>>> Performing hash slots allocation on 6 nodes...
+Master[0] -> Slots 0 - 2730
+Master[1] -> Slots 2731 - 5460
+Master[2] -> Slots 5461 - 8191
+Master[3] -> Slots 8192 - 10922
+Master[4] -> Slots 10923 - 13652
+Master[5] -> Slots 13653 - 16383
+M: b84f748531438a88cb4606a21d6a55670c3409ec 127.0.0.1:30001
+   slots:[0-2730] (2731 slots) master
+M: ec4d16bf410589af6cd5f2d506fc2489b5816d22 127.0.0.1:30002
+   slots:[2731-5460] (2730 slots) master
+M: 5c9e29e2290a3f602dba02a05771b0d084a3cb77 127.0.0.1:30003
+   slots:[5461-8191] (2731 slots) master
+M: 563673b560872dacf87a25ae44cd48ab6e94ace0 127.0.0.1:30004
+   slots:[8192-10922] (2731 slots) master
+M: 107552ca7c4bdc03e6dad0e1e0925992f63324b4 127.0.0.1:30005
+   slots:[10923-13652] (2730 slots) master
+M: 41a0cf9be1266b6b3b5a0a82fff5e26595a0e3c1 127.0.0.1:30006
+   slots:[13653-16383] (2731 slots) master
+>>> Nodes configuration updated
+>>> Assign a different config epoch to each node
+>>> Sending CLUSTER MEET messages to join the cluster
+Waiting for the cluster to join
+.
+>>> Performing Cluster Check (using node 127.0.0.1:30001)
+M: b84f748531438a88cb4606a21d6a55670c3409ec 127.0.0.1:30001
+   slots:[0-2730] (2731 slots) master
+M: ec4d16bf410589af6cd5f2d506fc2489b5816d22 127.0.0.1:30002
+   slots:[2731-5460] (2730 slots) master
+M: 41a0cf9be1266b6b3b5a0a82fff5e26595a0e3c1 127.0.0.1:30006
+   slots:[13653-16383] (2731 slots) master
+M: 5c9e29e2290a3f602dba02a05771b0d084a3cb77 127.0.0.1:30003
+   slots:[5461-8191] (2731 slots) master
+M: 107552ca7c4bdc03e6dad0e1e0925992f63324b4 127.0.0.1:30005
+   slots:[10923-13652] (2730 slots) master
+M: 563673b560872dacf87a25ae44cd48ab6e94ace0 127.0.0.1:30004
+   slots:[8192-10922] (2731 slots) master
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+-------------------------------
+#+end_example
+
+#+begin_src bash :results output
+/usr/bin/redis-cli -p 30001 cluster nodes 2>&1 | head -30
+#+end_src
+
+#+RESULTS:
+: 6aeb3854a1e18e84982ba8cf348c2c33493fca47 127.0.0.1:30005@40005 master - 0 1722807202081 5 connected 13107-16383
+: c9cad346e8767c369f9c5b50ef77aada99a7db2e 127.0.0.1:30002@40002 master - 0 1722807201679 2 connected 3277-6553
+: 752ffb0729024a986c17f74091e9823709993c9e 127.0.0.1:30003@40003 master - 0 1722807201679 3 connected 6554-9829
+: cd4edd35079a0f447da1e2f5fc3a4e23384e988c 127.0.0.1:30001@40001 myself,master - 0 1722807201000 1 connected 0-3276
+: 4259d34e68019d4bf2eac054485fb4f24b3bdcbf 127.0.0.1:30004@40004 master - 0 1722807202182 4 connected 9830-13106
+
+
+Get keys from all clusters:
+#+begin_src bash :results output
+redis-cli --cluster call localhost:30001 KEYS "*" 2>&1
+#+end_src
+
+#+RESULTS:
+: Could not connect to Redis at 127.0.0.1:30005: Connection refused
+: >>> Calling KEYS *
+: localhost:30001:
+: 127.0.0.1:30002: data_1:12:{2}
+: 127.0.0.1:30003:
+
+*** Insert and select
+#+begin_src python :results output :exports both :session s1
+from redis.cluster import RedisCluster as Redis
+from redis.cluster import ClusterNode
+
+def find_shard_id(SHARDS, value):
+    # Flatten the ranges into a list of tuples (start, end, shard_id)
+    ranges = [(start, end, shard_id) for shard_id, ranges_list in SHARDS.items() for start, end in ranges_list]
+
+    # Sort the ranges by their start values
+    ranges.sort(key=lambda x: x[0])
+
+    # Perform a binary search on the sorted list
+    left, right = 0, len(ranges) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if ranges[mid][0] <= value <= ranges[mid][1]:
+            return ranges[mid][2]
+        elif value < ranges[mid][0]:
+            right = mid - 1
+        else:
+            left = mid + 1
+
+    # If no matching range is found, return None
+    return None
+
+
+SHARDS={1:((1,  10), (31, 40)),
+        2:((11, 20), (41, 50)),
+        3:((21, 30), (51, 60))}
+
+
+nodes = [ClusterNode('localhost', pport) for pport in range(30001,30003)]
+rc = Redis(startup_nodes=nodes, decode_responses=True,
+           socket_connect_timeout=2) # 2 seconds timeout
+print(rc.ping(target_nodes=Redis.RANDOM))
+# -- set:
+sh = 1
+id = 1
+name = 'Test 1'
+print(rc.set(f"data_1:{id}:{{{sh}}}", "Name1"))
+
+sh = 2
+id = 12
+name = 'Test 2'
+print(rc.set(f"data_1:{id}:{{{sh}}}", "Name2"))
+
+# -- get one:
+id = 1
+sh = find_shard_id(SHARDS, id)
+print(rc.get(f"data_1:{id}:{{{sh}}}"))
+
+# -- get all:
+print(rc.keys(target_nodes=Redis.ALL_NODES))
+
+# -- get range (TODO):
+# Sorted set at each shard + "get all"
+#+end_src
+
+#+RESULTS:
+: True
+: True
+: True
+: Name1
+: ['data_1:12:{2}', 'data_1:1:{1}']
+
+*** testing timeout
+#+begin_src bash :results output
+redis-cli -p 30001 CLUSTER KEYSLOT 'data_1:1:{1}'
+#+end_src
+
+#+RESULTS:
+: 9842
+
+Master[3] : 30004
+
+
+By default Redis Cluster nodes stop accepting queries if they detect there is at
+ least an hash slot uncovered. So, just set the cluster-require-full-coverage
+ option to no.
+
+In create-cluster.sh::14 we added line:
+: ADDITIONAL_OPTIONS="cluster-require-full-coverage no".  And recreated cluster.
+
+For timout we set:
+: ADDITIONAL_OPTIONS="--repl-timeout 60”
+
+Starting cluster, inserting, killing node, fetrching:
+#+begin_src bash :results output
+. ~/create-cluster.sh stop
+. ~/create-cluster.sh clean
+. ~/create-cluster.sh clean-logs
+. ~/create-cluster.sh start
+. ~/create-cluster.sh create -f
+sleep 1
+redis-cli -p 30004 set 'data_1:1:{1}' 'Name1'
+redis-cli -p 30004 get 'data_1:1:{1}'
+ps aux | grep 30004 | grep redis |  tr -s ' ' | cut -f 2 -d ' ' | xargs kill -s 9
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Stopping 30001
+Stopping 30002
+Stopping 30003
+Stopping 30004
+Stopping 30005
+-------------------------------
+Cleaning *.log
+Cleaning appendonlydir-*
+Cleaning dump-*.rdb
+Cleaning nodes-*.conf
+-------------------------------
+Cleaning *.log
+-------------------------------
+Starting 30001
+Starting 30002
+Starting 30003
+Starting 30004
+Starting 30005
+-------------------------------
+>>> Performing hash slots allocation on 5 nodes...
+Master[0] -> Slots 0 - 3276
+Master[1] -> Slots 3277 - 6553
+Master[2] -> Slots 6554 - 9829
+Master[3] -> Slots 9830 - 13106
+Master[4] -> Slots 13107 - 16383
+M: 480587030e24d2994f6435249d7cff7ac443dfcf 127.0.0.1:30001
+   slots:[0-3276] (3277 slots) master
+M: 5e2a3a841109b37b0578b08e299bf7a216ee7957 127.0.0.1:30002
+   slots:[3277-6553] (3277 slots) master
+M: 5da23ddb8c7e2c464f3fcc2db38ae360dadf1524 127.0.0.1:30003
+   slots:[6554-9829] (3276 slots) master
+M: 172a3f0a494090987d9892284ea47f32e6fe7d10 127.0.0.1:30004
+   slots:[9830-13106] (3277 slots) master
+M: 4c0fae92352ba8d61c03814630fa93c8214c9154 127.0.0.1:30005
+   slots:[13107-16383] (3277 slots) master
+>>> Nodes configuration updated
+>>> Assign a different config epoch to each node
+>>> Sending CLUSTER MEET messages to join the cluster
+Waiting for the cluster to join
+.
+>>> Performing Cluster Check (using node 127.0.0.1:30001)
+M: 480587030e24d2994f6435249d7cff7ac443dfcf 127.0.0.1:30001
+   slots:[0-3276] (3277 slots) master
+M: 5e2a3a841109b37b0578b08e299bf7a216ee7957 127.0.0.1:30002
+   slots:[3277-6553] (3277 slots) master
+M: 4c0fae92352ba8d61c03814630fa93c8214c9154 127.0.0.1:30005
+   slots:[13107-16383] (3277 slots) master
+M: 172a3f0a494090987d9892284ea47f32e6fe7d10 127.0.0.1:30004
+   slots:[9830-13106] (3277 slots) master
+M: 5da23ddb8c7e2c464f3fcc2db38ae360dadf1524 127.0.0.1:30003
+   slots:[6554-9829] (3276 slots) master
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+-------------------------------
+OK
+Name1
+#+end_example
+
+#+RESULTS:
+: OK
+
+
+
+#+begin_src python :results output :exports both :session s1
+from redis.cluster import RedisCluster
+from redis import Redis
+from redis.cluster import ClusterNode
+from redis.connection import Connection, ConnectionPool
+from redis.retry import Retry
+from redis.backoff import NoBackoff, ConstantBackoff
+import redis.cluster
+
+# ---- fix for ClusterNode->Redis->connection_kwargs
+from redis.cluster import get_node_name
+
+def my_get_or_create_cluster_node(self, host, port, role, tmp_nodes_cache):
+    node_name = get_node_name(host, port)
+    # check if startup node exist to get redis_connection from it
+    startup_node = self.startup_nodes.get(get_node_name(host, port))
+    # check if we already have this node in the tmp_nodes_cache
+    target_node = tmp_nodes_cache.get(node_name)
+    if target_node is None:
+        # before creating a new cluster node, check if the cluster node already
+        # exists in the current nodes cache and has a valid connection so we can
+        # reuse it
+        target_node = self.nodes_cache.get(node_name)
+        if target_node is None or target_node.redis_connection is None:
+            # create new cluster node for this cluster
+            target_node = ClusterNode(host, port, role,
+                                      redis_connection=startup_node)
+        if target_node.server_type != role:
+            target_node.server_type = role
+
+RedisCluster._get_or_create_cluster_node = my_get_or_create_cluster_node
+
+# ---- fix for case when cluster knows that node is down.
+redis.cluster.REDIS_ALLOWED_KEYS += (
+    "socket_connect_timeout",
+    "socket_timeout",
+    "retry_on_timeout",
+    "retry",
+    "retry_on_error",
+    "single_connection_client")
+
+
+nodes = []
+for pport in (30001, 30002):
+    r = Redis(
+        # 'localhost', # there is a bug here
+        '127.0.0.1',
+        pport,
+        socket_connect_timeout=1,
+        socket_timeout=1, retry_on_timeout=False,
+        retry=Retry(ConstantBackoff(0), 0),
+        retry_on_error=[ConnectionRefusedError],
+        single_connection_client=True
+    )
+    cn = ClusterNode(
+        'localhost', pport,
+        redis_connection=r)
+    nodes.append(cn) # 2 seconds timeout
+
+rc = RedisCluster(startup_nodes=nodes, decode_responses=True,
+                  # fix for case when cluster knows that node is down:
+                  socket_connect_timeout=2,
+                  dynamic_startup_nodes=False,
+                  socket_timeout=1, retry_on_timeout=False,
+                  retry=Retry(ConstantBackoff(0), 0),
+                  retry_on_error=[ConnectionRefusedError],
+                  single_connection_client=True)
+
+
+import time
+
+start_time = time.time()
+# print(rc.get(f"data_1:{id}:{{{sh}}}"))
+print(rc.get('test1{'))
+
+end_time = time.time()
+print(f"Command executed in {end_time - start_time:.2f} seconds")
+#+end_src
+
+#+RESULTS:
+
+*Error:* “redis.exceptions.ClusterDownError: The cluster is down”
+
+Several fixes was made.
+** table
+
+** CLI cluster aware script
+* Testing timeout in Python
+Lets test that after 2.0 seconds if server is not reachable we assume keys are
+ missing. For that we create 3 nodes cluster, add two keys to two nodes, kill
+ one with key.
+
+After that we we use unroutable IP '10.255.255.1' to emulate “socket timeout”.
+
+#+begin_src bash :results output
+. ~/create-cluster.sh stop
+. ~/create-cluster.sh clean
+. ~/create-cluster.sh clean-logs
+. ~/create-cluster.sh start
+. ~/create-cluster.sh create -f
+sleep 1
+redis-cli -p 30001 set 'data_1:1:{11}' 'Name1'
+redis-cli -p 30003 set 'data_1:3:{66}' 'Name3'
+# kill one node
+ps aux | grep 30003 | grep redis |  tr -s ' ' | cut -f 2 -d ' ' | xargs kill -s 9
+redis-cli --cluster call localhost:30001 KEYS "*"
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Stopping 30001
+Stopping 30002
+Stopping 30003
+-------------------------------
+Cleaning *.log
+Cleaning appendonlydir-*
+Cleaning dump-*.rdb
+Cleaning nodes-*.conf
+-------------------------------
+Cleaning *.log
+-------------------------------
+Starting 30001
+Starting 30002
+Starting 30003
+-------------------------------
+>>> Performing hash slots allocation on 3 nodes...
+Master[0] -> Slots 0 - 5460
+Master[1] -> Slots 5461 - 10922
+Master[2] -> Slots 10923 - 16383
+M: e487c15c646625b81f89e29e6194e43c28274148 127.0.0.1:30001
+   slots:[0-5460] (5461 slots) master
+M: 1809cb89e71584a8496253e4e356f16dfbf88618 127.0.0.1:30002
+   slots:[5461-10922] (5462 slots) master
+M: 85903e325ba184ff53428601289948adf3b08306 127.0.0.1:30003
+   slots:[10923-16383] (5461 slots) master
+>>> Nodes configuration updated
+>>> Assign a different config epoch to each node
+>>> Sending CLUSTER MEET messages to join the cluster
+Waiting for the cluster to join
+.
+>>> Performing Cluster Check (using node 127.0.0.1:30001)
+M: e487c15c646625b81f89e29e6194e43c28274148 127.0.0.1:30001
+   slots:[0-5460] (5461 slots) master
+M: 1809cb89e71584a8496253e4e356f16dfbf88618 127.0.0.1:30002
+   slots:[5461-10922] (5462 slots) master
+M: 85903e325ba184ff53428601289948adf3b08306 127.0.0.1:30003
+   slots:[10923-16383] (5461 slots) master
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+-------------------------------
+OK
+OK
+>>> Calling KEYS *
+localhost:30001: data_1:1:{11}
+127.0.0.1:30002:
+#+end_example
+
+#+begin_src python :results output :exports both
+from redis.cluster import RedisCluster
+from redis import Redis
+from redis.cluster import ClusterNode
+import redis.cluster
+from redis.connection import Connection, ConnectionPool
+from redis.retry import Retry
+from redis.backoff import NoBackoff, ConstantBackoff
+
+# -- fix 127.0.0.1:0
+import random
+
+def my_get_nodes(self):
+    # with filter if port = 0, for CLUSTER SLOTS with disconnected node
+    return list([v for v in self.nodes_manager.nodes_cache.values() if v.port != 0 ])
+
+def my_get_random_node(self):
+    # with filter if port = 0, for CLUSTER SLOTS with disconnected node
+    l = list([v for v in self.nodes_manager.nodes_cache.values() if v.port != 0 ])
+    return random.choice(l)
+
+RedisCluster.get_nodes = my_get_nodes
+
+RedisCluster.get_random_node = my_get_random_node
+
+# --- fix  Problem command fails if one of master node don't reply.
+from redis.exceptions import ConnectionError, TimeoutError
+orig_ec = RedisCluster._execute_command
+
+def my_execute_command(self, target_node, *args, **kwargs):
+    try:
+        return orig_ec(self, target_node, *args, **kwargs)
+    except redis.exceptions.ConnectionError as e:
+        return []
+
+RedisCluster._execute_command = my_execute_command
+
+# --- test timeout
+import time
+
+orig_getc = ConnectionPool.get_connection
+
+
+def getc(self, command_name: str, *keys, **options):
+    "Create a new connection"
+    start_time = time.time()
+    try:
+        c = orig_getc(self, command_name, keys, options)
+    except Exception as e:
+        print(e)
+        raise e
+    finally:
+        end_time = time.time()
+        print(f"Getc executed in {end_time - start_time:.2f} seconds")
+
+    return c
+
+ConnectionPool.get_connection = getc
+
+import redis.cluster
+
+redis.cluster.REDIS_ALLOWED_KEYS += (
+    "socket_connect_timeout",
+    "socket_timeout",
+    "retry_on_timeout",
+    "retry",
+    "retry_on_error",
+    "single_connection_client")
+
+nodes = []
+for pport in (30001, 30002,30003):
+    if pport < 30002:
+        cn = ClusterNode(
+            # 'localhost',
+            '10.255.255.1',
+            pport
+        )
+    else:
+        cn = ClusterNode(
+            'localhost',
+            # '10.255.255.1',
+            pport
+        )
+    nodes.append(cn)
+
+rc = RedisCluster(
+    startup_nodes=nodes, # decode_responses=True,
+    socket_connect_timeout=2,
+    dynamic_startup_nodes=False,
+    socket_timeout=1, retry_on_timeout=False,
+    retry=Retry(ConstantBackoff(2), 0),
+    # retry_on_error=[ConnectionRefusedError],
+    # single_connection_client=True
+)
+
+print("startup_nodes:")
+[print (x) for x in rc.nodes_manager.startup_nodes]
+print()
+print("nodes_cache:")
+[print (x) for x in rc.nodes_manager.nodes_cache]
+print()
+print(rc.keys(target_nodes=RedisCluster.ALL_NODES))
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Timeout connecting to server
+Getc executed in 2.00 seconds
+Getc executed in 0.00 seconds
+Getc executed in 0.00 seconds
+Getc executed in 0.00 seconds
+startup_nodes:
+10.255.255.1:30001
+127.0.0.1:30002
+127.0.0.1:30003
+
+nodes_cache:
+127.0.0.1:30001
+127.0.0.1:30002
+127.0.0.1:30003
+
+Getc executed in 0.00 seconds
+Getc executed in 0.00 seconds
+Error 111 connecting to 127.0.0.1:30003. Connection refused.
+Getc executed in 0.00 seconds
+Timeout connecting to server
+Getc executed in 2.00 seconds
+Getc executed in 0.00 seconds
+Getc executed in 0.00 seconds
+[b'data_1:1:{11}']
+#+end_example
+
+* Testing of getting all data with CLI
+Timeout is used in Connection.connect. We will use socket_connect_timeout for 2
+ seconds. We add monkey to patch Connection.connect for testing.
+
+To be able to use automatic cluster-aware key lookup mechanic we need to store
+ ID field in a key, this limit us to following Redis data types: Strings. This way:
+: python a2-script.py hset data_1:1:{0-10} "Name1"
+For sorting there is two commands: ZRANGEBYSCORE and SORT.
+ZRANGEBYSCORE: can work with a single key hence single node.
+SORT: BY option of SORT denied in Cluster mode.
+
+That is why we can not use sorting at Redis server and should do it manually.
+
+The only way to get all keys is to send to every node ~KEYS *~ or ~SCAN 0 MATCH *~.
+
+To select all data we should do two commands: 1) get all keys 2) get value for every keys.
+
+In task there is no requirement to have operation to get a single key, that is
+ why we can keep keys in three SortedSets: “data_1”, “data_2”, “data_3”. We will
+ use two commands:
+ 1) get all keys, which is “data_1”, “data_2”, “data_3”
+ 2) do 0-3 requests to every data_*.
+This allow us to use Redis sorting, we only need to sort data_1, data_2, data_3
+ by itself.
+
+#+begin_src bash :results output
+. ~/create-cluster.sh stop
+. ~/create-cluster.sh clean
+. ~/create-cluster.sh clean-logs
+. ~/create-cluster.sh start
+. ~/create-cluster.sh create -f
+sleep 1
+redis-cli --cluster call localhost:30001 ZADD data_1 1 "Name1"
+redis-cli --cluster call localhost:30001 ZADD data_2 12 "Name12"
+redis-cli --cluster call localhost:30001 ZADD data_1 2 "Name2"
+redis-cli --cluster call localhost:30001 ZADD data_2 11 "Name11"
+redis-cli --cluster call 127.0.0.1:30001 KEYS "*"
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Stopping 30001
+Stopping 30002
+Stopping 30003
+-------------------------------
+Cleaning *.log
+Cleaning appendonlydir-*
+Cleaning dump-*.rdb
+Cleaning nodes-*.conf
+-------------------------------
+Cleaning *.log
+-------------------------------
+Starting 30001
+Starting 30002
+Starting 30003
+-------------------------------
+>>> Performing hash slots allocation on 3 nodes...
+Master[0] -> Slots 0 - 5460
+Master[1] -> Slots 5461 - 10922
+Master[2] -> Slots 10923 - 16383
+M: 3efddf8568d073047fd45d3bc041164f831638cc 127.0.0.1:30001
+   slots:[0-5460] (5461 slots) master
+M: cb31c93d107572b8d2ed8600d14436953e65ecd8 127.0.0.1:30002
+   slots:[5461-10922] (5462 slots) master
+M: 117e6b1cf1c824368880038ac2669fcda9709524 127.0.0.1:30003
+   slots:[10923-16383] (5461 slots) master
+>>> Nodes configuration updated
+>>> Assign a different config epoch to each node
+>>> Sending CLUSTER MEET messages to join the cluster
+Waiting for the cluster to join
+.
+>>> Performing Cluster Check (using node 127.0.0.1:30001)
+M: 3efddf8568d073047fd45d3bc041164f831638cc 127.0.0.1:30001
+   slots:[0-5460] (5461 slots) master
+M: 117e6b1cf1c824368880038ac2669fcda9709524 127.0.0.1:30003
+   slots:[10923-16383] (5461 slots) master
+M: cb31c93d107572b8d2ed8600d14436953e65ecd8 127.0.0.1:30002
+   slots:[5461-10922] (5462 slots) master
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+-------------------------------
+>>> Calling ZADD data_1 1 Name1
+localhost:30001: MOVED 13848 127.0.0.1:30003
+
+127.0.0.1:30003: 1
+127.0.0.1:30002: MOVED 13848 127.0.0.1:30003
+
+>>> Calling ZADD data_2 12 Name12
+localhost:30001: 1
+127.0.0.1:30003: MOVED 1659 127.0.0.1:30001
+
+127.0.0.1:30002: MOVED 1659 127.0.0.1:30001
+
+>>> Calling ZADD data_1 2 Name2
+localhost:30001: MOVED 13848 127.0.0.1:30003
+
+127.0.0.1:30003: 1
+127.0.0.1:30002: MOVED 13848 127.0.0.1:30003
+
+>>> Calling ZADD data_2 11 Name11
+localhost:30001: 1
+127.0.0.1:30003: MOVED 1659 127.0.0.1:30001
+
+127.0.0.1:30002: MOVED 1659 127.0.0.1:30001
+
+>>> Calling KEYS *
+127.0.0.1:30001: data_2
+127.0.0.1:30003: data_1
+127.0.0.1:30002:
+#+end_example
+
+Get all data sorted with CLI:
+#+begin_src bash :results output
+redis-cli --cluster call 127.0.0.1:30001 KEYS "*" | cut -d ' ' -f 2 | tail -n +2 | sort | grep -v "^$"| xargs -I '{}' redis-cli --cluster call 127.0.0.1:30001 ZRANGE '{}' 0 inf BYSCORE WITHSCORES | sed 's/127.0.0.1:3000[0-9]: //' | grep -v '127.0.0.1:3000[0-9]' | grep -v 'Calling ZRANGE' | grep -v "^$"
+#+end_src
+
+#+RESULTS:
+: Name1
+: 1
+: Name2
+: 2
+: Name11
+: 11
+: Name12
+: 12
+
+Drawback of this approach that we will not be able to have cluster-aware value
+ retrival by ID it it will be required in future.
+
+* Testing of getting all data with Python
+#+begin_src bash :eval no :exports code :results none
+. ~/create-cluster.sh stop
+. ~/create-cluster.sh clean
+. ~/create-cluster.sh clean-logs
+. ~/create-cluster.sh start
+. ~/create-cluster.sh create -f
+sleep 1
+redis-cli --cluster call localhost:30001 ZADD data_1 1 "Name1"
+redis-cli --cluster call localhost:30001 ZADD data_2 12 "Name12"
+redis-cli --cluster call localhost:30001 ZADD data_1 2 "Name2"
+redis-cli --cluster call localhost:30001 ZADD data_2 11 "Name11"
+redis-cli --cluster call 127.0.0.1:30001 KEYS "*"
+#+end_src
+#+begin_src bash :results output
+
+
+,#+begin_src python :results output :exports both
+from redis.cluster import RedisCluster
+from redis import Redis
+from redis.cluster import ClusterNode
+import redis.cluster
+from redis.connection import Connection, ConnectionPool
+from redis.retry import Retry
+from redis.backoff import NoBackoff, ConstantBackoff
+
+def find_shard_id(SHARDS, value):
+    # Flatten the ranges into a list of tuples (start, end, shard_id)
+    ranges = [(start, end, shard_id) for shard_id, ranges_list in SHARDS.items() for start, end in ranges_list]
+
+    # Sort the ranges by their start values
+    ranges.sort(key=lambda x: x[0])
+
+    # Perform a binary search on the sorted list
+    left, right = 0, len(ranges) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if ranges[mid][0] <= value <= ranges[mid][1]:
+            return ranges[mid][2]
+        elif value < ranges[mid][0]:
+            right = mid - 1
+        else:
+            left = mid + 1
+
+    # If no matching range is found, return None
+    return None
+
+
+SHARDS={1:((1,  10), (31, 40)),
+        2:((11, 20), (41, 50)),
+        3:((21, 30), (51, 60))}
+
+
+# -- fix 127.0.0.1:0
+import random
+
+def my_get_nodes(self):
+    # with filter if port = 0, for CLUSTER SLOTS with disconnected node
+    return list([v for v in self.nodes_manager.nodes_cache.values() if v.port != 0 ])
+
+def my_get_random_node(self):
+    # with filter if port = 0, for CLUSTER SLOTS with disconnected node
+    l = list([v for v in self.nodes_manager.nodes_cache.values() if v.port != 0 ])
+    return random.choice(l)
+
+RedisCluster.get_nodes = my_get_nodes
+
+RedisCluster.get_random_node = my_get_random_node
+
+# --- fix  Problem command fails if one of master node don't reply.
+from redis.exceptions import ConnectionError, TimeoutError
+orig_ec = RedisCluster._execute_command
+
+def my_execute_command(self, target_node, *args, **kwargs):
+    try:
+        return orig_ec(self, target_node, *args, **kwargs)
+    except redis.exceptions.ConnectionError as e:
+        return []
+
+RedisCluster._execute_command = my_execute_command
+
+
+# NodesManager.initialize = myinitialize
+import redis.cluster
+
+redis.cluster.REDIS_ALLOWED_KEYS += (
+    "socket_connect_timeout",
+    "socket_timeout",
+    "retry_on_timeout",
+    "retry",
+    "retry_on_error",
+    "single_connection_client")
+
+
+rs1 = []
+nodes = []
+for pport in (30001, 30002,30003,30004, 30005):
+
+    cn = ClusterNode(
+        'localhost',
+        # '10.255.255.1',
+        pport,
+        # redis_connection=r
+    )
+    # print("r", cn.redis_connection.connection_pool.connection_kwargs)
+    nodes.append(cn) # 2 seconds timeout
+
+# -------------------- MANIN ------------------
+
+rc = RedisCluster(
+    startup_nodes=nodes, decode_responses=False,
+    socket_connect_timeout=2,
+    dynamic_startup_nodes=False,
+    socket_timeout=1, retry_on_timeout=False,
+    retry=Retry(ConstantBackoff(2), 0),
+    # retry_on_error=[ConnectionRefusedError],
+    # single_connection_client=True
+)
+rs2 = []
+
+# # -- Insert items to SortedSets
+# for id in [1,2,11,12]:
+#     sh = find_shard_id(SHARDS, id)
+#     rc.zadd(f"data_{sh}",{f"Name{id}":id})
+#     # print(sh, id, )
+
+# KEYS "*"
+keys = rc.keys(target_nodes=RedisCluster.ALL_NODES)
+res = []
+for k in sorted(keys):
+    res.extend(rc.zrange(k, 0, '-1', withscores=True))
+for x in res:
+    print(x[0].decode("utf-8"))
+    print(int(x[1]))
+#+end_src
+
+#+RESULTS:
+: Name1
+: 1
+: Name2
+: 2
+: Name11
+: 11
+: Name12
+: 12
+
+* TODO Final solution
+[[./fapi.py]]
+[[./create-cluster.sh]]
+* conclusion
+I learned fastest debuging technique with pdb module and .pdbrc file.
