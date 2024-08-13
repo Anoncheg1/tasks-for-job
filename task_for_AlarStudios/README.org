@@ -1293,8 +1293,26 @@ for x in res:
 : Name12
 : 12
 
-* TODO Final solution
-[[./fapi.py]]
-[[./create-cluster.sh]]
-* conclusion
-I learned fastest debuging technique with pdb module and .pdbrc file.
+* Final solution
+- Cluster constructor: [[./create-cluster.sh]]
+- Main FlaskAPI application: [[./fapi.py]]
+- Tests: [[./test_fapi.py]]
+- Help script for cluster-aware commands calling: [[./redis-script.py]]
+* Conclusion
+Fastest debuging technique was found by using built-in Python pdb module and
+ .pdbrc file.
+
+Was learning: Mocking for FastAPI, Redis Cluster architecture building, py-redis
+ programming.
+
+Redis script for calling cluster-aware command was written for testing.
+
+Objectives of Original task that have been solved:
+- FastAPI application
+- Pytest
+
+Objectives of Original task that wasn't implemented:
+- async dbapi/adapter
+- SQLAlchemy 2.0
+- Asyncio
+- Docker

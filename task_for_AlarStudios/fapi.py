@@ -1,13 +1,16 @@
+import random
 from redis.cluster import RedisCluster
-from redis import Redis
+# from redis import Redis
 from redis.cluster import ClusterNode
 import redis.cluster
-from redis.connection import Connection, ConnectionPool
+# from redis.connection import Connection, ConnectionPool
 from redis.retry import Retry
-from redis.backoff import NoBackoff, ConstantBackoff
+from redis.backoff import ConstantBackoff
+ # NoBackoff
 from fastapi import FastAPI, HTTPException
 import logging
 from pydantic import BaseModel
+
 
 app = FastAPI()
 
@@ -36,22 +39,24 @@ def find_shard_id(SHARDS, value):
     return None
 
 
-SHARDS={1:((1,  10), (31, 40)),
-        2:((11, 20), (41, 50)),
-        3:((21, 30), (51, 60))}
+SHARDS = {1: ((1,  10), (31, 40)),
+          2: ((11, 20), (41, 50)),
+          3: ((21, 30), (51, 60))}
 
 
 # -- fix 127.0.0.1:0
-import random
+
 
 def my_get_nodes(self):
     # with filter if port = 0, for CLUSTER SLOTS with disconnected node
     return list([v for v in self.nodes_manager.nodes_cache.values() if v.port != 0 ])
 
+
 def my_get_random_node(self):
     # with filter if port = 0, for CLUSTER SLOTS with disconnected node
     l = list([v for v in self.nodes_manager.nodes_cache.values() if v.port != 0 ])
     return random.choice(l)
+
 
 RedisCluster.get_nodes = my_get_nodes
 
@@ -61,11 +66,13 @@ RedisCluster.get_random_node = my_get_random_node
 from redis.exceptions import ConnectionError, TimeoutError
 orig_ec = RedisCluster._execute_command
 
+
 def my_execute_command(self, target_node, *args, **kwargs):
     try:
         return orig_ec(self, target_node, *args, **kwargs)
-    except redis.exceptions.ConnectionError as e:
+    except redis.exceptions.ConnectionError:
         return []
+
 
 RedisCluster._execute_command = my_execute_command
 
@@ -82,36 +89,8 @@ redis.cluster.REDIS_ALLOWED_KEYS += (
     "single_connection_client")
 
 
-rs1 = []
-nodes = []
-for pport in (30001, 30002,30003,30004, 30005):
-
-    cn = ClusterNode(
-        'localhost',
-        # '10.255.255.1',
-        pport,
-        # redis_connection=r
-    )
-    # print("r", cn.redis_connection.connection_pool.connection_kwargs)
-    nodes.append(cn) # 2 seconds timeout
-
-# -------------------- MANIN ------------------
-
-rc = RedisCluster(
-    startup_nodes=nodes, decode_responses=False,
-    socket_connect_timeout=2,
-    dynamic_startup_nodes=False,
-    socket_timeout=1, retry_on_timeout=False,
-    retry=Retry(ConstantBackoff(2), 0),
-    # retry_on_error=[ConnectionRefusedError],
-    # single_connection_client=True
-)
-
-# -- Insert items to SortedSets
-# for id in [1,2,11,12]:
-#     sh = find_shard_id(SHARDS, id)
-#     rc.zadd(f"data_{sh}",{f"Name{id}":id})
-#     # print(sh, id, )
+# -------------------- MAIN ------------------
+rc = None
 
 
 def get_all_data()-> list[dict]:
@@ -126,13 +105,18 @@ def get_all_data()-> list[dict]:
     return res
 
 
-def get_one(item_id: int)->dict:
+def get_one(item_id: int) -> dict | None:
     "ZRANGE key start stop"
     sh = find_shard_id(SHARDS, item_id)
-    resp = rc.zrange(f"data_{sh}", item_id, item_id)
-    logger.info(f"zrange data_{sh} {item_id} {resp}")
-    res = {item_id: r[0].decode("utf-8") for r in resp}
-    return res
+    resp = rc.zrangebyscore(f"data_{sh}", item_id, item_id)
+    logger.info(f"zrangebyscore data_{sh} {item_id} {resp}")
+    res = {"idn": item_id}
+    if resp:
+        res.update({"name": r.decode("utf-8") for r in resp})
+        logger.info(res)
+        return res
+    else:
+        return None
 
 
 def add_one(item_id: int, name: str) -> bool:
@@ -145,16 +129,12 @@ def add_one(item_id: int, name: str) -> bool:
 
 def remove_one(item_id: int) -> dict:
     "ZREM key member."
-    sh = find_shard_id(SHARDS, item_id)
-    resp = rc.zrange(f"data_{sh}", item_id, item_id)
-    logger.info(f"zrange data_{sh} {item_id} {resp}")
-    res = {}
-    for r in resp:
-        v = r[0].decode("utf-8")
-        res[item_id] = v
-        resp = rc.zrem(f"data_{sh}", v)
-    logger.info(f"zrem data_{sh} {item_id} {resp}")
-    return res
+    r = get_one(item_id)  # for return only
+    if r:
+        sh = find_shard_id(SHARDS, item_id)
+        resp = rc.zremrangebyscore(f"data_{sh}", item_id, item_id)
+        logger.info(f"zremrangebyscore data_{sh} {item_id} {resp}")
+    return r
 
 
 # Pydantic model for data
@@ -175,7 +155,7 @@ async def read_item(item_id: int):
     if res:
         return res
     else:
-        raise HTTPException(status_code=404, detail="Book not found")
+        raise HTTPException(status_code=404, detail="Item not found")
 
 
 # Endpoint to DELETE a book by ID.
@@ -185,13 +165,40 @@ async def delete_item(item_id: int):
     if res:
         return res
     else:
-        raise HTTPException(status_code=404, detail="Book not found")
+        raise HTTPException(status_code=404, detail="Item not found")
 
 
 # Endpoint to create a new book
 @app.post("/names/", response_model=Data)
-async def create_book(d: Data):
+async def create_item(d: Data):
     if add_one(d.idn, d.name):
         return d
     else:
         raise HTTPException(status_code=409, detail="Item already exists")
+
+
+def main():
+    nodes = []
+    for pport in (30001, 30002,30003,30004, 30005):
+        cn = ClusterNode(
+            'localhost',
+            # '10.255.255.1',
+            pport,
+            # redis_connection=r
+        )
+        nodes.append(cn)  # 2 seconds timeout
+
+    rc = RedisCluster(
+        startup_nodes=nodes, decode_responses=False,
+        socket_connect_timeout=2,
+        dynamic_startup_nodes=False,
+        socket_timeout=1, retry_on_timeout=False,
+        retry=Retry(ConstantBackoff(2), 0),
+        # retry_on_error=[ConnectionRefusedError],
+        # single_connection_client=True
+    )
+
+
+if __name__ == "__main__":
+    # init rc variable
+    main()
