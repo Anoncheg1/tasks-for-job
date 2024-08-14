@@ -1297,6 +1297,7 @@ for x in res:
 - Cluster constructor: [[./create-cluster.sh]]
 - Main FlaskAPI application: [[./fapi.py]]
 - Tests: [[./test_fapi.py]]
+  - pytest -s test_fapi.py # to run
 - Help script for cluster-aware commands calling: [[./redis-script.py]]
 * Conclusion
 Fastest debuging technique was found by using built-in Python pdb module and

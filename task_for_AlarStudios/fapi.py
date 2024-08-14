@@ -8,11 +8,20 @@ from redis.retry import Retry
 from redis.backoff import ConstantBackoff
  # NoBackoff
 from fastapi import FastAPI, HTTPException
+from starlette.responses import RedirectResponse
 import logging
 from pydantic import BaseModel
+from fastapi.openapi.utils import get_openapi
+from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi import FastAPI, Response
+from starlette.requests import Request
+from starlette.responses import HTMLResponse, JSONResponse, Response
 
 
-app = FastAPI()
+app = FastAPI(title="Redis Cluster",
+              version="0.1",
+              description="Implementation of sharding table by ID with Sorted Set type.")
+
 
 logger = logging.getLogger('uvicorn.error')
 
@@ -176,6 +185,10 @@ async def create_item(d: Data):
     else:
         raise HTTPException(status_code=409, detail="Item already exists")
 
+@app.get("/")
+async def root():
+    response = RedirectResponse(url='/docs', status_code=302)
+    return response
 
 def main():
     nodes = []
