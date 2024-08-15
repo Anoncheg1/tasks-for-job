@@ -1299,6 +1299,16 @@ for x in res:
 - Tests: [[./test_fapi.py]]
   - pytest -s test_fapi.py # to run
 - Help script for cluster-aware commands calling: [[./redis-script.py]]
+
+Requrements:
+Python 3.11+
+#+begin_src text
+pip install redis
+pip install redis-py
+pip install fastapi
+pip install pytest
+#+end_src
+
 * Conclusion
 Fastest debuging technique was found by using built-in Python pdb module and
  .pdbrc file.
