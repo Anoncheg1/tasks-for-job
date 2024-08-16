@@ -1300,16 +1300,40 @@ for x in res:
   - pytest -s test_fapi.py # to run
 - Help script for cluster-aware commands calling: [[./redis-script.py]]
 
+
+To run cluster:
+#+begin_src bash :eval no :exports code :results none
+. ~/create-cluster.sh stop
+. ~/create-cluster.sh clean
+. ~/create-cluster.sh clean-logs
+. ~/create-cluster.sh start
+. ~/create-cluster.sh create -f
+sleep 1
+redis-cli --cluster call localhost:30001 ZADD data_1 1 "Name1"
+redis-cli --cluster call localhost:30001 ZADD data_2 12 "Name12"
+redis-cli --cluster call localhost:30001 ZADD data_1 2 "Name2"
+redis-cli --cluster call localhost:30001 ZADD data_2 11 "Name11"
+redis-cli --cluster call 127.0.0.1:30001 KEYS "*"
+#+end_src
+
+To run access point:
+: $ uvicorn fapi:app
+
 Requrements:
-Python 3.11+
+- Python 3.11+
 #+begin_src text
 pip install redis
 pip install redis-py
 pip install fastapi
 pip install pytest
+pip install uvicorn
 #+end_src
 
 * Conclusion
+Implemented: single access point with FastAPI, 2 seconds timeout, cluster with
+ shared table by ID. Redis have been to implement database access and data
+ sharding.
+
 Fastest debuging technique was found by using built-in Python pdb module and
  .pdbrc file.
 
