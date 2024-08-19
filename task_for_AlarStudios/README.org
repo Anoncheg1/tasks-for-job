@@ -1329,6 +1329,18 @@ pip install pytest
 pip install uvicorn
 #+end_src
 
+* Software Architecture (documentation)
+*Software architecture* is a representation of a system in which there is a
+ mapping of functionality onto hardware and software components.
+
+- RESTful access point :: FastAPI app runned under “uvicorn” ASGI web server.
+- database and sharing implementation :: Redis runned in cluster mode.
+- timings 2sec :: socket_timeout and patches for Redis implementation
+- asynchronousness :: web - FastAPI implementation, database - py-redis provide
+  alternative implementation in
+  https://github.com/redis/redis-py/tree/master/redis/asyncio (require some time
+  to switch)
+
 * Conclusion
 Implemented: single access point with FastAPI, 2 seconds timeout, cluster with
  shared table by ID. Redis have been to implement database access and data
