@@ -1,14 +1,10 @@
-Without payment:
-- 2024-08-12 - DS-ML Questions for abstract task. [[file:task_for_aiexp.org]]
+Good:
 - 2024-08-03 - Redis Cluster + FastAPI [[file:task_for_AlarStudios/README.org]]
 - 2024-06-06 - Demo about AI NLP Hackathon [[file:task_for_hackathon_demo/README.pdf]]
 - 2024-05-01 - Research: Battery degradation modeling [[file:task_for_battery_life/README.org]]
-- 2024-04-19 - SQLite + Telegram Bot [[file:task_for_stepbystep/README.org]]
 - 2024-03-25 - SQL small task. [[file:skorburo-sql-task/skorburo-sql-task.org]]
-- 2024-03-14 - Algorithmical: Yandex MultiTrack (2024-01-18) - [[file:yandex_multitrack.org]]
 - 2024-03-08 - Questions about ML, DL, DS. [[file:task_for_ml_questions/README.org]]
 - 2024-03-02 - LLM Prompt-Engineer: generate people comments with YandexGPT API  [[file:task_for_prompt_engineer/README.org]]
-- 2023-12-15 - Algorithmical: path finding on 2d grid. [[file:task_for_peredovietechnologii/README.org]]
 - 2023-12-01 - Computer Vision: solvation of captcha with OpenCV. [[file:task_for_zennolab/README.org]]
 - 2023-11-11 - GreenScreens, Regression analysis. [[file:task_for_greenscreensai/README_green.org]]
 - 2023-10-13 - Model and metrics selection, model calibration. [[file:task_for_allmagen/README.org]]
@@ -17,3 +13,10 @@ Without payment:
 - optimization task for bit-packing. [[file:others/optimization.org]]
 - answer question after analysis of articles. [[file:others/nft_data_engineer.org]]
 - create strategy for interior design about rotation of generateion scene image with DL. [[file:others/task_for_interior_design.org]]
+
+Bad:
+- 2024-09-10 - Trading Bot. [[file:o2trading_cindrikov_oleg/README.org]]
+- 2024-08-12 - DS-ML Questions for abstract task. [[file:task_for_aiexp.org]]
+- 2024-04-19 - SQLite + Telegram Bot [[file:task_for_stepbystep/README.org]]
+- 2024-03-14 - Algorithmical: Yandex MultiTrack (2024-01-18) - [[file:yandex_multitrack.org]]
+- 2023-12-15 - Algorithmical: path finding on 2d grid. [[file:task_for_peredovietechnologii/README.org]]

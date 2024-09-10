@@ -1,0 +1,143 @@
+* Task - message
+1. Ожидаем увидеть удобный для восприятия и нешумный отчёт
+2. Выводы и комментарии, понятные коллегам, не владеющим кодом
+3. Код можно не показывать
+4. Полное решение не требуется, стремление к положительному pnl приветствуется
+5. Важно увидеть от кандидата анализ и оценку первого пробного решения и результата
+
+Знакомясь с тестовым кейсом, новые ДС быстрее вникают в проект,
+понимают, интересны ли им такого рода задачи,
+а удачные идеи из тестового развивают дальше в своём первом рабочем ТЗ
+
+Notes:
+- (profit and loss, P&L) - метрика показывающая разницу между всеми расходами и доходами бизнеса за выбранный период
+- скринкаст - «screen cast», что в переводе означает «захват с экрана»,  это видеозапись происходящего на экране.
+** eng
+1. We expect to see a user-friendly and quiet report
+2. Conclusions
+   and comments understandable to colleagues who do not know the
+   code
+3. You don't have to show the code
+4. A complete solution is not required, striving for a positive PNL is
+   welcome
+5. It is important to see the candidate's analysis and evaluation of
+   the first trial solution and the result\n\nGetting acquainted with
+   the test case, new DS delve into the project faster,\nunderstand
+   whether they are interested in such tasks,\nand develop successful
+   ideas from the test further in their first working TK
+
+Getting acquainted with the test case, new DS delve into the project
+ faster,\nunderstand whether they are interested in such tasks,\nand
+ develop successful ideas from the test further in their first working
+ TK
+* Tesk - text
+#+begin_src text
+Задание в текстовом формате
+1. Разобрать датасет алертов и документации (актуально
+измерение за два часа с момента алерта)
+2. На этом отрезке вы должны найти какую-либо
+закономерность/закономерности с высоким шансом срабатывания.
+Задать правила при которых вы зайдете/выйдете в лонг/шорт
+позицию. Желательно, чтобы трейд был положительным.
+3. Найти предсказуемый отрезок графика, используя любые
+индикаторы (когда видим подобный сетап, не видя будущего, то
+будущее случается с высокой долей вероятности от 60% минимум)
+4. Написать в каком проценте алертов данный сетап будет
+находиться и какой процент срабатывания этого алерта.
+5. Записать с веб-камерой и демонстрацией экрана вашу
+рефлексию по решению задачи - запись рассуждений о каждом
+аспекте вашего кода (как мыслили, почему выбрали данный метод
+решения и т.д.). По сути, требуется краткое тезисное видео.
+Примерный формат: происходит событие А - встаем в позицию
+long/short, происходит событие В - движение в какую-то сторону,
+закрытие позиции.
+Дедлайн составляет 7 дней
+#+end_src
+
+https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-data
+https://github.com/binance/binance-futures-connector-python/tree/main/binance
+https://github.com/binance/binance-futures-connector-python/tree/main/binance
+* Task - task.mp4
+You have asset trading chart, some history and event point in current
+ time. Task is to create trading strategy (rule) to predict direction
+ and time to enter up or down trading and strategy to predict moment
+ to exit from trading.
+* Solving
+Chatgpt questions: How called creation of trading bot that signal when
+ to buy and when to sold? How this activity is commonly called?
+ trading bot or some sort of trading system?
+- Trading Bot: A computer program that automates trading decisions and
+  executes trades based on predefined rules or strategies.
+- Automated Trading System: A broader term that encompasses trading
+  bots, indicating a system that automates trading processes without
+  manual intervention. The Bot, the strategy, and the infrastructure.
+
+Steps:
+1. Define the Trading Strategy
+2. Choose a Programming Language
+3. Set Up the Infrastructure
+4. Implement the Strategy in Code
+5. Backtest and Optimize
+6. Integrate with Exchange API
+7. Deploy and Monitor
+   - Risk Management: Implement strategies to manage risk, such as
+     stop-loss orders and position sizing.
+
+ChatGPT: How to choose and build the Strategy for trading bot?
+- Key Considerations: Market Analysis, Emotional Trading, 24/7 Trading
+
+ChatGPT: What is measure of effectiveness for Automated Trading Systems or trading bots?
+- Profitability Metrics: ROI, Profit factor
+- Risk Management Metrics
+- Execution Speed Metrics
+- Win Rate Metrics
+- Backtesting Performance
+- others
+* Solution
+This is a fundamental task for any broker and trading bot
+ creation. The main measure of effectiveness is profit at historical
+ data.
+
+The key step is to choose “the Strategy”. I think, that the best
+ strategy is to follow most popular strategy on the market.
+
+Techincal Analysis consist of most popular strategy + most effective
+ method to predict price movement.
+
+Sources for most popular strategy:
+- found out biggest companies which are participants
+- company text and video blogs monitoring for leaks
+- most popular repositories at github
+- news and articles monitoring for leaks
+
+Fundamental analysis:
+- Incorporate news analysis
+- Assets related reports analysis
+- social networks monitorings, etc...
+
+* Steps to solve:
+1) find most popular technical analysis pattern and creat effecthive
+   algorithm to predict price movement.
+   - optional: incorporate fundamentat analysis
+2) implement this in code
+3) test code and measure P&L
+4) write documentation and create demo
+
+To better solve this task it is required to dive in field of Automated
+ Trading Systems, market analysis and to incorporate trading platform
+ specifics, dive in time serieses analysis and analyse deep learning
+ approaches.
+* Screencast text
+1) Прочесть Solution.
+2) Как должно быть: командная работа, общая база знаний, архитектуринг
+   и планирование. Data Scientist получает четкую задачу. В команде
+   есть узкоспециализированные специалисты, роли распределены.
+3) Однако вы выбрали подход переложить всю работу на плечи Data
+   Scientist-ов и соикателей. Это современный и хорошо работающий
+   подход, который можно развивать, как это делает LATOKEN. Только я
+   хочу работать тем, кто раздает задания, администратором, а не тем,
+   в одиночку выполняет невыполнимые задачи.
+4) Так как, вы сказали, что к моим hard скилам вопросов нет, то я
+   выполнил только эту демонстрацию.
+
+Спасибо за внимание.
