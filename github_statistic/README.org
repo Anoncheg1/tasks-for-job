@@ -1,0 +1,141 @@
+* Task
+What: Please collect some statistic from your github account with
+ scripts, it require github token to access, it is easy.
+- scripts: https://github.com/format37/git_statistic
+* Short report
+I added tqdm to see progress and replaced OpenAI with GigaChat.
+
+result files:
+- [[file:project_overview.md]]
+- [[file:report_rwa.html]]
+- [[file:report.html]]
+- [[file:project_timeline.html]]
+- [[file:cat_retriever.org]]
+- [[file:report.png]]
+* Full report
+** Report
+After reading poorly written README and quick glance at code I
+ collected information. see [[info]]:
+
+
+After reading the poorly written README and taking a quick glance at
+ the code, I collected the information. See [[info]].
+
+Then I found that there is an OpenAI dependency not documented in
+ requirements.txt.
+
+I added a patch with the tqdm library to see the progress, and after
+ 15 hours, the GitHub statistics were collected.
+
+I sent the file with the collected statistics, git.csv, to the person
+ assigned to the task.
+
+He sent me the OpenAI key and a link to download an unknown binary
+ application that provides a VPN.
+
+Instead of installing the potentially malicious VPN, I have been
+ trying to use TOR and OpenVPN on my VPS, but without quick
+ success. After that, I rewrote the code to comply with the GigaChat
+ API.
+
+I converted Jupyter ‘.ipynb’ to Org ‘.org’ for Emacs. [[file:cat_retriever.org]]
+
+I rewrote the code quickly and poorly (in comfortable for me Org
+ format) because the whole project is poorly implemented and requires
+ a lot of rework.
+
+I checked files quickly and sent back solved task.
+
+** Scripts description collected
+https://github.com/format37/git_statistic
+# Requirements
+This is a collection of scripts:
+- download.py - download all "requirements.txt",.py, .ipynb files from git account and generate “git.csv” file.
+  - uses PyGithub
+- cat_retriever.ipynb - read “git.csv” file and with help of ChatGTP describe “Libraries”,
+  - create: 'repos.json', 'cat.json', 'enabled_categories.txt'.
+- report.py - read 'cat.json', 'git.csv', 'enabled_categories.txt' and with help of plotly generate 'report.html' file.
+- timeline.py - read 'git.csv' and generate 'project_timeline.html'
+- md_report.py - read 'git.csv', 'cat.json', 'repos.json' and generate 'project_overview.md'
+
+requirements.txt
+#+begin_src text
+PyGithub==2.2.0
+matplotlib==3.8.3
+seaborn==0.13.2
+pandas==2.2.0
+plotly==5.18.0
+requests==2.32.3
+#+end_src
+
+and require:
+- OpenAI
+
+
+Dependencies chains for PyGithub and openai.
+#+begin_src text
+PyGithub==2.4.0
+├── Deprecated [required: Any, installed: 1.2.14]
+│   └── wrapt [required: >=1.10,<2, installed: 1.16.0]
+├── PyJWT [required: >=2.4.0, installed: 2.9.0]
+├── PyNaCl [required: >=1.4.0, installed: 1.5.0]
+│   └── cffi [required: >=1.4.1, installed: 1.17.1]
+│       └── pycparser [required: Any, installed: 2.22]
+├── requests [required: >=2.14.0, installed: 2.32.3]
+│   ├── certifi [required: >=2017.4.17, installed: 2024.8.30]
+│   ├── charset-normalizer [required: >=2,<4, installed: 3.3.2]
+│   ├── idna [required: >=2.5,<4, installed: 3.10]
+│   └── urllib3 [required: >=1.21.1,<3, installed: 2.2.3]
+├── typing_extensions [required: >=4.0.0, installed: 4.12.2]
+└── urllib3 [required: >=1.26.0, installed: 2.2.3]
+openai==1.51.0
+├── anyio [required: >=3.5.0,<5, installed: 4.6.0]
+│   ├── exceptiongroup [required: >=1.0.2, installed: 1.2.2]
+│   ├── idna [required: >=2.8, installed: 3.10]
+│   ├── sniffio [required: >=1.1, installed: 1.3.1]
+│   └── typing_extensions [required: >=4.1, installed: 4.12.2]
+├── distro [required: >=1.7.0,<2, installed: 1.9.0]
+├── httpx [required: >=0.23.0,<1, installed: 0.27.2]
+│   ├── anyio [required: Any, installed: 4.6.0]
+│   │   ├── exceptiongroup [required: >=1.0.2, installed: 1.2.2]
+│   │   ├── idna [required: >=2.8, installed: 3.10]
+│   │   ├── sniffio [required: >=1.1, installed: 1.3.1]
+│   │   └── typing_extensions [required: >=4.1, installed: 4.12.2]
+│   ├── certifi [required: Any, installed: 2024.8.30]
+│   ├── httpcore [required: ==1.*, installed: 1.0.6]
+│   │   ├── certifi [required: Any, installed: 2024.8.30]
+│   │   └── h11 [required: >=0.13,<0.15, installed: 0.14.0]
+│   ├── idna [required: Any, installed: 3.10]
+│   └── sniffio [required: Any, installed: 1.3.1]
+├── jiter [required: >=0.4.0,<1, installed: 0.5.0]
+├── pydantic [required: >=1.9.0,<3, installed: 2.9.2]
+│   ├── annotated-types [required: >=0.6.0, installed: 0.7.0]
+│   ├── pydantic_core [required: ==2.23.4, installed: 2.23.4]
+│   │   └── typing_extensions [required: >=4.6.0,!=4.7.0, installed: 4.12.2]
+│   └── typing_extensions [required: >=4.6.1, installed: 4.12.2]
+├── sniffio [required: Any, installed: 1.3.1]
+├── tqdm [required: >4, installed: 4.66.5]
+└── typing_extensions [required: >=4.11,<5, installed: 4.12.2]
+#+end_src
+
+Gigachat:
+#+begin_src text
+gigachat==0.1.34
+├── httpx [required: <1, installed: 0.27.2]
+│   ├── anyio [required: Any, installed: 4.6.0]
+│   │   ├── exceptiongroup [required: >=1.0.2, installed: 1.2.2]
+│   │   ├── idna [required: >=2.8, installed: 3.10]
+│   │   ├── sniffio [required: >=1.1, installed: 1.3.1]
+│   │   └── typing_extensions [required: >=4.1, installed: 4.12.2]
+│   ├── certifi [required: Any, installed: 2024.8.30]
+│   ├── httpcore [required: ==1.*, installed: 1.0.6]
+│   │   ├── certifi [required: Any, installed: 2024.8.30]
+│   │   └── h11 [required: >=0.13,<0.15, installed: 0.14.0]
+│   ├── idna [required: Any, installed: 3.10]
+│   └── sniffio [required: Any, installed: 1.3.1]
+└── pydantic [required: >=1, installed: 2.9.2]
+    ├── annotated-types [required: >=0.6.0, installed: 0.7.0]
+    ├── pydantic_core [required: ==2.23.4, installed: 2.23.4]
+    │   └── typing_extensions [required: >=4.6.0,!=4.7.0, installed: 4.12.2]
+    └── typing_extensions [required: >=4.6.1, installed: 4.12.2]
+#+end_src
