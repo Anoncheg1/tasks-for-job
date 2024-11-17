@@ -20,5 +20,5 @@ Bad:
 - 2024-09-10 - Trading Bot. [[file:o2trading_cindrikov_oleg/README.org]]
 - 2024-08-12 - DS-ML Questions for abstract task. [[file:others/task_for_aiexp.org]]
 - 2024-04-19 - SQLite + Telegram Bot. [[file:task_for_stepbystep/README.org]]
-- 2024-03-14 - Algorithmical: Yandex MultiTrack (2024-01-18). [[file:yandex_multitrack.org]]
+- 2024-03-14 - Algorithmical: Yandex MultiTrack (2024-01-18). [[file:others/yandex_multitrack.org]]
 - 2023-12-15 - Algorithmical: path finding on 2d grid. [[file:task_for_peredovietechnologii/README.org]]
