@@ -15,6 +15,7 @@ Good:
 - create strategy for interior design about rotation of generateion scene image with DL. [[file:others/task_for_interior_design.org]]
 
 Bad:
+- 2024-11-17 - RL reward function for trader [[file:README_RL_trader.org]]
 - 2024-10-05 - Github statistic. [[file:github_statistic/README.org]]
 - 2024-09-10 - Trading Bot. [[file:o2trading_cindrikov_oleg/README.org]]
 - 2024-08-12 - DS-ML Questions for abstract task. [[file:task_for_aiexp.org]]

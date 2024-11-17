@@ -1,0 +1,176 @@
+; -*- mode: Org ; fill-column: 80; -*-
+* Task
+** rus
+Мы разрабатываем торговую стратегию, основанную на обучении с подкреплением. Одной из ключевых задач
+ является определение корректной системы наград для открытия сделок, которая будет способствовать
+ обучению алгоритма оптимальному поведению на рынке. Для правильного применения обучения с
+ подкреплением критически важно написать функцию наград за действия. Алгоритм делает следующие
+ действия: BUY (купить актив), HOLD (ничего не делать, не продавать и не покупать) и SELL (продать
+ актив). Сделки могут быть как LONG (длинные позиции), так и SHORT (короткие позиции). В Случае
+ открытия SHORT при условии, что ранее открытых LONG сделок не было, необходимо сделать SELL. Чтобы
+ закрыть SHORT, нужно сделать BUY такое же количество актива, которое было в начале (то есть когда
+ было сделано SELL). В случае открытия LONG, при условии, что ранее открытых SHORT сделок не было,
+ необходимо сделать BUY, а для закрытия LONG – SELL.
+
+Задача: Сформулируйте систему наград для алгоритма такую, что агент будет награждаться при открытии
+ позиций, при HOLD и при закрытии с учётом типа сделок.  Напишите на Python фрагмент кода,
+ реализующий предложенную вами систему наград.  Укажите, какие метрики будете использовать для
+ оценки эффективности предложенной системы наград.
+
+Ожидаемый результат:
+1. Документ, описывающий концепцию системы наград и обоснование подхода.
+2. Код на Python, демонстрирующий расчет награды.
+
+** eng
+We are developing a trading strategy using reinforcement learning. The key task is to create a
+ reward system that encourages the algorithm to behave optimally in the market. The algorithm can
+ perform BUY, HOLD, or SELL actions for LONG or SHORT trades.
+- To open a SHORT, sell if no LONG was previously opened.
+- To close a SHORT, buy the same amount sold.
+- To open a LONG, buy if no SHORT was previously opened.
+- To close a LONG, sell.
+
+Task: Design a reward system to reward the agent for opening, holding, and closing positions based
+ on trade types. Write a Python code snippet for this system and specify the metrics to evaluate its
+ effectiveness.
+
+Result:
+1. Document with justification of reward system.
+2. Python demo for reward system.
+* Solution
+** 1. ENG Document with justification of reward system.
+*** Description of the Reward System Concept
+In reinforcement learning, the reward system is a crucial component
+ that guides the agent's behavior by providing feedback in the form of
+ rewards or penalties for its actions. Here’s how it applies to
+ trading strategies:
+- Agent :: The trading algorithm or agent that interacts with the
+  market environment.
+- Environment :: The financial market, which provides feedback in the
+  form of profits, losses, or other performance metrics.
+- State :: The current market conditions, such as daily moving
+  averages, high of the day, volume, etc..
+- Actions :: The possible actions the agent can take, such as BUY,
+  SELL, or HOLD.
+- Reward :: The feedback received from the environment after taking an
+  action. This can be based on various metrics such as profit, loss,
+  Sharpe ratio, or other performance indicators.
+
+*** Justification of Customizable Reward Function
+The reward function can be tailored to fit the specific goals of the
+ trader. For example:
+- Profit Maximization: Reward the agent for maximizing profits.
+- Risk-Adjusted Returns: Use the Sharpe ratio to reward risk-adjusted
+  returns, balancing profit and volatility.
+- Transaction Costs: Include transaction costs to discourage frequent
+  and frivolous trades.
+- Unrealized Profits and Losses (PnL): Account for unrealized PnL to
+  ensure the algorithm learns from its inaction and improves its
+  trading policy.
+
+*** Dynamic Adaptation
+The reward system allows the agent to adapt dynamically to changing
+ market conditions. By receiving feedback at each time step, the agent
+ can adjust its policy to maximize long-term rewards. This is
+ particularly useful in trading, where market conditions are
+ constantly evolving[1][3][4].
+*** Balancing Exploration and Exploitation
+The reward system helps balance the exploration-exploitation
+ trade-off. Initially, the agent may explore different actions
+ randomly to learn about the environment. As it gathers more
+ experience, it can exploit this knowledge to make more informed
+ decisions that maximize rewards[4].
+*** Real-Time Decision Making
+The algorithm can make real-time trading decisions based on the reward
+ function. By simulating multiple possible actions and estimating
+ their returns, the agent can recommend the best sequence of actions
+ to exploit for maximum returns.
+
+** 1. RUS Документ, описывающий концепцию системы наград и обоснование подхода.
+*** Описание концепции системы вознаграждений
+В обучении подкрепления система вознаграждений является важным
+ компонентом, который направляет поведение агента, предоставляя
+ обратную связь в виде вознаграждений или штрафов за свои
+ действия. Вот как это относится к торговым стратегиям:
+ - Агент: алгоритм торговли или агент, который взаимодействует с
+   рыночной средой.
+ - Окружающая среда: финансовый рынок, который предоставляет обратную
+   связь в виде прибыли, убытков или других показателей эффективности.
+ - Состояние: текущие рыночные условия, такие как ежедневные
+   скользящие значения, высокий день, объем и т. Д..
+ - Действия: возможные действия, которые агент может предпринять,
+   такие как покупка, продажа или удержание.
+ - Награда: отзывы, полученные из окружающей среды после принятия
+   мер. Это может быть основано на различных показателях, таких как
+   прибыль, убыток, соотношение Sharpe или другие показатели
+   эффективности.
+
+*** Оправдание подхода настраиваемой функция вознаграждения
+Функция вознаграждения может быть адаптирована в соответствии с
+ конкретными целями трейдера. Например:
+- Максимизация прибыли: вознаградите агента за максимизацию прибыли.
+- Доходность с поправкой на риск: используйте отношение Шарпа, чтобы
+  вознаградить доходность с поправкой на риск, баланс прибыли и
+  волатильности.
+- Транзакционные издержки: включайте транзакционные издержки, чтобы
+  препятствовать частым и легкомысленным сделкам.
+- Нереализованная прибыль и убытки (PNL): объясните нереализованный
+  PNL, чтобы гарантировать, что алгоритм учится на его бездействии и
+  улучшает свою торговую политику.
+
+*** Динамическая адаптация
+Система вознаграждения позволяет агенту динамически адаптироваться к
+ изменяющимся рыночным условиям. Получая обратную связь на каждом
+ временном шаге, агент может скорректировать свою политику, чтобы
+ максимизировать долгосрочные вознаграждения. Это особенно полезно при
+ торговле, где рыночные условия постоянно развиваются.
+*** Баланс исследования и эксплуатации
+Система вознаграждений помогает сбалансировать компромисс
+ разведки-эксплуатации. Первоначально агент может случайным образом
+ исследовать различные действия, чтобы узнать об окружающей
+ среде. Поскольку он собирает больше опыта, он может использовать эти
+ знания, чтобы принимать более обоснованные решения, которые
+ максимизируют вознаграждения.
+*** Принятие решений в реальном времени
+Алгоритм может принимать решения в режиме реального времени на основе
+ функции вознаграждения. Моделируя несколько возможных действий и
+ оценивая их доходность, агент может рекомендовать наилучшую
+ последовательность действий для использования для максимальной
+ доходности.
+** 2. Python demo for reward system. Код на Python, демонстрирующий расчет награды.
+#+begin_src python :results output :exports both :session s1
+def reward_function(action, position_type, previous_position, profit, sharpe_ratio, transaction_cost):
+    reward = 0
+    if action == 'BUY':
+        if position_type == 'LONG' and previous_position != 'SHORT':
+            reward += 1  # Reward for opening a LONG position
+            reward += 0.5 * sharpe_ratio  # Additional reward for good risk-adjusted return
+            reward -= transaction_cost  # Penalty for transaction cost
+        elif position_type == 'SHORT' and previous_position != 'LONG':
+            reward -= 1  # Reward for opening a SHORT position
+            reward += 0.5 * sharpe_ratio  # Additional reward for good risk-adjusted return
+            reward -= transaction_cost  # Penalty for transaction cost
+    elif action == 'SELL':
+        if position_type == 'LONG' and previous_position == 'LONG':
+            reward += profit  # Reward for closing a LONG position with profit
+            reward += 0.5 * sharpe_ratio  # Additional reward for good risk-adjusted return
+            reward -= transaction_cost  # Penalty for transaction cost
+        elif position_type == 'SHORT' and previous_position == 'SHORT':
+            reward += profit  # Reward for closing a SHORT position with profit
+            reward += 0.5 * sharpe_ratio  # Additional reward for good risk-adjusted return
+            reward -= transaction_cost  # Penalty for transaction cost
+    elif action == 'HOLD':
+        reward += 0.5 * sharpe_ratio  # Reward for holding the position with good risk-adjusted return
+
+    return reward
+
+# Example usage
+action = 'BUY'
+position_type = 'LONG'
+previous_position = None
+profit = 100
+sharpe_ratio = 1.5
+transaction_cost = 10
+reward = reward_function(action, position_type, previous_position, profit, sharpe_ratio, transaction_cost)
+print(f"Reward for {action} {position_type} position: {reward}")
+#+end_src
