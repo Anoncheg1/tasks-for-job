@@ -15,10 +15,10 @@ Good:
 - create strategy for interior design about rotation of generateion scene image with DL. [[file:others/task_for_interior_design.org]]
 
 Bad:
-- 2024-11-17 - RL reward function for trader [[file:README_RL_trader.org]]
+- 2024-11-17 - RL reward function for trader [[file:others/README_RL_trader.org]]
 - 2024-10-05 - Github statistic. [[file:github_statistic/README.org]]
 - 2024-09-10 - Trading Bot. [[file:o2trading_cindrikov_oleg/README.org]]
-- 2024-08-12 - DS-ML Questions for abstract task. [[file:task_for_aiexp.org]]
+- 2024-08-12 - DS-ML Questions for abstract task. [[file:others/task_for_aiexp.org]]
 - 2024-04-19 - SQLite + Telegram Bot. [[file:task_for_stepbystep/README.org]]
 - 2024-03-14 - Algorithmical: Yandex MultiTrack (2024-01-18). [[file:yandex_multitrack.org]]
 - 2023-12-15 - Algorithmical: path finding on 2d grid. [[file:task_for_peredovietechnologii/README.org]]
