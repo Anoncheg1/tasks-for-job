@@ -1,4 +1,5 @@
 Good:
+- 2025-02-09 - Code review for AI assistent validator code [[file:task_for_codereview/README.org]]
 - 2024-08-03 - Redis Cluster + FastAPI. [[file:task_for_AlarStudios/README.org]]
 - 2024-06-06 - Demo about AI NLP Hackathon. [[file:task_for_hackathon_demo/README.pdf]]
 - 2024-05-01 - Research: Battery degradation modeling. [[file:task_for_battery_life/README.org]]
