@@ -1,4 +1,5 @@
 Good:
+- 2026-05-24 - Research proposal for AIRI: Anchor & Adapt KG [[file:task_for_research_proposal/README.md]]
 - 2025-09-01 - Research: RL solution for aviation industry (role: RL Specialist) [[file:task_for_research_about_rl_in_avia_industry/README.org]]
 - 2025-02-09 - Code review: of AI assistent validator code [[file:task_for_codereview/README.org]]
 - 2024-08-03 - Python Programming: Redis Cluster + FastAPI. [[file:task_for_AlarStudios/README.org]]
@@ -15,6 +16,7 @@ Good:
 - optimization task for bit-packing. [[file:others/optimization.org]]
 - answer question after analysis of articles. [[file:others/nft_data_engineer.org]]
 - create strategy for interior design about rotation of generateion scene image with DL. [[file:others/task_for_interior_design.org]]
+
 
 Bad:
 - 2024-11-17 - RL reward function for trader [[file:others/README_RL_trader.org]]
